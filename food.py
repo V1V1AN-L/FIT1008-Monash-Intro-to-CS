@@ -102,6 +102,7 @@ class Food:
 
     @classmethod
     def random_food(cls) -> Food:
+        raise NotImplementedError()
         return Food(RandomGen.random_choice(FOOD_NAMES))
 
 if __name__ == "__main__":

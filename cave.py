@@ -121,7 +121,8 @@ class Cave:
         if isinstance(material_list, Material):
             return Cave(RandomGen.random_choice(CAVE_NAMES), material_list)
         elif isinstance(material_list, list):
-            return Cave(RandomGen.random_choice(CAVE_NAMES), RandomGen.random_choice(material_list))
+            chosen_material = RandomGen.random_choice(material_list)
+            return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, material_list.count(chosen_material))
         
 
 if __name__ == "__main__":
