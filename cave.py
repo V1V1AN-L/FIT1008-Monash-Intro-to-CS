@@ -1,4 +1,5 @@
 from __future__ import annotations
+from random_gen import *
 
 from material import Material
 
@@ -99,23 +100,29 @@ CAVE_NAMES = [
 class Cave:
     
     def __init__(self, name: str, material: Material, quantity: float=0) -> None:
-        raise NotImplementedError()
+        self.name = name
+        self.material = material
+        self.quantity = quantity
     
     def add_quantity(self, amount: float) -> None:
-        raise NotImplementedError()
+        self.quantity += amount
     
     def remove_quantity(self, amount: float) -> None:
-        raise NotImplementedError()
+        self.quantity -= amount
 
     def get_quantity(self) -> float:
-        raise NotImplementedError()
+        return self.quantity
 
     def __str__(self) -> str:
         raise NotImplementedError()
 
     @classmethod
     def random_cave(self, material_list: list[Material]) -> Cave:
-        raise NotImplementedError()
+        if isinstance(material_list, Material):
+            return Cave(RandomGen.random_choice(CAVE_NAMES), material_list)
+        elif isinstance(material_list, list):
+            return Cave(RandomGen.random_choice(CAVE_NAMES), RandomGen.random_choice(material_list))
+        
 
 if __name__ == "__main__":
     print(Cave("Mt Coronet", Material("Coal", 4.5), 3))

@@ -1,4 +1,5 @@
 from random_gen import RandomGen
+from graphics_module import *
 
 # Material names taken from https://minecraft-archive.fandom.com/wiki/Items
 RANDOM_MATERIAL_NAMES = [
@@ -91,7 +92,9 @@ class Material:
     """
     
     def __init__(self, name: str, mining_rate: float) -> None:
+        assert name in RANDOM_MATERIAL_NAMES, "invalid name"
         self.name = name
+        self.mining_rate = mining_rate
     
     def __str__(self) -> str:
         raise NotImplementedError()
@@ -100,5 +103,5 @@ class Material:
     def random_material(cls):
         raise NotImplementedError()
 
-if __name__ == "__main__":
-    print(Material("Coal", 4.5))
+
+        

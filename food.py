@@ -93,14 +93,16 @@ FOOD_NAMES = [
 class Food:
     
     def __init__(self, name: str, hunger_bars: int, price: int) -> None:
-        raise NotImplementedError()
+        self.name = name
+        self.hunger_bars = hunger_bars
+        self.price = price
     
     def __str__(self) -> str:
         raise NotImplementedError()
 
     @classmethod
     def random_food(cls) -> Food:
-        raise NotImplementedError()
+        return Food(RandomGen.random_choice(FOOD_NAMES))
 
 if __name__ == "__main__":
     print(Food.random_food())
