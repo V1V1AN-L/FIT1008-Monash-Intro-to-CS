@@ -91,7 +91,7 @@ class Material:
     """
     
     def __init__(self, name: str, mining_rate: float) -> None:
-        raise NotImplementedError()
+        self.name = name
     
     def __str__(self) -> str:
         raise NotImplementedError()
