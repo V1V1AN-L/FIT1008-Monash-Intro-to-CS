@@ -78,10 +78,19 @@ class Trader(ABC):
         self.materials: list = []
         self.buying: Material = None
         self.buying_price: float = None
+        
+    def __str__(self) -> str:
+        return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
+    
+    def __repr__(self):
+        return self.__str__()
 
     @classmethod
     def random_trader(cls):
         return RandomTrader(RandomGen.random_choice(TRADER_NAMES))
+    
+    def get_materials(self):
+        return self.materials
     
     def set_all_materials(self, mats: list[Material]) -> None:
         self.materials = mats
@@ -92,6 +101,8 @@ class Trader(ABC):
     def add_material(self, mat: Material) -> None:
         if mat not in self.materials:
             self.materials.append(mat)
+            
+    # deal handling
     
     def is_currently_selling(self) -> bool:
         return self.buying
@@ -100,28 +111,33 @@ class Trader(ABC):
         return tuple(self.buying, self.buying_price)
     
     def generate_deal(self) -> None:
-        self.buying = RandomGen.random_choice(self.materials)
+        self.buying = self.get_market_material()
+        self.buying_price = round(2 + 8 * RandomGen.random_float(), 2)
 
     def stop_deal(self) -> None:
         self.buying = None
     
-    def __str__(self) -> str:
-        return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
-    
-    def __repr__(self):
-        return self.__str__()
+    @abstractmethod
+    def get_market_material(self):
+        pass
 
 class RandomTrader(Trader):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
-    pass
+    def get_market_material(self):
+        return RandomGen.random_choice(self.get_materials())
 
 class RangeTrader(Trader):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
+    
+    def get_market_material(self):
+        lower = RandomGen.randint(0, len(self.get_materials())-1)
+        upper = RandomGen.randint(upper, len(self.get_materials())-1)
+        return RandomGen.random_choice(self.materials_between(lower, upper))
     
     def materials_between(self, i: int, j: int) -> list[Material]:
         """_summary_
@@ -140,7 +156,8 @@ class HardTrader(Trader):
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
-    pass
+    def get_market_material(self):
+        pass
 
 if __name__ == "__main__":
     trader = RangeTrader("Jackson")
