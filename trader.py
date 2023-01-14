@@ -104,6 +104,9 @@ class Trader(ABC):
     
     def __str__(self) -> str:
         return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
+    
+    def __repr__(self):
+        return self.__str__()
 
 class RandomTrader(Trader):
     """
