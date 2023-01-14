@@ -77,7 +77,7 @@ class Trader(ABC):
         self.name: str = name
         self.materials: list[Material] = []
         self.buying: Material = None
-        self.buying_price: float = None
+        self.buying_price: float = 0.00
         
     def __str__(self) -> str:
         return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
@@ -117,6 +117,7 @@ class Trader(ABC):
 
     def stop_deal(self) -> None:
         self.buying = None
+        self.buying_price = 0.00
     
     @abstractmethod
     def get_market_material(self):
