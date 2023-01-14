@@ -71,26 +71,29 @@ TRADER_NAMES = [
 class Trader(ABC):
     
     def __init__(self, name: str) -> None:
-        raise NotImplementedError()
+        self.name = name
+        self.materials = []
+        self.selling = None
 
     @classmethod
     def random_trader(cls):
         raise NotImplementedError()
     
     def set_all_materials(self, mats: list[Material]) -> None:
-        raise NotImplementedError()
+        self.materials = []
     
     def add_material(self, mat: Material) -> None:
-        raise NotImplementedError()
+        if mat not in self.materials:
+            self.materials.append(mat)
     
     def is_currently_selling(self) -> bool:
-        raise NotImplementedError()
+        return self.selling
 
     def current_deal(self) -> tuple[Material, float]:
         raise NotImplementedError()
     
     def generate_deal(self) -> None:
-        raise NotImplementedError()
+        self.selling = RandomGen.random_choice(self.materials)
 
     def stop_deal(self) -> None:
         raise NotImplementedError()
@@ -105,7 +108,16 @@ class RandomTrader(Trader):
 class RangeTrader(Trader):
     
     def materials_between(self, i: int, j: int) -> list[Material]:
-        raise NotImplementedError()
+        """_summary_
+
+        Args:
+            i (int): lower index
+            j (int): upper index
+
+        Returns:
+            list[Material]: spliced list of materials
+        """
+        return self.materials[i:j+1]
 
 class HardTrader(Trader):
     
