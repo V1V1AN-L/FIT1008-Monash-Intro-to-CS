@@ -489,13 +489,14 @@ def medium_text_print(text: str, row: int = -1, colour = ''):
             '▀',
             ' '
         ],
+        # emojis
         '🍗':[
             f"{medium_text_print('hunger')}",
             f"{medium_text_print('hunger')}"
         ],
         '💎':[
-            f"{medium_text_print('hunger')}",
-            f"{medium_text_print('hunger')}"
+            f"{medium_text_print('item')}",
+            f"{medium_text_print('item')}"
         ],
         '💰':[
             f"{medium_text_print('gold')}",

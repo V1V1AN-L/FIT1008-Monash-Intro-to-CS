@@ -9,7 +9,9 @@ from text_generation import *
 # functions which help the intergration of graphics
 
 def keyboard_wait():
-    msvcrt.getch()
+    keypressed = msvcrt.getch()
+    # TODO
+    return 
 
 def clearConsole():
     """

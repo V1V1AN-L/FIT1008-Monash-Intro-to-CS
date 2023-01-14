@@ -1,8 +1,4 @@
 from __future__ import annotations
-try:
-    import keyboard
-except:
-    pass
 from random_gen import *
 from graphics_module import *
 from cave import *
@@ -155,10 +151,14 @@ class Player():
     # MANUAL CONTROL OF PLAYERS
         
     def refresh_key_cooldown(self):
-        if self.key_cooldown <= int(time.time()*1000):
-            self.key_cooldown = int(time.time()*1000) + 100
-            return True
-        return False
+        while True:
+            try:
+                if self.key_cooldown <= int(time.time()*1000):
+                    self.key_cooldown = int(time.time()*1000) + 100
+                    return True
+                return False
+            except AttributeError:
+                self.key_cooldown = int(time.time()*1000) 
     
     def choose_food_screen(self):
         clearConsole()
@@ -188,13 +188,13 @@ f"""{dark}{medium_text_print(food, 1)}
 {medium_text_print(food, 2)}{dark}   
 {' '*get_screensize()}""")
             # get input or not
-            if self.refresh_key_cooldown() and keyboard.is_pressed('up') and choice > 0:
+            pressed_key = keyboard_wait()
+            if self.refresh_key_cooldown() and pressed_key == 'up' and choice > 0:
                 choice -= 1
-            elif self.refresh_key_cooldown() and keyboard.is_pressed('down') and choice < len(foods):
+            elif self.refresh_key_cooldown() and pressed_key == 'down' and choice < len(foods):
                 choice += 1
-            elif self.refresh_key_cooldown() and keyboard.is_pressed('enter'):
+            elif self.refresh_key_cooldown() and pressed_key == 'enter':
                 return foods[choice]
-            time.sleep(.005)
             go_back()
         
     def choose_cave_screen(self):
@@ -225,13 +225,13 @@ f"""{dark}{medium_text_print(cave, 1)}
 {medium_text_print(cave, 2)}{dark}   
 {' '*get_screensize()}""")
             # get input or not
-            if self.refresh_key_cooldown() and keyboard.is_pressed('up') and choice > 0:
+            pressed_key = keyboard_wait()
+            if self.refresh_key_cooldown() and pressed_key == 'up' and choice > 0:
                 choice -= 1
-            elif self.refresh_key_cooldown() and keyboard.is_pressed('down') and choice < len(caves):
+            elif self.refresh_key_cooldown() and pressed_key == 'down' and choice < len(caves):
                 choice += 1
-            elif self.refresh_key_cooldown() and keyboard.is_pressed('enter'):
+            elif self.refresh_key_cooldown() and pressed_key == 'enter':
                 return caves[choice]
-            time.sleep(.005)
             go_back()
     
     def display_title(self):
