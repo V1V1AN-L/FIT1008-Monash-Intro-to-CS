@@ -96,10 +96,10 @@ class Trader(ABC):
         self.selling = RandomGen.random_choice(self.materials)
 
     def stop_deal(self) -> None:
-        raise NotImplementedError()
+        self.selling = None
     
     def __str__(self) -> str:
-        raise NotImplementedError()
+        return f"<{type(self).__name__}: {self.name} buying [{self.selling}] for 7.57💰>"
 
 class RandomTrader(Trader):
     
