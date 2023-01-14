@@ -88,7 +88,7 @@ RANDOM_MATERIAL_NAMES = [
 
 class Material:
     """
-
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
     def __init__(self, name: str, mining_rate: float) -> None:
@@ -97,7 +97,12 @@ class Material:
         self.mining_rate = mining_rate
     
     def __str__(self) -> str:
-        raise NotImplementedError()
+        """_summary_
+
+        Returns:
+            str: string representation
+        """
+        return f"{self.name}: {int(self.mining_rate)}🍗/💎"
 
     @classmethod
     def random_material(cls):
