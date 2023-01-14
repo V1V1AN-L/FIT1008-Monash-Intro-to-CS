@@ -75,7 +75,7 @@ class Trader(ABC):
     
     def __init__(self, name: str) -> None:
         self.name: str = name
-        self.materials: list = []
+        self.materials: list[Material] = []
         self.buying: Material = None
         self.buying_price: float = None
         
@@ -108,7 +108,8 @@ class Trader(ABC):
         return self.buying
 
     def current_deal(self) -> tuple[Material, float]:
-        return tuple(self.buying, self.buying_price)
+        if self.buying == None: raise ValueError
+        return (self.buying, self.buying_price)
     
     def generate_deal(self) -> None:
         self.buying = self.get_market_material()
@@ -127,6 +128,11 @@ class RandomTrader(Trader):
     """
     
     def get_market_material(self):
+        """_summary_
+
+        Returns:
+            Material: random material chosen from the avaliable list of materials the trader is buying
+        """
         return RandomGen.random_choice(self.get_materials())
 
 class RangeTrader(Trader):
@@ -135,8 +141,13 @@ class RangeTrader(Trader):
     """
     
     def get_market_material(self):
+        """_summary_
+
+        Returns:
+            Material: random material chosen from the avaliable list of materials the trader is buying within the bounds of lower and upper (see RangeTrader.materials_between)
+        """
         lower = RandomGen.randint(0, len(self.get_materials())-1)
-        upper = RandomGen.randint(upper, len(self.get_materials())-1)
+        upper = RandomGen.randint(lower, len(self.get_materials())-1)
         return RandomGen.random_choice(self.materials_between(lower, upper))
     
     def materials_between(self, i: int, j: int) -> list[Material]:
@@ -147,9 +158,9 @@ class RangeTrader(Trader):
             j (int): upper index
 
         Returns:
-            list[Material]: spliced list of materials
+            list[Material]: spliced list of materials, bound to the lower and upper indexes (inclusive)
         """
-        return self.materials[i:j+1]
+        return self.get_materials()[i:j+1]
 
 class HardTrader(Trader):
     """
@@ -157,7 +168,18 @@ class HardTrader(Trader):
     """
     
     def get_market_material(self):
-        pass
+        """_summary_
+
+        Returns:
+            Material: hardest material to mine in the avaliable list of materials the trader is buying
+        """
+        hardest_to_mine = None
+        hardest_to_mine_value = 0
+        for material in self.get_materials():
+            if material.mining_rate > hardest_to_mine_value:
+                hardest_to_mine = material
+        return hardest_to_mine
+            
 
 if __name__ == "__main__":
     trader = RangeTrader("Jackson")

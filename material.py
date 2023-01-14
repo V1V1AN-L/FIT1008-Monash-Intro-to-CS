@@ -92,7 +92,6 @@ class Material:
     """
     
     def __init__(self, name: str, mining_rate: float) -> None:
-        assert name in RANDOM_MATERIAL_NAMES, "invalid name"
         self.name = name
         self.mining_rate = mining_rate
     
