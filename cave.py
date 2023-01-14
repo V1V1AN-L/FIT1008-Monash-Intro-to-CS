@@ -103,6 +103,7 @@ class Cave:
     """
     
     def __init__(self, name: str, material: Material, quantity: float=0) -> None:
+        assert name in CAVE_NAMES, "Invalid cave name"
         self.name = name
         self.material = material
         self.quantity = quantity
@@ -117,7 +118,7 @@ class Cave:
         return self.quantity
 
     def __str__(self) -> str:
-        raise NotImplementedError()
+        return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
 
     @classmethod
     def random_cave(self, material_list: list[Material]) -> Cave:

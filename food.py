@@ -101,7 +101,7 @@ class Food:
         self.price = price
     
     def __str__(self) -> str:
-        raise NotImplementedError()
+        return f"{self.name}: {self.hunger_bars}🍗 for {self.price}💰"
 
     @classmethod
     def random_food(cls) -> Food:

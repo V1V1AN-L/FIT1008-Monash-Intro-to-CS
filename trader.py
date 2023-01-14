@@ -74,9 +74,10 @@ class Trader(ABC):
     """
     
     def __init__(self, name: str) -> None:
-        self.name = name
-        self.materials = []
-        self.buying = None
+        self.name: str = name
+        self.materials: list = []
+        self.buying: Material = None
+        self.buying_price: float = None
 
     @classmethod
     def random_trader(cls):
@@ -93,7 +94,7 @@ class Trader(ABC):
         return self.buying
 
     def current_deal(self) -> tuple[Material, float]:
-        raise NotImplementedError()
+        return tuple(self.buying, self.buying_price)
     
     def generate_deal(self) -> None:
         self.buying = RandomGen.random_choice(self.materials)
