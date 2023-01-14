@@ -109,6 +109,9 @@ class Player():
         
     def __str__(self) -> str:
         raise NotImplementedError()
+    
+    def __repr__(self):
+        return self.__str__()
 
     def set_traders(self, traders_list: list[Trader]) -> None:
         self.traders_list = traders_list
