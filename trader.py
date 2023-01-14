@@ -85,6 +85,9 @@ class Trader(ABC):
     
     def set_all_materials(self, mats: list[Material]) -> None:
         self.materials = mats
+        
+    def set_materials(self, mats: list[Material]) -> None:
+        self.set_all_materials(mats)
     
     def add_material(self, mat: Material) -> None:
         if mat not in self.materials:
