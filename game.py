@@ -8,6 +8,9 @@ from food import Food
 from random_gen import RandomGen
 
 class Game:
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
 
     MIN_MATERIALS = 5
     MAX_MATERIALS = 10

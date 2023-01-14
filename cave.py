@@ -98,6 +98,9 @@ CAVE_NAMES = [
 ]
 
 class Cave:
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     def __init__(self, name: str, material: Material, quantity: float=0) -> None:
         self.name = name

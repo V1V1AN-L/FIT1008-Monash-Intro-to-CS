@@ -69,43 +69,52 @@ TRADER_NAMES = [
 ]
 
 class Trader(ABC):
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     def __init__(self, name: str) -> None:
         self.name = name
         self.materials = []
-        self.selling = None
+        self.buying = None
 
     @classmethod
     def random_trader(cls):
-        raise NotImplementedError()
+        return RandomTrader(RandomGen.random_choice(TRADER_NAMES))
     
     def set_all_materials(self, mats: list[Material]) -> None:
-        self.materials = []
+        self.materials = mats
     
     def add_material(self, mat: Material) -> None:
         if mat not in self.materials:
             self.materials.append(mat)
     
     def is_currently_selling(self) -> bool:
-        return self.selling
+        return self.buying
 
     def current_deal(self) -> tuple[Material, float]:
         raise NotImplementedError()
     
     def generate_deal(self) -> None:
-        self.selling = RandomGen.random_choice(self.materials)
+        self.buying = RandomGen.random_choice(self.materials)
 
     def stop_deal(self) -> None:
-        self.selling = None
+        self.buying = None
     
     def __str__(self) -> str:
-        return f"<{type(self).__name__}: {self.name} buying [{self.selling}] for 7.57💰>"
+        return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
 
 class RandomTrader(Trader):
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     pass
 
 class RangeTrader(Trader):
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     def materials_between(self, i: int, j: int) -> list[Material]:
         """_summary_
@@ -120,6 +129,9 @@ class RangeTrader(Trader):
         return self.materials[i:j+1]
 
 class HardTrader(Trader):
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     pass
 

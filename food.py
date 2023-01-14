@@ -91,6 +91,9 @@ FOOD_NAMES = [
 ]
 
 class Food:
+    """
+    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    """
     
     def __init__(self, name: str, hunger_bars: int, price: int) -> None:
         self.name = name
@@ -102,7 +105,6 @@ class Food:
 
     @classmethod
     def random_food(cls) -> Food:
-        raise NotImplementedError()
         return Food(RandomGen.random_choice(FOOD_NAMES))
 
 if __name__ == "__main__":
