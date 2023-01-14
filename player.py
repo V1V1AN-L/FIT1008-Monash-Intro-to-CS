@@ -101,11 +101,15 @@ class Player():
     MIN_EMERALDS = 14
     MAX_EMERALDS = 40
 
-    def __init__(self, name, emeralds=None) -> None:
+    def __init__(self, name, emeralds=None, **kwargs) -> None:
         self.name = name
         self.balance = self.DEFAULT_EMERALDS if emeralds is None else emeralds
         # extras
-        self.key_cooldown = int(time.time()*1000)
+        try:
+            self.AI = bool(kwargs['AI'])
+            self.key_cooldown = int(time.time()*1000)
+        except KeyError:
+            self.AI = True
         
     def __str__(self) -> str:
         raise NotImplementedError()
@@ -129,27 +133,36 @@ class Player():
     def set_caves(self, caves_list: list[Cave]) -> None:
         self.caves_list = caves_list
         
+
+    def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
+        if self.AI:
+            chosen_food, chosen_cave = self.AI_select_food_and_caves()
+        else:
+            while True:
+                chosen_food = self.choose_food_screen()
+                try:
+                    chosen_cave = self.choose_cave_screen(chosen_food)
+                    break
+                except:
+                    pass
+    
+        return chosen_food, self.balance, chosen_cave
+    
+    def AI_select_food_and_caves(self):
+        pass
+    
+    
+    # MANUAL CONTROL OF PLAYERS
+        
     def refresh_key_cooldown(self):
         if self.key_cooldown <= int(time.time()*1000):
             self.key_cooldown = int(time.time()*1000) + 100
             return True
         return False
     
-    def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
-        while True:
-            chosen_food = self.choose_food_screen()
-            try:
-                chosen_cave = self.choose_cave_screen(chosen_food)
-                break
-            except:
-                pass
-    
-        return chosen_food, self.balance, chosen_cave
-    
     def choose_food_screen(self):
         clearConsole()
         self.title = 'Food'
-        caves = CAVE_NAMES
         foods = FOOD_NAMES  
         dark = '\033[90m'
         clear = '\033[0m'
@@ -163,33 +176,63 @@ class Player():
                 chosen_range = range(choice-3, choice + 5)
             for i in chosen_range:
                 food = f"{foods[i]}"
-                cave = f"{caves[i]}"
-                white_space = ' '*7
                 if i == choice:
                     food += ' <<'
                     print(
-f"""{clear}{medium_text_print(food, 1)}{white_space}{dark}{medium_text_print('|', 1)}{white_space}{medium_text_print(cave, 1)}{white_space}
-{clear}{medium_text_print(food, 2)}{white_space}{dark}{medium_text_print('|', 2)}{white_space}{medium_text_print(cave, 2)}{white_space}      
+f"""{clear}{medium_text_print(food, 1)}{dark}
+{clear}{medium_text_print(food, 2)}{dark}  
 {' '*get_screensize()}""")
                 else:
                     print(
-f"""{medium_text_print(food, 1)}{white_space}{dark}{medium_text_print('|', 1)}{white_space}{medium_text_print(cave, 1)}{white_space}
-{medium_text_print(food, 2)}{white_space}{dark}{medium_text_print('|', 2)}{white_space}{medium_text_print(cave, 2)}{white_space}      
+f"""{dark}{medium_text_print(food, 1)}
+{medium_text_print(food, 2)}{dark}   
 {' '*get_screensize()}""")
             # get input or not
-            keyboard_wait()
             if self.refresh_key_cooldown() and keyboard.is_pressed('up') and choice > 0:
                 choice -= 1
             elif self.refresh_key_cooldown() and keyboard.is_pressed('down') and choice < len(foods):
                 choice += 1
             elif self.refresh_key_cooldown() and keyboard.is_pressed('enter'):
                 return foods[choice]
+            time.sleep(.005)
             go_back()
         
-    def choose_cave_screen(self, chosen_food):
-        self.title = 'Food'
-        
-    # printing functions
+    def choose_cave_screen(self):
+        clearConsole()
+        self.title = 'Caves'
+        caves = CAVE_NAMES  
+        dark = '\033[90m'
+        clear = '\033[0m'
+        choice = 0
+        while True:
+            if choice < 3:
+                chosen_range = range(0, 8)
+            elif choice > len(caves[i])-8:
+                chosen_range = range(len(caves[i])-8, len(caves[i]))
+            else:
+                chosen_range = range(choice-3, choice + 5)
+            for i in chosen_range:
+                cave = f"{caves[i]}"
+                if i == choice:
+                    cave += ' <<'
+                    print(
+f"""{clear}{medium_text_print(cave, 1)}{dark}
+{clear}{medium_text_print(cave, 2)}{dark}  
+{' '*get_screensize()}""")
+                else:
+                    print(
+f"""{dark}{medium_text_print(cave, 1)}
+{medium_text_print(cave, 2)}{dark}   
+{' '*get_screensize()}""")
+            # get input or not
+            if self.refresh_key_cooldown() and keyboard.is_pressed('up') and choice > 0:
+                choice -= 1
+            elif self.refresh_key_cooldown() and keyboard.is_pressed('down') and choice < len(caves):
+                choice += 1
+            elif self.refresh_key_cooldown() and keyboard.is_pressed('enter'):
+                return caves[choice]
+            time.sleep(.005)
+            go_back()
     
     def display_title(self):
         title = self.title
@@ -206,11 +249,6 @@ f"""{title_white_space}{big_text_print(title, 1)}{title_white_space}
 {title_white_space}{big_text_print(title, 5)}{title_white_space}    
 {'-'*screensize}
 """)
-    
-    def screen_template(self):
-        SCREENSIZE = 33
-"""
-"""
         
 
 

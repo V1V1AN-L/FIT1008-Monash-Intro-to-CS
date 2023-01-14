@@ -489,6 +489,18 @@ def medium_text_print(text: str, row: int = -1, colour = ''):
             '▀',
             ' '
         ],
+        '🍗':[
+            f"{medium_text_print('hunger')}",
+            f"{medium_text_print('hunger')}"
+        ],
+        '💎':[
+            f"{medium_text_print('hunger')}",
+            f"{medium_text_print('hunger')}"
+        ],
+        '💰':[
+            f"{medium_text_print('gold')}",
+            f"{medium_text_print('gold')}"
+        ],
     } 
     text = text.lower()  
     return_string = f"{colour}"
