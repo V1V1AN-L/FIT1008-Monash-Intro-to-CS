@@ -18,7 +18,7 @@ def clearConsole():
     command = 'clear'
     if os.name in ('nt', 'dos'):  
         command = 'cls'
-    os.system('cls')  
+    os.system(command)  
     
     
 def get_screensize(vertical = False):
