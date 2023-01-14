@@ -104,6 +104,9 @@ class Material:
         """
         return f"{self.name}: {int(self.mining_rate)}🍗/💎"
     
+    def __repr__(self):
+        return self.__str__()
+    
     def get_material_plural(self, amount: int = 2):
         mapping = {
         "Arrow":"Arrows",

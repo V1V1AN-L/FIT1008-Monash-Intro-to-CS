@@ -107,6 +107,9 @@ class Cave:
         self.name = name
         self.material = material
         self.quantity = quantity
+        
+    def __repr__(self):
+        return self.__str__()
     
     def add_quantity(self, amount: float) -> None:
         self.quantity += amount

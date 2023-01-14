@@ -102,6 +102,9 @@ class Food:
     
     def __str__(self) -> str:
         return f"{self.name}: {self.hunger_bars}🍗 for {self.price}💰"
+    
+    def __repr__(self):
+        return self.__str__()
 
     @classmethod
     def random_food(cls) -> Food:
