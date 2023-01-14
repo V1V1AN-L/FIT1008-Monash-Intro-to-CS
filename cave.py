@@ -102,7 +102,7 @@ class Cave:
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
-    def __init__(self, name: str, material: Material, quantity: float=0) -> None:
+    def __init__(self, name: str, material: Material, quantity: float = 0.0) -> None:
         assert name in CAVE_NAMES, "Invalid cave name"
         self.name = name
         self.material = material
