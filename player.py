@@ -99,7 +99,11 @@ class Player():
 
     def __init__(self, name, emeralds=None, **kwargs) -> None:
         self.name = name
-        self.balance = self.DEFAULT_EMERALDS if emeralds is None else emeralds
+        self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds) 
+        self.set_traders()
+        self.set_foods()
+        self.set_materials()
+        self.set_caves()
         # extras
         try:
             self.AI = bool(kwargs['AI'])
@@ -108,23 +112,33 @@ class Player():
             self.AI = True
         
     def __str__(self) -> str:
-        raise NotImplementedError()
+        return f"{self.name}: {self.get_balance()}💰"
     
     def __repr__(self):
         return self.__str__()
 
     # mutators
+    
+    def set_balance(self, balance: float = None) -> None:
+        self.balance = round(balance, 2)
+        
+    def get_balance(self) -> float:
+        self.set_balance(self.balance) # makes sure its rounded to two decimal places
+        return self.balance
 
-    def set_traders(self, traders_list: list[Trader]) -> None:
+    def set_traders(self, traders_list: list[Trader] = None) -> None:
         self.traders_list = traders_list
 
-    def set_foods(self, foods_list: list[Food]) -> None:
-        self.foods_list = foods_list
+    def set_foods(self, foods_list: list[Food] = None) -> None:
+        if foods_list != None:
+            self.foods_list: list[Food] = foods_list
+        elif self.get_traders() != None:
+            self.foods_list: list[Food] = [trader.buying for trader in self.get_traders() if trader.buying != None]
         
-    def set_materials(self, materials_list: list[Material]) -> None:
+    def set_materials(self, materials_list: list[Material] = None) -> None:
         self.materials_list = materials_list
 
-    def set_caves(self, caves_list: list[Cave]) -> None:
+    def set_caves(self, caves_list: list[Cave] = None) -> None:
         self.caves_list = caves_list
         
     def get_traders(self) -> list[Trader]:
@@ -158,7 +172,34 @@ class Player():
         return (chosen_food, self.balance, chosen_cave)
     
     def AI_select_food_and_caves(self):
+        """_summary_
+        
+        Returns :
+            tuple: _description_
+        
+        brief on function:
+Given that the player has access to the materials, caves, and traders given through the relevant methods in the player class (which you need to implement), 
+we want to implement the method select_food_and_caves, which generates a tuple containing 3 objects:
+- The food which this player will buy
+- The emerald balance after this player has made their move
+- A list of all caves plundered on their journey, paired with the quantity of each material mined.
+
+The choice the player makes should be optimal (Achieving the highest balance of emeralds possible in a single day) The method should not change the existing quantities of any caves, or any statistics of any material/cave/trader object.
+
+Complexity Requirement!
+Given that F = #Foods, T = #Traders, C=#Caves, M=#Materials:
+Your select_food_and_caves method should have complexity at most O(M + T + F * C * logC)
+
+Documentation Requirement!
+For your solution to select_food_and_caves, please leave a lengthy docstring describing the motivation for your approach in full. 
+Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
+
+        Documentation:
+        """
         raise NotImplementedError
+        chosen_food, chosen_cave = None, None
+        return chosen_food, chosen_cave
+        
     
     
     # MANUAL CONTROL OF PLAYERS
