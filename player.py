@@ -155,7 +155,7 @@ class Player():
                 except:
                     pass
     
-        return chosen_food, self.balance, chosen_cave
+        return (chosen_food, self.balance, chosen_cave)
     
     def AI_select_food_and_caves(self):
         raise NotImplementedError
