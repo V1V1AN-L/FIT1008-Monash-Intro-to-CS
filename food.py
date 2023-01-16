@@ -105,6 +105,9 @@ class Food:
     
     def __repr__(self):
         return self.__str__()
+    
+    def get_ratio(self):
+        return self.hunger_bars/self.price
 
     @classmethod
     def random_food(cls) -> Food:

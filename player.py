@@ -184,17 +184,22 @@ class Player():
     # select_food_and_caves
     def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
         if self.AI:
-            chosen_food, chosen_cave = self.AI_select_food_and_caves()
+            chosen_food, chosen_caves = self.AI_select_food_and_caves()
         else:
             while True:
-                chosen_food = self.choose_food_screen()
                 try:
-                    chosen_cave = self.choose_cave_screen(chosen_food)
+                    try:
+                        chosen_food = self.choose_food_screen()
+                    except AssertionError:
+                        chosen_food = None
+                    chosen_caves = self.choose_cave_screen(chosen_food)
                     break
-                except:
+                except AssertionError:
                     pass
+                except Exception as e:
+                    raise e
     
-        return (chosen_food, self.get_balance(), chosen_cave)
+        return (chosen_food, self.get_balance(), chosen_caves)
     
     def AI_select_food_and_caves(self):
         """_summary_
@@ -221,9 +226,14 @@ Please use a small example to demonstrate your approach. Additionally, you need 
 
         Documentation:
         """
-        raise NotImplementedError
-        chosen_food, chosen_cave = None, None
-        return chosen_food, chosen_cave
+        
+        chosen_food, chosen_caves = None, None
+        return chosen_food, chosen_caves
+    
+    def choose_food(self):
+        ratio = 0
+        for food in self.get_foods():
+            
         
     
     
@@ -246,35 +256,7 @@ Please use a small example to demonstrate your approach. Additionally, you need 
         dark = '\033[90m'
         clear = '\033[0m'
         choice = 0
-        while True:
-            if choice < 3:
-                chosen_range = range(0, 8)
-            elif choice > len(foods[i])-8:
-                chosen_range = range(len(foods[i])-8, len(foods[i]))
-            else:
-                chosen_range = range(choice-3, choice + 5)
-            for i in chosen_range:
-                food = f"{foods[i]}"
-                if i == choice:
-                    food += ' <<'
-                    print(
-f"""{clear}{medium_text_print(food, 1)}{dark}
-{clear}{medium_text_print(food, 2)}{dark}  
-{' '*get_screensize()}""")
-                else:
-                    print(
-f"""{dark}{medium_text_print(food, 1)}
-{medium_text_print(food, 2)}{dark}   
-{' '*get_screensize()}""")
-            # get input or not
-            pressed_key = keyboard_wait()
-            if self.refresh_key_cooldown() and pressed_key == 'up' and choice > 0:
-                choice -= 1
-            elif self.refresh_key_cooldown() and pressed_key == 'down' and choice < len(foods):
-                choice += 1
-            elif self.refresh_key_cooldown() and pressed_key == 'enter':
-                return foods[choice]
-            go_back()
+        raise NotImplementedError
         
     def choose_cave_screen(self):
         clearConsole()
@@ -283,35 +265,7 @@ f"""{dark}{medium_text_print(food, 1)}
         dark = '\033[90m'
         clear = '\033[0m'
         choice = 0
-        while True:
-            if choice < 3:
-                chosen_range = range(0, 8)
-            elif choice > len(caves[i])-8:
-                chosen_range = range(len(caves[i])-8, len(caves[i]))
-            else:
-                chosen_range = range(choice-3, choice + 5)
-            for i in chosen_range:
-                cave = f"{caves[i]}"
-                if i == choice:
-                    cave += ' <<'
-                    print(
-f"""{clear}{medium_text_print(cave, 1)}{dark}
-{clear}{medium_text_print(cave, 2)}{dark}  
-{' '*get_screensize()}""")
-                else:
-                    print(
-f"""{dark}{medium_text_print(cave, 1)}
-{medium_text_print(cave, 2)}{dark}   
-{' '*get_screensize()}""")
-            # get input or not
-            pressed_key = keyboard_wait()
-            if self.refresh_key_cooldown() and pressed_key == 'up' and choice > 0:
-                choice -= 1
-            elif self.refresh_key_cooldown() and pressed_key == 'down' and choice < len(caves):
-                choice += 1
-            elif self.refresh_key_cooldown() and pressed_key == 'enter':
-                return caves[choice]
-            go_back()
+        raise NotImplementedError
     
     def display_title(self):
         title = self.title
