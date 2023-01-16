@@ -113,22 +113,35 @@ class Player():
     def __repr__(self):
         return self.__str__()
 
+    # mutators
+
     def set_traders(self, traders_list: list[Trader]) -> None:
         self.traders_list = traders_list
 
     def set_foods(self, foods_list: list[Food]) -> None:
         self.foods_list = foods_list
-
-    @classmethod
-    def random_player(self) -> Player:
-        return Player(RandomGen.random_choice(PLAYER_NAMES), RandomGen.randint(self.MIN_EMERALDS, self.MAX_EMERALDS))
-
+        
     def set_materials(self, materials_list: list[Material]) -> None:
         self.materials_list = materials_list
 
     def set_caves(self, caves_list: list[Cave]) -> None:
         self.caves_list = caves_list
         
+    def get_traders(self) -> list[Trader]:
+        return self.traders_list 
+
+    def get_foods(self) -> list[Food]:
+        return self.foods_list 
+        
+    def get_materials(self) -> list[Material]:
+        return self.materials_list 
+
+    def get_caves(self) -> list[Cave]:
+        return self.caves_list 
+
+    @classmethod
+    def random_player(self) -> Player:
+        return Player(RandomGen.random_choice(PLAYER_NAMES), RandomGen.randint(self.MIN_EMERALDS, self.MAX_EMERALDS))
 
     def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
         if self.AI:
@@ -145,7 +158,7 @@ class Player():
         return chosen_food, self.balance, chosen_cave
     
     def AI_select_food_and_caves(self):
-        pass
+        raise NotImplementedError
     
     
     # MANUAL CONTROL OF PLAYERS

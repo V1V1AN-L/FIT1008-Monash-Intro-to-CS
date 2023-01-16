@@ -91,6 +91,10 @@ class Material:
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
+    MIN_MINING_RATE = .5
+    MAX_MINING_RATE = 50
+    
+    
     def __init__(self, name: str, mining_rate: float) -> None:
         self.name = name
         self.mining_rate = mining_rate
@@ -193,7 +197,7 @@ class Material:
 
     @classmethod
     def random_material(cls):
-        raise NotImplementedError()
+        return Material(RandomGen.random_choice(RANDOM_MATERIAL_NAMES), RandomGen.random_float(cls.MIN_MINING_RATE, cls.MAX_MINING_RATE))
 
 
         
