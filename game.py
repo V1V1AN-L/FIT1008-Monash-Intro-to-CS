@@ -128,6 +128,7 @@ class SoloGame(Game):
 
     def simulate_day(self):
         # 1. Traders make deals
+        self.generate_trader_deals()
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
@@ -146,6 +147,14 @@ class SoloGame(Game):
 
     def verify_output_and_update_quantities(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
         raise NotImplementedError()
+    
+    # user defined helper methods
+    
+    def generate_trader_deals(self):
+        """_summary_
+        """
+        for trader in self.get_traders():
+            trader.generate_deal()
 
 class MultiplayerGame(Game):
 
@@ -154,7 +163,7 @@ class MultiplayerGame(Game):
 
     def __init__(self) -> None:
         super().__init__()
-        self.players = []
+        self.players: list[Player] = []
 
     def initialise_game(self) -> None:
         super().initialise_game()
