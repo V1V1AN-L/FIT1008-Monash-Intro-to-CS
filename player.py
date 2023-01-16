@@ -226,13 +226,27 @@ Please use a small example to demonstrate your approach. Additionally, you need 
 
         Documentation:
         """
-        
-        chosen_food, chosen_caves = None, None
+        raise NotImplementedError
+        chosen_food = self.choose_food()
+        chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves
     
-    def choose_food(self):
-        ratio = 0
+    def choose_food(self) -> Food:
+        hunger = 0
+        chosen_food: Food = None
         for food in self.get_foods():
+            if food.hunger_bars > hunger and food.price > self.get_balance():
+                hunger = food.hunger_bars
+                chosen_food: Food = food
+        return chosen_food
+    
+    def choose_caves(self) -> list[Cave]:
+        chosen_caves = []
+        
+        
+        
+        return chosen_caves
+                
             
         
     
