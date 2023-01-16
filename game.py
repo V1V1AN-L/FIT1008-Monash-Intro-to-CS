@@ -117,6 +117,14 @@ class Game:
         """
         for trader in self.get_traders():
             trader.generate_deal()
+    
+    def generate_food(self):
+        food_num = RandomGen.randint(self.MIN_FOOD, self.MAX_FOOD)
+        foods = []
+        for _ in range(food_num):
+            foods.append(Food.random_food())
+        self.player.set_foods(foods)
+        return foods
 
 class SoloGame(Game):
 
@@ -140,16 +148,12 @@ class SoloGame(Game):
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
-        food_num = RandomGen.randint(self.MIN_FOOD, self.MAX_FOOD)
-        foods = []
-        for _ in range(food_num):
-            foods.append(Food.random_food())
+        foods = self.generate_food()
         print("\nFoods:\n\t", end="")
         print("\n\t".join(map(str, foods)))
-        self.player.set_foods(foods)
         # 3. Select one food item to purchase
         food, balance, caves = self.player.select_food_and_caves()
-        print(food, balance, caves)
+        print(f"{self.player} | Chosen Food: {food} | Chosen Caves: {caves}")
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
@@ -200,14 +204,35 @@ class MultiplayerGame(Game):
         print(f"\nFoods:\n\t{offered_food}")
         # 3. Each player selects a cave - The game does this instead.
         foods, balances, caves = self.select_for_players(offered_food)
+        for i in range(len(self.players)):
+            print(f"{self.players[i]} | Chosen Food: {foods[i]} | Chosen Caves: {caves[i]}")
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(foods, balances, caves)
 
-    def select_for_players(self, food: Food) -> tuple[list[Food|None], list[float], list[tuple[Cave, float]|None]]:
-        """
-        """
-        raise NotImplementedError()
+    def select_for_players(self, offered_food: Food) -> tuple[list[Food|None], list[float], list[tuple[Cave, float]|None]]:
+        """_summary_
 
+Complexity Requirement!
+Given that M=#Materials, T=#Traders, C=#Caves, P=#Players, 
+the select_for_players method should have complexity at most O(M + T + C + P * log C).
+
+Documentation Requirement!
+For your solution to select_for_players, please leave a lengthy docstring describing the motivation for your approach in full. 
+Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
+
+MOTIVATION (VIRGIL STATUS):
+        """
+        foods = []
+        balances = []
+        caves = []
+        for player in self.players:
+            food, balance, cave = player.select_food_and_caves(offered_food)
+            foods.append(food)
+            balances.append(balance)
+            caves.append(cave)
+            # modify other players lists so that mining happens real time
+            
+            
     def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float]|None]) -> None:
         raise NotImplementedError()
 

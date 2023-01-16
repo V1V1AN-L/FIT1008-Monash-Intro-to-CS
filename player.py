@@ -138,6 +138,7 @@ class Player():
     
     def clear_hunger(self):
         self.set_hunger(0)
+        
     
     # balance
     def set_balance(self, balance: float = None) -> None:
@@ -149,6 +150,7 @@ class Player():
     def get_balance(self) -> float:
         self.set_balance(self.balance) # makes sure its rounded to two decimal places
         return self.balance
+    
 
     # traders
     def set_traders(self, traders_list: list[Trader] = None) -> None:
@@ -157,30 +159,19 @@ class Player():
     def get_traders(self) -> list[Trader]:
         return self.traders_list 
     
+    
     # foods
-    def set_foods(self, foods_list: list[Food] = None, **kwargs) -> None:
+    def set_foods(self, foods_list: list[Food] = None) -> None:
         if foods_list != None:
             self.foods_list: list[Food] = foods_list
         elif self.get_traders() != None:
-            self.foods_list: list[Food] = [trader.buying for trader in self.get_traders() if trader.buying != None]
-        try:
-            self.check_foods_list(kwargs['check'])
-        except KeyError:
-            self.check_foods_list()
+            self.foods_list: list[Food] = []
+        else:
+            self.foods_list = foods_list
             
     def get_foods(self) -> list[Food]:
-        self.check_foods_list()
         return self.foods_list 
     
-    def check_foods_list(self, check = True):
-        if check:
-            food_list = self.get_foods()
-            for food in food_list:
-                if isinstance(food, Food):
-                    food_list.append(food)
-                food_list.pop(0)
-            self.set_foods(food_list, check = False)
-
     
     # materials 
     def set_materials(self, materials_list: list[Material] = None) -> None:
@@ -189,6 +180,7 @@ class Player():
     def get_materials(self) -> list[Material]:
         return self.materials_list 
     
+    
     # caves
     def set_caves(self, caves_list: list[Cave] = None) -> None:
         self.caves_list = caves_list
@@ -196,27 +188,8 @@ class Player():
     def get_caves(self) -> list[Cave]:
         return self.caves_list 
 
-    # select_food_and_caves
-    def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
-        if self.AI:
-            chosen_food, chosen_caves = self.AI_select_food_and_caves()
-        else:
-            while True:
-                try:
-                    try:
-                        chosen_food = self.choose_food_screen()
-                    except AssertionError:
-                        chosen_food = None
-                    chosen_caves = self.choose_cave_screen(chosen_food)
-                    break
-                except AssertionError:
-                    pass
-                except Exception as e:
-                    raise e
-    
-        return (chosen_food, self.get_balance(), chosen_caves)
-    
-    def AI_select_food_and_caves(self):
+    # (SOLO) select_food_and_caves
+    def select_food_and_caves(self, offered_food: Food = None) -> tuple[Food | None, float, list[tuple[Cave, float]]]: 
         """_summary_
         
         Returns :
@@ -241,10 +214,54 @@ Please use a small example to demonstrate your approach. Additionally, you need 
 
         Documentation:
         """
+        if isinstance(offered_food, Food):
+            if self.AI:
+                chosen_food, chosen_caves = self.multiplayer_AI_select_food_and_caves(offered_food)
+            else:
+                while True:
+                    try:
+                        try:
+                            chosen_food = self.multiplayer_choose_food_screen(offered_food)
+                        except AssertionError:
+                            chosen_food = None
+                        chosen_caves = self.multiplayer_choose_cave_screen()
+                        break
+                    except AssertionError:
+                        pass
+                    except Exception as e:
+                        raise e
+        else:
+            if self.AI:
+                chosen_food, chosen_caves = self.AI_select_food_and_caves()
+            else:
+                while True:
+                    try:
+                        try:
+                            chosen_food = self.choose_food_screen()
+                        except AssertionError:
+                            chosen_food = None
+                        chosen_caves = self.choose_cave_screen()
+                        break
+                    except AssertionError:
+                        pass
+                    except Exception as e:
+                        raise e
+    
+        return (chosen_food, self.get_balance(), chosen_caves)
+    
+    def AI_select_food_and_caves(self):
         raise NotImplementedError
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves
+    
+    def multiplayer_AI_select_food_and_caves(self, offered_food):
+        raise NotImplementedError
+        chosen_food = self.multiplayer_choose_food(offered_food)
+        chosen_cave = self.multiplayer_choose_caves()
+        return chosen_food, chosen_caves
+    
+    # SOLO
     
     def choose_food(self) -> Food:
         """_summary_
@@ -264,17 +281,63 @@ Please use a small example to demonstrate your approach. Additionally, you need 
     
     def choose_caves(self) -> list[Cave]:
         chosen_caves = []
-        
-        
-        
         return chosen_caves
-                
-            
-        
     
+    # MULTI
+    
+    def multiplayer_choose_food(self, offered_food: Food):
+        if offered_food.price > self.get_balance():
+            return offered_food
+        return None
+        
+    def multiplayer_choose_caves(self):
+        pass
     
     # MANUAL CONTROL OF PLAYERS
+    
+    # SOLO 
+    def choose_food_screen(self):
+        raise NotImplementedError
+        clearConsole()
+        self.title = 'Food'
+        foods = FOOD_NAMES  
+        dark = '\033[90m'
+        clear = '\033[0m'
+        choice = 0
         
+        
+    def choose_cave_screen(self):
+        raise NotImplementedError
+        clearConsole()
+        self.title = 'Caves'
+        caves = CAVE_NAMES  
+        dark = '\033[90m'
+        clear = '\033[0m'
+        choice = 0
+        
+    
+    # MULTI
+    def multiplayer_choose_food_screen(self, offered_food):
+        raise NotImplementedError
+        clearConsole()
+        self.title = 'Food'
+        dark = '\033[90m'
+        clear = '\033[0m'
+        choice = 0
+       
+        
+    def multiplayer_choose_cave_screen(self):
+        raise NotImplementedError
+        clearConsole()
+        self.title = 'Caves'
+        caves = CAVE_NAMES  
+        dark = '\033[90m'
+        clear = '\033[0m'
+        choice = 0
+        
+    
+    # SOLO + MULTI METHODS
+    
     def refresh_key_cooldown(self):
         while True:
             try:
@@ -285,26 +348,13 @@ Please use a small example to demonstrate your approach. Additionally, you need 
             except AttributeError:
                 self.key_cooldown = int(time.time()*1000) 
     
-    def choose_food_screen(self):
-        clearConsole()
-        self.title = 'Food'
-        foods = FOOD_NAMES  
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-        raise NotImplementedError
-        
-    def choose_cave_screen(self):
-        clearConsole()
-        self.title = 'Caves'
-        caves = CAVE_NAMES  
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-        raise NotImplementedError
-    
     def display_title(self):
-        title = self.title
+        while True:
+            try:
+                title = self.title
+                break
+            except Exception as e:
+                self.title = f"e"
         #
         screensize = get_screensize()
         big_text_len = len(big_text_print(title, 1))
@@ -325,4 +375,4 @@ f"""{title_white_space}{big_text_print(title, 1)}{title_white_space}
 
 if __name__ == "__main__":
     player = Player("Alex", emeralds=1000)
-    print(player.choose_food_screen())
+    print(player.display_title())
