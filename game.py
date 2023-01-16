@@ -109,6 +109,14 @@ class Game:
             else:
                 cave.add_quantity(round(RandomGen.random_float() * 10, 2))
             cave.quantity = round(cave.quantity, 2)
+            
+    # user defined helper methods
+    
+    def generate_trader_deals(self):
+        """_summary_
+        """
+        for trader in self.get_traders():
+            trader.generate_deal()
 
 class SoloGame(Game):
 
@@ -147,14 +155,6 @@ class SoloGame(Game):
 
     def verify_output_and_update_quantities(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
         raise NotImplementedError()
-    
-    # user defined helper methods
-    
-    def generate_trader_deals(self):
-        """_summary_
-        """
-        for trader in self.get_traders():
-            trader.generate_deal()
 
 class MultiplayerGame(Game):
 
@@ -192,7 +192,7 @@ class MultiplayerGame(Game):
 
     def simulate_day(self):
         # 1. Traders make deals
-        raise NotImplementedError()
+        self.generate_trader_deals()
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
