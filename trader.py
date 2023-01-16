@@ -78,6 +78,7 @@ class Trader(ABC):
         self.materials: list[Material] = []
         self.buying: Material = None
         self.buying_price: float = 0.00
+            
         
     def __str__(self) -> str:
         return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"

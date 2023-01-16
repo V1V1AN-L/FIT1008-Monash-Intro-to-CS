@@ -25,7 +25,9 @@ class Game:
     MAX_FOOD = 5
 
     def __init__(self) -> None:
-        raise NotImplementedError()
+        self.set_materials()
+        self.set_caves()
+        self.set_traders()
 
     def initialise_game(self) -> None:
         """Initialise all game objects: Materials, Caves, Traders."""
@@ -47,23 +49,23 @@ class Game:
         self.set_caves(caves)
         self.set_traders(traders)
 
-    def set_materials(self, mats: list[Material]) -> None:
-        raise NotImplementedError()
+    def set_materials(self, mats: list[Material] = None) -> None:
+        self.materials = mats
 
-    def set_caves(self, caves: list[Cave]) -> None:
-        raise NotImplementedError()
+    def set_caves(self, caves: list[Cave] = None) -> None:
+        self.caves = caves
 
-    def set_traders(self, traders: list[Trader]) -> None:
-        raise NotImplementedError()
+    def set_traders(self, traders: list[Trader] = None) -> None:
+        self.traders = traders
 
     def get_materials(self) -> list[Material]:
-        raise NotImplementedError()
+        return self.materials 
 
     def get_caves(self) -> list[Cave]:
-        raise NotImplementedError()
+        return self.caves 
 
     def get_traders(self) -> list[Trader]:
-        raise NotImplementedError()
+        return self.traders 
 
     def generate_random_materials(self, amount):
         """
@@ -71,15 +73,15 @@ class Game:
         Generated materials must all have different names and different mining_rates.
         (You may have to call Material.random_material more than <amount> times.)
         """
-        raise NotImplementedError()
-
+        self.set_materials([Material.random_material() for _ in range(amount)])
+        
     def generate_random_caves(self, amount):
         """
         Generates <amount> random caves using Cave.random_cave
         Generated caves must all have different names
         (You may have to call Cave.random_cave more than <amount> times.)
         """
-        raise NotImplementedError()
+        self.set_caves([Cave.random_cave(self.get_materials()) for _ in range(amount)])
 
     def generate_random_traders(self, amount):
         """
@@ -89,7 +91,12 @@ class Game:
         Generated traders must all have different names
         (You may have to call <TraderClass>.random_trader() more than <amount> times.)
         """
-        raise NotImplementedError()
+        trader_list = []
+        for i in range(amount):
+            _trader = Trader.random_trader() 
+            _trader.set_all_materials(self.get_materials())
+            trader_list.append(_trader)
+        self.set_traders(trader_list)
 
     def finish_day(self):
         """
