@@ -158,14 +158,29 @@ class Player():
         return self.traders_list 
     
     # foods
-    def set_foods(self, foods_list: list[Food] = None) -> None:
+    def set_foods(self, foods_list: list[Food] = None, **kwargs) -> None:
         if foods_list != None:
             self.foods_list: list[Food] = foods_list
         elif self.get_traders() != None:
             self.foods_list: list[Food] = [trader.buying for trader in self.get_traders() if trader.buying != None]
+        try:
+            self.check_foods_list(kwargs['check'])
+        except KeyError:
+            self.check_foods_list()
             
     def get_foods(self) -> list[Food]:
+        self.check_foods_list()
         return self.foods_list 
+    
+    def check_foods_list(self, check = True):
+        if check:
+            food_list = self.get_foods()
+            for food in food_list:
+                if isinstance(food, Food):
+                    food_list.append(food)
+                food_list.pop(0)
+            self.set_foods(food_list, check = False)
+
     
     # materials 
     def set_materials(self, materials_list: list[Material] = None) -> None:
@@ -232,6 +247,13 @@ Please use a small example to demonstrate your approach. Additionally, you need 
         return chosen_food, chosen_caves
     
     def choose_food(self) -> Food:
+        """_summary_
+
+        Returns:
+            Food: chosen food
+            
+        COMPLEXITY (best & worst) = O(f), f = amount of foods player can choose from
+        """
         hunger = 0
         chosen_food: Food = None
         for food in self.get_foods():
