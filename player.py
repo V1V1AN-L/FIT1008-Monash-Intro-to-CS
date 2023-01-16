@@ -99,7 +99,8 @@ class Player():
 
     def __init__(self, name, emeralds=None, **kwargs) -> None:
         self.name = name
-        self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds) 
+        self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds)
+        self.set_hunger() 
         self.set_traders()
         self.set_foods()
         self.set_materials()
@@ -116,47 +117,71 @@ class Player():
     
     def __repr__(self):
         return self.__str__()
+    
+    # class methods
+    @classmethod
+    def random_player(self) -> Player:
+        return Player(RandomGen.random_choice(PLAYER_NAMES), RandomGen.randint(self.MIN_EMERALDS, self.MAX_EMERALDS))
 
     # mutators
     
+    # hunger
+    def set_hunger(self, hunger: float = None) -> None: 
+        if isinstance(hunger, int) or isinstance(hunger, float):
+            self.hunger = round(hunger, 2)
+        else:
+            self.hunger = hunger
+        
+    def get_hunger(self) -> float:
+        self.set_hunger(self.hunger) # makes sure its rounded to two decimal places
+        return self.hunger
+    
+    def clear_hunger(self):
+        self.set_hunger(0)
+    
+    # balance
     def set_balance(self, balance: float = None) -> None:
-        self.balance = round(balance, 2)
+        if isinstance(balance, int) or isinstance(balance, float):
+            self.balance = round(balance, 2)
+        else:
+            self.balance = balance
         
     def get_balance(self) -> float:
         self.set_balance(self.balance) # makes sure its rounded to two decimal places
         return self.balance
 
+    # traders
     def set_traders(self, traders_list: list[Trader] = None) -> None:
         self.traders_list = traders_list
-
+        
+    def get_traders(self) -> list[Trader]:
+        return self.traders_list 
+    
+    # foods
     def set_foods(self, foods_list: list[Food] = None) -> None:
         if foods_list != None:
             self.foods_list: list[Food] = foods_list
         elif self.get_traders() != None:
             self.foods_list: list[Food] = [trader.buying for trader in self.get_traders() if trader.buying != None]
-        
-    def set_materials(self, materials_list: list[Material] = None) -> None:
-        self.materials_list = materials_list
-
-    def set_caves(self, caves_list: list[Cave] = None) -> None:
-        self.caves_list = caves_list
-        
-    def get_traders(self) -> list[Trader]:
-        return self.traders_list 
-
+            
     def get_foods(self) -> list[Food]:
         return self.foods_list 
+    
+    # materials 
+    def set_materials(self, materials_list: list[Material] = None) -> None:
+        self.materials_list = materials_list
         
     def get_materials(self) -> list[Material]:
         return self.materials_list 
+    
+    # caves
+    def set_caves(self, caves_list: list[Cave] = None) -> None:
+        self.caves_list = caves_list
 
     def get_caves(self) -> list[Cave]:
         return self.caves_list 
 
-    @classmethod
-    def random_player(self) -> Player:
-        return Player(RandomGen.random_choice(PLAYER_NAMES), RandomGen.randint(self.MIN_EMERALDS, self.MAX_EMERALDS))
-
+    # select_food_and_caves
     def select_food_and_caves(self) -> tuple[Food | None, float, list[tuple[Cave, float]]]: #TODO by Nick
         if self.AI:
             chosen_food, chosen_cave = self.AI_select_food_and_caves()
@@ -169,7 +194,7 @@ class Player():
                 except:
                     pass
     
-        return (chosen_food, self.balance, chosen_cave)
+        return (chosen_food, self.get_balance(), chosen_cave)
     
     def AI_select_food_and_caves(self):
         """_summary_

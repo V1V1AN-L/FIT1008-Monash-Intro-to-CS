@@ -119,6 +119,9 @@ class Cave:
 
     def get_quantity(self) -> float:
         return self.quantity
+    
+    def calculate_total_hunger_spent(self):
+        return self.get_quantity() * self.material.mining_rate
 
     def __str__(self) -> str:
         return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
