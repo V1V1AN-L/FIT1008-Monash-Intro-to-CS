@@ -163,7 +163,7 @@ class Player():
     # foods
     def set_foods(self, foods_list: list[Food] = None) -> None:
         if foods_list != None:
-            self.foods_list: list[Food] = foods_list
+            self.foods_list: list[Food] = [food for food in foods_list if isinstance(food, Food)]
         elif self.get_traders() != None:
             self.foods_list: list[Food] = []
         else:
