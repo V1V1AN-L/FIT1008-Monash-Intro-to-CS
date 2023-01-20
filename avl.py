@@ -83,11 +83,9 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         else:
             if current.left is None:
                 right_node = current.right
-                current = None
                 return right_node
             elif current.right is None:
                 left_node = current.left
-                current = None
                 return left_node
 
         current = self.rebalance(current)
