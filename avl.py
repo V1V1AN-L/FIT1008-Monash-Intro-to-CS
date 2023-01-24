@@ -180,4 +180,16 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         
         :complexity ...
         """
-        raise NotImplementedError()
+        all_key = []
+        all_key = self.inorder_traversal(self.root, all_key)
+        all_key.sort()
+        res = []
+        for k in range (i,j+1):
+            res.append(all_key[k])
+        return res
+    def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
+        if root != None:
+            self.inorder_traversal(root.left, res)
+            res.append(root.key)
+            self.inorder_traversal(root.right, res)
+            return res
