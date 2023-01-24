@@ -182,7 +182,6 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         all_key = []
         all_key = self.inorder_traversal(self.root, all_key)
-        all_key.sort()
         res = []
         for k in range (i,j+1):
             res.append(all_key[k])
