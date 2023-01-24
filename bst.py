@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-__author__ = 'Brendon Taylor, modified by Alexey Ignatiev, further modified by Jackson Goerner'
+__author__ = 'Brendon Taylor, modified by Alexey Ignatiev, further modified by Jackson Goerner and Forbes Purcell'
 __docformat__ = 'reStructuredText'
 
 from typing import TypeVar, Generic
@@ -179,7 +179,16 @@ class BinarySearchTree(Generic[K, I]):
             larger keys.
             If no such node exists, then none should be returned.
         """
-        raise NotImplementedError()
+        if current is None:  # end of tree
+            raise ValueError("Must provide node")
+
+        target_key = current.key
+        elif key == current.key:  # base case: found
+            return (current.key, current.item)
+        elif key < current.key:
+            return self.getitem_aux(current.left, key)
+        else:  # key > current.key
+            return self.getitem_aux(current.right, key)
 
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """

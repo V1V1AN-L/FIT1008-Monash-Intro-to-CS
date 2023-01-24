@@ -5,6 +5,8 @@ from material import Material
 from trader import Trader
 from food import Food
 
+# The real player is me and my unspoken rizz
+
 # List taken from https://minecraft.fandom.com/wiki/Mob
 PLAYER_NAMES = [
     "Steve",

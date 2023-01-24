@@ -3,9 +3,10 @@
 Defines a Hash Table using Linear Probing for conflict resolution.
 """
 from __future__ import annotations
-__author__ = 'Brendon Taylor. Modified by Graeme Gange, Alexey Ignatiev, and Jackson Goerner'
+from hashlib import sha256
+__author__ = 'Brendon Taylor. Modified by Graeme Gange, Alexey Ignatiev, Jackson Goerner and Forbes Purcell'
 __docformat__ = 'reStructuredText'
-__modified__ = '21/05/2020'
+__modified__ = '14/01/2023'
 __since__ = '14/05/2020'
 
 
@@ -26,17 +27,32 @@ class LinearProbeTable(Generic[T]):
 
     def __init__(self, expected_size: int, tablesize_override: int = -1) -> None:
         """
-            Initialiser.
+            Initialiser. It initially initialises the class in order to initialise it.
         """
 
-        raise NotImplementedError()
+        if tablesize_override != -1: # change to >= 0 ?
+            # set table_size to "reasonable choice"
+            self.table_size = 69
+        else:
+            self.table_size = tablesize_override
+        # extra instance variables
+        self.conflict_count = 0
+        self.probe_total = 0
+        self.probe_max = 0
+        self.rehash_count = 0
 
     def hash(self, key: str) -> int:
         """
             Hash a key for insertion into the hashtable.
-        """
 
-        raise NotImplementedError()
+            currently uses the hashing function from class. Will change to SHA-256 hashing for the memes.
+        """
+        value = 0
+        a = 31415
+        for char in key:
+            value = (ord(char) + a * value) % self.table_size
+            a = a * 17 % (self.table_size - 1)
+        return value
 
     def statistics(self) -> tuple:
         raise NotImplementedError()

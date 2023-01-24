@@ -118,6 +118,7 @@ class SoloGame(Game):
 
     def simulate_day(self):
         # 1. Traders make deals
+        raise NotImplementedError()
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
