@@ -1,12 +1,13 @@
+from primes import *
+
 """ Hash Table ADT
 
 Defines a Hash Table using Linear Probing for conflict resolution.
 """
-from __future__ import annotations
-from hashlib import sha256
-__author__ = 'Brendon Taylor. Modified by Graeme Gange, Alexey Ignatiev, Jackson Goerner and Forbes Purcell'
+# from __future__ import annotations
+__author__ = 'Brendon Taylor. Modified by Graeme Gange, Alexey Ignatiev, and Jackson Goerner'
 __docformat__ = 'reStructuredText'
-__modified__ = '14/01/2023'
+__modified__ = '21/05/2020'
 __since__ = '14/05/2020'
 
 
@@ -16,6 +17,7 @@ T = TypeVar('T')
 
 
 class LinearProbeTable(Generic[T]):
+    MIN_CAPACITY = 1
     """
         Linear Probe Table.
 
@@ -27,35 +29,38 @@ class LinearProbeTable(Generic[T]):
 
     def __init__(self, expected_size: int, tablesize_override: int = -1) -> None:
         """
-            Initialiser. It initially initialises the class in order to initialise it.
+            Initialiser.
         """
 
-        if tablesize_override != -1: # change to >= 0 ?
-            # set table_size to "reasonable choice"
-            self.table_size = 69
-        else:
-            self.table_size = tablesize_override
-        # extra instance variables
         self.conflict_count = 0
         self.probe_total = 0
         self.probe_max = 0
         self.rehash_count = 0
+        self.expected_size = int(expected_size*1.2)
+        if tablesize_override == -1:
+            prime_tablesize = LargestPrimeIterator(self.expected_size, 1)
+            self.table_size = next(prime_tablesize)
+        else:
+            self.table_size = tablesize_override
+
+        self.count = 0
+        self.table = ArrayR(max(self.MIN_CAPACITY, self.table_size))
 
     def hash(self, key: str) -> int:
         """
             Hash a key for insertion into the hashtable.
-
-            currently uses the hashing function from class. Will change to SHA-256 hashing for the memes.
         """
+
         value = 0
         a = 31415
+        b = 27183
         for char in key:
             value = (ord(char) + a * value) % self.table_size
-            a = a * 17 % (self.table_size - 1)
+            a = a * b % (self.table_size - 1)
         return value
 
     def statistics(self) -> tuple:
-        raise NotImplementedError()
+        return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
         """
@@ -74,6 +79,8 @@ class LinearProbeTable(Generic[T]):
             :raises KeyError: When a position can't be found
         """
         position = self.hash(key)  # get the position using hash
+        probe_temp = self.probe_total
+        conflict_temp = self.conflict_count
 
         if is_insert and self.is_full():
             raise KeyError(key)
@@ -88,6 +95,10 @@ class LinearProbeTable(Generic[T]):
                 return position
             else:  # there is something but not the key, try next
                 position = (position + 1) % len(self.table)
+                self.probe_total +=1
+                self.probe_max = max(self.probe_max, self.probe_total-probe_temp)
+                if self.conflict_count == conflict_temp:
+                    self.conflict_count += 1
 
         raise KeyError(key)
 
@@ -138,6 +149,8 @@ class LinearProbeTable(Generic[T]):
             :see: #self._linear_probe(key: str, is_insert: bool)
             :see: #self.__contains__(key: str)
         """
+        if self.count > self.table_size * 0.5:
+            self._rehash()
 
         position = self._linear_probe(key, True)
 
@@ -172,8 +185,15 @@ class LinearProbeTable(Generic[T]):
             Need to resize table and reinsert all values
         """
 
-        raise NotImplementedError()
+        new_hash = LinearProbeTable(self.expected_size, int(self.table_size*1.2))
 
+        for i in range(len(self.table)):
+            if self.table[i] is not None:
+                new_hash[str(self.table[i][0])] = self.table[i][1]
+
+        self.count = new_hash.count
+        self.table = new_hash.table
+        self.rehash_count +=1
     def __str__(self) -> str:
         """
             Returns all they key/value pairs in our hash table (no particular
