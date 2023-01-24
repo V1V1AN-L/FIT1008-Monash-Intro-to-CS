@@ -179,16 +179,42 @@ class BinarySearchTree(Generic[K, I]):
             larger keys.
             If no such node exists, then none should be returned.
         """
-        if current is None:  # end of tree
-            raise ValueError("Must provide node")
+        # must search through entire subtree to find the node whose key is smallest of those greater than current
 
-        target_key = current.key
-        elif key == current.key:  # base case: found
-            return (current.key, current.item)
-        elif key < current.key:
-            return self.getitem_aux(current.left, key)
-        else:  # key > current.key
-            return self.getitem_aux(current.right, key)
+
+        # if current is None:  # end of tree
+        #     raise ValueError("Must provide node")
+        #
+        # target_key = current.key
+        # elif key == current.key:  # base case: found
+        #     return (current.key, current.item)
+        # elif key < current.key:
+        #     return self.getitem_aux(current.left, key)
+        # else:  # key > current.key
+        #     return self.getitem_aux(current.right, key)
+        self.current_min = None
+        self.root_node_value = current.item
+        inorder_search_aux(current)
+        return self.current_min
+
+    def compare_node(self, current_value: int):
+        """"
+        performs the comparison to determine whether the current node is greater
+        than the root, while being the smallest of them all"""
+        if self.current_min == None:
+            self.current_min = current_value
+        elif self.current_min > current_value > self.root_node_value:
+            self.current_min = current_value
+    def inorder_search_aux(self, current: TreeNode) -> None:
+        """
+        Actual in-order traversal of the tree
+        :complexity: O(N) where N is number of nodes in the tree
+        """
+        if current is not None:  # if not a base case
+            self.inorder_search_aux(current.left)
+            compare_node(current.item)
+            self.inorder_search_aux(current.right)
+
 
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
