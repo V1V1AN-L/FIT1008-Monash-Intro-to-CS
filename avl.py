@@ -178,14 +178,15 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         Returns a sorted list of all elements in the tree between the ith and jth indices, inclusive.
         
-        :complexity ...
+        :complexity: O(j - i + log(N))
         """
-        all_key = []
-        all_key = self.inorder_traversal(self.root, all_key)
+        all_keys = []
+        all_keys = self.inorder_traversal(self.root, all_keys) # O(log n) since tree is balanced
         res = []
-        for k in range (i,j+1):
-            res.append(all_key[k])
+        for k in range (i,j+1): # j - i iterations
+            res.append(all_keys[k])
         return res
+
     def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
         if root != None:
             self.inorder_traversal(root.left, res)
