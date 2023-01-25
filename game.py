@@ -117,27 +117,23 @@ class Game:
         """
         for trader in self.get_traders():
             trader.generate_deal()
-    
-    def generate_food(self):
-        food_num = RandomGen.randint(self.MIN_FOOD, self.MAX_FOOD)
-        foods = []
-        for _ in range(food_num):
-            foods.append(Food.random_food())
-        self.player.set_foods(foods)
-        return foods
 
 class SoloGame(Game):
+    
+    def __init__(self) -> None:
+        super().__init__()
+        self.player: Player = None
 
     def initialise_game(self) -> None:
         super().initialise_game()
-        self.player = Player.random_player()
+        self.player: Player = Player.random_player()
         self.player.set_materials(self.get_materials())
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
 
     def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float]):
         super().initialise_with_data(materials, caves, traders)
-        self.player = Player(player_names[0], emeralds=emerald_info[0])
+        self.player: Player = Player(player_names[0], emeralds=emerald_info[0])
         self.player.set_materials(self.get_materials())
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
@@ -159,6 +155,16 @@ class SoloGame(Game):
 
     def verify_output_and_update_quantities(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
         raise NotImplementedError()
+    
+    # user defined helper methods
+    
+    def generate_food(self):
+        food_num = RandomGen.randint(self.MIN_FOOD, self.MAX_FOOD)
+        foods = []
+        for _ in range(food_num):
+            foods.append(Food.random_food())
+        self.player.set_foods(foods)
+        return foods
 
 class MultiplayerGame(Game):
 

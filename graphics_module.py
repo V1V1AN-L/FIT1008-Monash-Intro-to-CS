@@ -12,10 +12,31 @@ NOTE: unless specified all methods have a best and worst case complexity of O(1)
 
 # functions which help the intergration of graphics
 
+special_key_mapping = {
+    r"(b'\x00', b'H')":'up',
+    r"(b'\x00', b'P')":'down',
+    r"(b'\x00', b'K')":'left',
+    r"(b'\x00', b'M')":'right',
+    r"(b'\r',)":'enter',
+    r"(b'\x08',)":'backspace',    
+    r"(b'\x00', b'S')":'delete',    
+}
+    
 def keyboard_wait():
-    keypressed = msvcrt.getch()
-    # TODO
-    return 
+    try:
+        while True:
+            results = []
+            while msvcrt.kbhit():
+                result = msvcrt.getch()
+                results.append(result)
+            if results != []:
+                break
+    except Exception as e:
+        raise e
+    results = tuple(results)
+    if (len(results) == 2 and results[0] == b'\x00') or f"{results}" in list(special_key_mapping.keys()):
+        return f"{special_key_mapping[f'{results}']}"
+    return f"{chr(ord(results[0]))}"
 
 def clearConsole():
     """
