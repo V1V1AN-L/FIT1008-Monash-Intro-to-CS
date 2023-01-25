@@ -7,7 +7,10 @@ __docformat__ = 'reStructuredText'
 
 class LargestPrimeIterator():
     """ iterator that yields largest prime less than upper_bound"""
-    def __init__(self, upper_bound, factor):
+    
+    SIZE_INCREMENT: float = 2**(3/4)
+    
+    def __init__(self, upper_bound: int, factor: float = SIZE_INCREMENT):
         self.upper_bound = upper_bound
         self.factor = factor
 
@@ -17,7 +20,7 @@ class LargestPrimeIterator():
     def __next__(self):
         """ return the largest prime less than upper_bound
             set upper bound to prime*factor"""
-        prime = self.upper_bound
+        prime = int(self.upper_bound)
         while not is_prime(prime):
             prime -= 1
         self.upper_bound = prime * self.factor
@@ -58,6 +61,6 @@ def is_prime(n: int) -> bool:
 
 
 if __name__ == "__main__":
-    test = LargestPrimeIterator(6,2)
-    for i in range(0,23):
-        print(next(test))
+    test = LargestPrimeIterator(6)
+    for i in range(23):
+        print(test.__next__())
