@@ -190,6 +190,6 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
     def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
         if root != None:
             self.inorder_traversal(root.left, res)
-            res.append(root.key)
+            res.append(root.item)
             self.inorder_traversal(root.right, res)
             return res
