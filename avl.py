@@ -48,7 +48,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def insert_aux(self, current: AVLTreeNode, key: K, item: I) -> AVLTreeNode:
         """
-            Attempts to insert an item into the tree, it uses the Key to insert it
+            Inserts an item into the tree, using the Key.
             
         """
         # Find the correct location and insert the node
@@ -70,7 +70,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def delete_aux(self, current: AVLTreeNode, key: K) -> AVLTreeNode:
         """
-            Attempts to delete an item from the tree, it uses the Key to
+            Deletes an item from the tree, using the Key to
             determine the node to delete.
         """
 
@@ -181,15 +181,101 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         :complexity: O(j - i + log(N))
         """
         all_keys = []
-        all_keys = self.inorder_traversal(self.root, all_keys) # O(log n) since tree is balanced
+        all_keys = self.inOrderTraversal_stack(self.root, all_keys) # O(log n) since tree is balanced
         res = []
         for k in range (i,j+1): # j - i iterations
             res.append(all_keys[k])
         return res
 
-    def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
-        if root != None:
-            self.inorder_traversal(root.left, res)
-            res.append(root.item)
-            self.inorder_traversal(root.right, res)
-            return res
+    # def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
+    #     if root != None:
+    #         self.inorder_traversal(root.left, res)
+    #         res.append(root.item)
+    #         self.inorder_traversal(root.right, res)
+    #         return res
+
+
+    # def range_between_traversal(self, root: AVLTreeNode, res: list) -> List:
+    #     if root != None:
+    #         if root.item 
+    #         self.inorder_traversal(root.left, res)
+    #         res.append(root.item)
+    #         self.inorder_traversal(root.right, res)
+    #         return res
+
+    # def inorder_traversal_pp(self, root: AVLTreeNode, res: List = [] ) -> List:
+    #     """
+    #     a modified version of inorder traversal that utilises parent pointers
+    #     to achieve a complexity of log(n)
+        
+    #     parent pointers are added to the tree nodes, and point to the parent of a node
+        
+    #     the tree is traversed by:
+    #     find the leftmost node (smallest element)
+    #     traverse up to the parent, then to the right
+    #     if n
+
+
+
+    #     returns a list of all the items in the tree, smallest to largest
+    #     :complexity: O(log(n))"""
+    #     current = self.leftmost_leaf(root)
+    #     while current != None: # need to make recursive
+    #         res.append(current.item)
+    #         if current.right != None:
+    #             current = self.leftmost_leaf(current.right)
+    #         else:
+    #             current.fully_traversed = True
+    #             current = current.parent
+
+    # def leftmost_leaf(self, node: AVLTreeNode) -> AVLTreeNode:
+    #     """
+    #     traverses to, and returns, the leftmost leaf from a node
+    #     """
+    #     # while node.left != None:
+    #     #     node = node.left
+    #     # return node
+
+    #     # recursive version:
+    #     if node.left != None:
+    #         return self.leftmost_leaf(node.left)
+    #     else:
+    #         return node
+
+
+
+    def inOrderTraversal_stack(self, root: AVLTreeNode, res: List = []) -> List:
+        # if not root:
+        #     return
+
+        stack = []
+        current = root
+        while stack or current != None:
+            while current != None:
+                stack.append(current)
+                current = current.left
+
+            current = stack.pop()
+            res.append(current.item) # append to main lst
+            current = current.right
+
+        return res
+
+
+if __name__ == "__main__":
+    #random.seed(16)
+    #numbers = list(range(1, 100))
+    tree = AVLTree()
+    #length = random.randint(10, 100)
+    #for num in numbers[:length]:
+    tree[0] = 7
+    tree[1] = 1
+    tree[2] = 3
+    tree[3] = 14
+    tree[4] = 2
+    tree[5] = 25
+    tree[6] = 4
+    tree[7] = 13
+    tree[8] = 12
+    tree[9] = 5
+    print(tree.range_between(1,6))
