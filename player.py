@@ -205,7 +205,7 @@ we want to implement the method select_food_and_caves, which generates a tuple c
 The choice the player makes should be optimal (Achieving the highest balance of emeralds possible in a single day) The method should not change the existing quantities of any caves, or any statistics of any material/cave/trader object.
 
 Complexity Requirement!
-Given that F = #Foods, T = #Traders, C=#Caves, M=#Materials:
+Given that F = #Foods, T = #Traders, C = #Caves, M = #Materials:
 Your select_food_and_caves method should have complexity at most O(M + T + F * C * logC)
 
 Documentation Requirement!
@@ -370,8 +370,6 @@ f"""{title_white_space}{big_text_print(title, 1)}{title_white_space}
 {title_white_space}{big_text_print(title, 5)}{title_white_space}    
 {'-'*screensize}
 """)
-        
-
 
 
 
