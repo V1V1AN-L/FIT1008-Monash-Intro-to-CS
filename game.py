@@ -6,7 +6,7 @@ from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
-
+import numpy
 
 class Game:
     """
@@ -154,8 +154,59 @@ class SoloGame(Game):
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
-    def verify_output_and_update_quantities(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
-        raise NotImplementedError()
+    def verify_output_and_update_quantities(self, player_result: tuple):    #(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
+        """
+        verifies the result of a round of gameplay is consistent with expected values
+        raises an error if expectations are not met
+
+        the results verified and updated are:
+        Player emerald balance
+        Player hunger levels
+        cave material quantity
+
+        """
+        #### Not Finished #### i misread the damn task, so this method does the incorrect thing
+        # ensure emerald balance is sufficent to purchase food
+        food = player_result[0]
+        assert self.player.get_balance > food.price
+
+        # update emerald balance
+        self.player.set_balance(self.player.get_balance - food.price)
+        # update hunger levels
+        self.player.set_hunger(self.player.get_hunger + food.hunger_bars) # will hunger from previous day carry over?
+
+        # verify hunger > 0
+        assert self.player.get_hunger > 0
+
+        # add emeralds and update hunger and update quantites for caves
+        for cave in player_result[2]:
+            self.calculate_hunger_emerald_material_changes(self.player, cave)
+            
+            
+ 
+
+
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave) -> None:
+        """
+        given a player and cave, changes the player's hunger and emerald balance, while
+        reducing the material count in the cave
+        """
+        max_hunger_loss = cave.calculate_total_hunger_spent
+        if player.get_hunger > max_hunger_loss:
+            player.set_hunger(player.get_hunger - max_hunger_loss)
+            player.set_balance(player.get_balance + cave.get_quantity * rate) ## how to get trader rate?
+            cave.remove_quantity(cave.get_quantity)
+
+        else: # determine max amount mined with remaining hunger
+            mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger)
+            player.set_hunger(0)
+            player.set_balance(player.get_balance + mined_quantity*rate) ## how to get trader rate?
+            cave.remove_quantity(mined_quantity)
+
+
+
+
+
     
     # user defined helper methods
     
