@@ -7,6 +7,7 @@ from cave import Cave
 from food import Food
 from random_gen import RandomGen
 
+
 class Game:
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
