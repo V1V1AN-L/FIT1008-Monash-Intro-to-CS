@@ -108,8 +108,14 @@ class Cave:
         self.material = material
         self.quantity = quantity
         
+    def __str__(self) -> str:
+        return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
+        
     def __repr__(self):
         return self.__str__()
+    
+    def __eq__(self, other):
+        return self.name == other.name and self.material == other.material
     
     # material
     
@@ -133,11 +139,16 @@ class Cave:
     def get_quantity(self) -> float:
         return self.quantity
     
-    def calculate_total_hunger_spent(self):
-        return self.get_quantity() * self.material.mining_rate
-
-    def __str__(self) -> str:
-        return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
+    def get_quantity_given_energy_spend(self, energy):
+        quantity = energy/self.material.mining_rate, 2
+        if quantity > self.get_quantity():
+            quantity = self.get_quantity()
+        return round(quantity, 2)
+    
+    def calculate_total_hunger_spent(self, quantity: float = False):
+        if quantity:
+            return round(quantity * self.material.mining_rate, 2)
+        return round(self.get_quantity() * self.material.mining_rate, 2)
 
     @classmethod
     def random_cave(self, material_list: list[Material]) -> Cave:

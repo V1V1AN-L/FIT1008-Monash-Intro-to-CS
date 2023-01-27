@@ -127,23 +127,25 @@ class Game:
             trader.generate_deal()
             
     # can be used in both SOLO games and MULTIPLAYER games
-    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave) -> None:
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = False) -> None:
         """
         given a player and cave, changes the player's hunger and emerald balance, while
         reducing the material count in the cave
         """
         selling_rate = self.material_price_map[cave.get_material()]
-        player.decrease_hunger(cave.calculate_total_hunger_spent())  
-        if player.get_hunger() > 0:
-            player.increase_balance(cave.get_quantity()*selling_rate)
-            cave.clear_quantity()
-
-        else: # determine max amount mined with remaining hunger
-            mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger())
-            player.clear_hunger()
+        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
+        
+        if mined_quantity: # determine max amount mined with remaining hunger or mine the amount specified
+            if not mined_quantity:
+                mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger())
             player.increase_balance(mined_quantity*selling_rate) 
             cave.remove_quantity(mined_quantity)    
-
+            
+        elif player.get_hunger() > 0:
+            player.increase_balance(cave.get_quantity()*selling_rate)
+            cave.clear_quantity()
+        player.check_hunger()
+        
         return cave
     
     def generate_material_price_map(self):
@@ -305,16 +307,23 @@ Documentation Requirement!
 For your solution to select_for_players, please leave a lengthy docstring describing the motivation for your approach in full. 
 Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
 
-MOTIVATION (VIRGIL STATUS):
+Motivation:
+
+
+
         """
         foods = []
         balances = []
         caves = []
-        for player in self.players:
+        for i, player in enumerate(self.players):
             food, balance, cave_tuple = player.select_food_and_caves(offered_food)
             foods.append(food)
             balances.append(balance)
             caves.append(cave_tuple)
+            # update the quantities in game so that other players quantities will be updated (only players that need the quantities updated)
+            self.update_cave_quantity(cave_tuple)
+            for j in range(i, self.players):
+                self.players[i].set_caves(self.get_caves())
             
         return foods, balances, caves
             
@@ -323,26 +332,43 @@ MOTIVATION (VIRGIL STATUS):
         self.generate_material_price_map()
         # modify other players lists so that mining happens real time
         
-        for i, player in enumerate(self.players):
+        for i in range(len(self.players)):
             # ensure emerald balance is sufficent to purchase food
             food = foods[i]
             balance = balances[i]
-            cave = caves[i]
+            cave, amount_of_material_mined = caves[i]
             assert balance > food.price
 
             # update emerald balance
-            player.decrease_balance(food.price)
+            self.players[i].decrease_balance(food.price)
             # update hunger levels
-            player.set_hunger(food.hunger_bars)
+            self.players[i].set_hunger(food.hunger_bars)
 
-            # verify hunger > 0
-            assert player.get_hunger() > 0
+            # verify hunger > amount mined
+            assert self.players[i].get_hunger() > cave.calculate_total_hunger_spent(amount_of_material_mined)
             
             # add emeralds and update hunger and update quantites for caves
-            self.calculate_hunger_emerald_material_changes(player, caves[i])
+            self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
             
             # updates the quantities
-            player.clear_hunger()
+            self.players[i].set_caves(self.get_caves()) # updates all players caves
+            self.players[i].clear_hunger()
+            
+    # helper functions
+    
+    def update_cave_quantity(self, chosen_cave_tuple: list[Cave, float]):
+        chosen_cave, amount_mined = chosen_cave_tuple
+        
+        caves_list = self.get_caves()
+        for i in range(len(caves_list)):
+            if caves_list[i] == chosen_cave:
+                caves_list[i].remove_quantity(amount_mined)
+                break
+                
+        self.set_caves(caves_list)
+                
+            
+            
 
 if __name__ == "__main__":
 
