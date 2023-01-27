@@ -78,7 +78,61 @@ class LinearProbeTable(Generic[T]):
     def statistics(self) -> tuple:
         '''
         Analysis
-        
+
+        Expectation of these values:
+        1. conflict_count: total number of conflicts (two or more values have the same key value)
+        2. probe_total: total probe_chain throughout the hash table
+        3. probe_max: longest probe chain
+        4. rehash_count: how many rehashing has been done if the load factor is > 0.5
+
+        Example:
+        Eva, Amy, Tim, Ron, Jan, Kim, Dot, Ann, Jim, Jon
+
+        Hash key result:
+        Eva 12
+        Amy 8
+        Tim 8
+        Ron 6
+        Jan 17
+        Kim 18
+        Dot 11
+        Ann 8
+        Jim 17
+        Jon 17
+
+        The result of the hash table is:
+        ('Jim', 'Jim-value'), ('Jon', 'Jon-value'), None, None,
+        None, None, ('Ron', 'Ron-value'), None,
+        ('Amy', 'Amy-value'), ('Tim', 'Tim-value'), ('Ann', 'Ann-value'), ('Dot', 'Dot-value'),
+        ('Eva', 'Eva-value'), None, None, None,
+        None, ('Jan', 'Jan-value'), ('Kim', 'Kim-value')
+
+        from this example, we have:
+        -> 4 conflict counts when:
+          --> we insert Tim, because we already had Amy on key 8
+          --> we insert Ann, because we already had Tim on key 8
+          --> we insert Jim, because we already had Jan on key 17
+          --> we insert Jon, because we already had Jim on key 17
+
+        -> probe_total:
+          --> Jim has 2
+          --> Jon has 1
+          --> Ron has 1
+          --> Amy has 5
+          --> Tim has 4
+          --> Ann has 3
+          --> Dot has 2
+          --> Eva has 1
+          --> Jan has 4
+          --> Kim has 3
+          In total, the total distance of probing is 26
+
+        -> probe_max:
+          from the previous result, we noticed that Amy has the biggest probing chain which means 5 is the probe_max
+
+        -> rehash_count:
+
+
 
 
         :return: conflict_count, probe_total, probe_max, rehash_count
