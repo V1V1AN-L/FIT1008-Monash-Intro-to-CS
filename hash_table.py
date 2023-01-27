@@ -59,7 +59,33 @@ class LinearProbeTable(Generic[T]):
             a = a * b % (self.table_size - 1)
         return value
 
+    def count_total_probe(self) -> int:
+        probe = 0
+        max = 0
+        for index in range(self.table_size):
+            count = 0
+            pos = index
+            while self.table[pos] is not None:
+                pos = (pos + 1) % self.table_size
+                count += 1
+                if pos == index:
+                    break
+            if max <= count:
+                max = count
+            probe += count
+        return probe, max
+
     def statistics(self) -> tuple:
+        '''
+        Analysis
+        
+
+
+        :return: conflict_count, probe_total, probe_max, rehash_count
+        '''
+
+        # probe_total, probe_max = self.count_total_probe()
+        # return (self.conflict_count, probe_total, probe_max, self.rehash_count)
         return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
