@@ -154,6 +154,7 @@ class Game:
             material_map[material] = selling_price
             
         self.material_price_map = material_map
+        return self.material_price_map
 
 
 class SoloGame(Game):
@@ -210,10 +211,10 @@ class SoloGame(Game):
         # update emerald balance
         self.player.set_balance(balance - food.price)
         # update hunger levels
-        self.player.set_hunger(food.hunger_bars) # will hunger from previous day carry over?
+        self.player.set_hunger(food.hunger_bars)
 
         # verify hunger > 0
-        assert self.player.get_hunger > 0
+        assert self.player.get_hunger() >= 0
         
         # map all materials to a price
         self.material_price_map = self.generate_material_price_map()
@@ -223,6 +224,7 @@ class SoloGame(Game):
             caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
             
         # updates the quantities
+        self.player.clear_hunger()
         self.set_caves(caves)
 
     
@@ -313,13 +315,34 @@ MOTIVATION (VIRGIL STATUS):
             foods.append(food)
             balances.append(balance)
             caves.append(cave_tuple)
-            # modify other players lists so that mining happens real time
             
         return foods, balances, caves
             
             
     def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float]|None]) -> None:
         self.generate_material_price_map()
+        # modify other players lists so that mining happens real time
+        
+        for i, player in enumerate(self.players):
+            # ensure emerald balance is sufficent to purchase food
+            food = foods[i]
+            balance = balances[i]
+            cave = caves[i]
+            assert balance > food.price
+
+            # update emerald balance
+            player.decrease_balance(food.price)
+            # update hunger levels
+            player.set_hunger(food.hunger_bars)
+
+            # verify hunger > 0
+            assert player.get_hunger() > 0
+            
+            # add emeralds and update hunger and update quantites for caves
+            self.calculate_hunger_emerald_material_changes(player, caves[i])
+            
+            # updates the quantities
+            player.clear_hunger()
 
 if __name__ == "__main__":
 

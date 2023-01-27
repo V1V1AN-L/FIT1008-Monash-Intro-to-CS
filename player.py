@@ -163,6 +163,12 @@ class Player():
             self.balance += round(balance, 2)
         else:
             self.balance += balance
+            
+    def decrease_balance(self, balance: float = None):
+        if isinstance(balance, int) or isinstance(balance, float):
+            self.balance -= round(balance, 2)
+        else:
+            self.balance -= balance
     
 
     # traders
