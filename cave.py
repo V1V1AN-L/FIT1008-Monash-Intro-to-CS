@@ -124,26 +124,32 @@ class Cave:
     
     # quantity
     
+    def round_quantity(self):
+        self.quantity = round(self.quantity, 4)
+    
     def add_quantity(self, amount: float) -> None:
         self.quantity += amount
+        self.round_quantity()
     
     def remove_quantity(self, amount: float) -> None:
         if amount > self.quantity:
             self.clear_quantity()
         else:
             self.quantity -= amount
+            self.round_quantity()
         
     def clear_quantity(self):
         self.quantity = 0
 
     def get_quantity(self) -> float:
+        self.round_quantity()
         return self.quantity
     
     def get_quantity_given_energy_spend(self, energy):
         quantity = energy/self.material.mining_rate, 2
         if quantity > self.get_quantity():
             quantity = self.get_quantity()
-        return round(quantity, 2)
+        return quantity
     
     def calculate_total_hunger_spent(self, quantity: float = False):
         if quantity:

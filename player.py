@@ -240,20 +240,22 @@ Documentation Requirement!
 For your solution to select_food_and_caves, please leave a lengthy docstring describing the motivation for your approach in full. 
 Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
 
-Documentation:
-    Approaches:
-    SOLO food:
-        Returns the food that has the most hunger filling while the balance is above 0
+Approaches:
+SOLO food:
+    Returns the food that has the most hunger filling while the balance is above 0
+
+SOLO caves:
+    TODO
     
-    SOLO caves:
-        TODO
+SOLO Complexity: (best & worst) = O(F + T + C)
 
-    MULTIPLAYER food:
-        If the player can afford the food, they buy it
+MULTIPLAYER food:
+    If the player can afford the food, they buy it
 
-    MULTIPLAYER caves:
-        As you can only choose one cave, you want the most amount of profit possible from a single cave
+MULTIPLAYER caves:
+    As you can only choose one cave, you want the most amount of profit possible from a single cave
 
+MULTIPLAYER Complexity: (best & worst) = O(C + T)
         """
         self.generate_material_price_map() # O(T)
         
@@ -290,7 +292,7 @@ Documentation:
         Returns:
             Food: chosen food
             
-        COMPLEXITY (best & worst) = O(f), f = amount of foods player can choose from
+        COMPLEXITY (best & worst) = O(F), F = amount of foods player can choose from
         """
         hunger = 0
         chosen_food: Food = None
