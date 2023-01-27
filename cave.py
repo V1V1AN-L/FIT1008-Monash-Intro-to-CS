@@ -111,11 +111,24 @@ class Cave:
     def __repr__(self):
         return self.__str__()
     
+    # material
+    
+    def get_material(self):
+        return self.material
+    
+    # quantity
+    
     def add_quantity(self, amount: float) -> None:
         self.quantity += amount
     
     def remove_quantity(self, amount: float) -> None:
-        self.quantity -= amount
+        if amount > self.quantity:
+            self.clear_quantity()
+        else:
+            self.quantity -= amount
+        
+    def clear_quantity(self):
+        self.quantity = 0
 
     def get_quantity(self) -> float:
         return self.quantity

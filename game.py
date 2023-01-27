@@ -47,11 +47,18 @@ class Game:
 
     def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader]):
         self.set_materials(materials)
+        print("Materials:\n\t", end="")
+        print("\n\t".join(map(str, self.get_materials())))
         self.set_caves(caves)
+        print("Caves:\n\t", end="")
+        print("\n\t".join(map(str, self.get_caves())))
         self.set_traders(traders)
+        print("Traders:\n\t", end="")
+        print("\n\t".join(map(str, self.get_traders())))
 
     def set_materials(self, mats: list[Material] = None) -> None:
         self.materials = mats
+        self.material_price_map: dict
 
     def set_caves(self, caves: list[Cave] = None) -> None:
         self.caves = caves
@@ -118,6 +125,36 @@ class Game:
         """
         for trader in self.get_traders():
             trader.generate_deal()
+            
+    # can be used in both SOLO games and MULTIPLAYER games
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave) -> None:
+        """
+        given a player and cave, changes the player's hunger and emerald balance, while
+        reducing the material count in the cave
+        """
+        selling_rate = self.material_price_map[cave.get_material()]
+        player.decrease_hunger(cave.calculate_total_hunger_spent())  
+        if player.get_hunger() > 0:
+            player.increase_balance(cave.get_quantity()*selling_rate)
+            cave.clear_quantity()
+
+        else: # determine max amount mined with remaining hunger
+            mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger())
+            player.clear_hunger()
+            player.increase_balance(mined_quantity*selling_rate) 
+            cave.remove_quantity(mined_quantity)    
+
+        return cave
+    
+    def generate_material_price_map(self):
+        trader_list = self.get_traders()
+        material_map = {}
+        for trader in trader_list:
+            material, selling_price = trader.current_deal()
+            material_map[material] = selling_price
+            
+        self.material_price_map = material_map
+
 
 class SoloGame(Game):
     
@@ -146,6 +183,7 @@ class SoloGame(Game):
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
         foods = self.generate_food()
+        self.player.set_foods(foods)
         print("\nFoods:\n\t", end="")
         print("\n\t".join(map(str, foods)))
         # 3. Select one food item to purchase
@@ -154,7 +192,7 @@ class SoloGame(Game):
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
-    def verify_output_and_update_quantities(self, player_result: tuple):    #(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
+    def verify_output_and_update_quantities(self, food: Food, balance: float, caves: list[Cave]):    #(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
         """
         verifies the result of a round of gameplay is consistent with expected values
         raises an error if expectations are not met
@@ -167,45 +205,25 @@ class SoloGame(Game):
         """
         #### Not Finished #### i misread the damn task, so this method does the incorrect thing
         # ensure emerald balance is sufficent to purchase food
-        food = player_result[0]
-        assert self.player.get_balance > food.price
+        assert balance > food.price
 
         # update emerald balance
-        self.player.set_balance(self.player.get_balance - food.price)
+        self.player.set_balance(balance - food.price)
         # update hunger levels
-        self.player.set_hunger(self.player.get_hunger + food.hunger_bars) # will hunger from previous day carry over?
+        self.player.set_hunger(food.hunger_bars) # will hunger from previous day carry over?
 
         # verify hunger > 0
         assert self.player.get_hunger > 0
+        
+        # map all materials to a price
+        self.material_price_map = self.generate_material_price_map()
 
         # add emeralds and update hunger and update quantites for caves
-        for cave in player_result[2]:
-            self.calculate_hunger_emerald_material_changes(self.player, cave)
+        for i, cave in enumerate(caves):
+            caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
             
-            
- 
-
-
-    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave) -> None:
-        """
-        given a player and cave, changes the player's hunger and emerald balance, while
-        reducing the material count in the cave
-        """
-        max_hunger_loss = cave.calculate_total_hunger_spent
-        if player.get_hunger > max_hunger_loss:
-            player.set_hunger(player.get_hunger - max_hunger_loss)
-            player.set_balance(player.get_balance + cave.get_quantity * rate) ## how to get trader rate?
-            cave.remove_quantity(cave.get_quantity)
-
-        else: # determine max amount mined with remaining hunger
-            mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger)
-            player.set_hunger(0)
-            player.set_balance(player.get_balance + mined_quantity*rate) ## how to get trader rate?
-            cave.remove_quantity(mined_quantity)
-
-
-
-
+        # updates the quantities
+        self.set_caves(caves)
 
     
     # user defined helper methods
@@ -217,6 +235,13 @@ class SoloGame(Game):
             foods.append(Food.random_food())
         self.player.set_foods(foods)
         return foods
+    
+    
+    
+    
+    
+    
+    
 
 class MultiplayerGame(Game):
 
@@ -263,11 +288,11 @@ class MultiplayerGame(Game):
         # 3. Each player selects a cave - The game does this instead.
         foods, balances, caves = self.select_for_players(offered_food)
         for i in range(len(self.players)):
-            print(f"{self.players[i]} | Chosen Food: {foods[i]} | Chosen Caves: {caves[i]}")
+            print(f"{self.players[i]} | Chosen Food: {foods[i]} | Chosen Caves: {caves[i][0]}")
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(foods, balances, caves)
 
-    def select_for_players(self, offered_food: Food) -> tuple[list[Food|None], list[float], list[tuple[Cave, float]|None]]:
+    def select_for_players(self, offered_food: Food) -> tuple[list[Food | None], list[float], list[tuple[Cave, float] | None]]:
         """_summary_
 
 Complexity Requirement!
@@ -284,15 +309,17 @@ MOTIVATION (VIRGIL STATUS):
         balances = []
         caves = []
         for player in self.players:
-            food, balance, cave = player.select_food_and_caves(offered_food)
+            food, balance, cave_tuple = player.select_food_and_caves(offered_food)
             foods.append(food)
             balances.append(balance)
-            caves.append(cave)
+            caves.append(cave_tuple)
             # modify other players lists so that mining happens real time
+            
+        return foods, balances, caves
             
             
     def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float]|None]) -> None:
-        raise NotImplementedError()
+        self.generate_material_price_map()
 
 if __name__ == "__main__":
 

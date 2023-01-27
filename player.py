@@ -136,6 +136,13 @@ class Player():
         self.set_hunger(self.hunger) # makes sure its rounded to two decimal places
         return self.hunger
     
+    def decrease_hunger(self, hunger: float = None) -> None: 
+        if isinstance(hunger, int) or isinstance(hunger, float):
+            self.hunger -= round(hunger, 2)
+        else:
+            self.hunger -= hunger
+        
+    
     def clear_hunger(self):
         self.set_hunger(0)
         
@@ -150,6 +157,12 @@ class Player():
     def get_balance(self) -> float:
         self.set_balance(self.balance) # makes sure its rounded to two decimal places
         return self.balance
+    
+    def increase_balance(self, balance: float = None):
+        if isinstance(balance, int) or isinstance(balance, float):
+            self.balance += round(balance, 2)
+        else:
+            self.balance += balance
     
 
     # traders
