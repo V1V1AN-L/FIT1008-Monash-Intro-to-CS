@@ -241,7 +241,18 @@ For your solution to select_food_and_caves, please leave a lengthy docstring des
 Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
 
 Documentation:
+    Approaches:
+    SOLO food:
+        Returns the food that has the most hunger filling while the balance is above 0
+    
+    SOLO caves:
+        TODO
 
+    MULTIPLAYER food:
+        If the player can afford the food, they buy it
+
+    MULTIPLAYER caves:
+        As you can only choose one cave, you want the most amount of profit possible from a single cave
 
         """
         self.generate_material_price_map() # O(T)
@@ -280,9 +291,6 @@ Documentation:
             Food: chosen food
             
         COMPLEXITY (best & worst) = O(f), f = amount of foods player can choose from
-        
-        Approach:
-        Returns the food that has the most hunger filling while the balance is above 0
         """
         hunger = 0
         chosen_food: Food = None
@@ -299,10 +307,6 @@ Documentation:
             list[Cave]: list of caves in order of mining to 
             
         COMPLEXITY TODO
-            
-        Approach:
-        TODO
-        
         """
         raise NotImplementedError
         chosen_caves = []
@@ -321,9 +325,6 @@ Documentation:
             Food|None: food chosen for a multiplayer game
             
         COMPLEXITY (best & worst) = O(1)
-            
-        Approach:
-        If the player can afford the food, they buy it
         """
         if offered_food.price > self.get_balance():
             return offered_food
@@ -336,9 +337,6 @@ Documentation:
             _type_: _description_
             
         COMPLEXITY (best & worst) = O(C), C = amount of caves player can choose from
-            
-        Approach:
-        As you can only choose one cave, you want the most amount of profit possible from a single cave
         """
         chosen_cave = None
         max_profit = 0
@@ -451,23 +449,13 @@ Documentation:
     
     # SOLO + MULTI METHODS
     
-    def refresh_key_cooldown(self):
-        while True:
-            try:
-                if self.key_cooldown <= int(time.time()*1000):
-                    self.key_cooldown = int(time.time()*1000) + 100
-                    return True
-                return False
-            except AttributeError:
-                self.key_cooldown = int(time.time()*1000) 
-    
     def display_title(self):
         while True:
             try:
                 title = self.title
                 break
             except Exception as e:
-                self.title = f"e"
+                self.title = f"{e}"
         #
         screensize = get_screensize()
         big_text_len = len(big_text_print(title, 1))
@@ -486,4 +474,4 @@ f"""{title_white_space}{big_text_print(title, 1)}
 
 if __name__ == "__main__":
     player = Player("Alex", emeralds=1000)
-    print(player.display_title())
+    player.display_title()

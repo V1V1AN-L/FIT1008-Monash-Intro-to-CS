@@ -523,12 +523,7 @@ def medium_text_print(text: str, row: int = -1):
     return return_string
         
 def text_print(text):
-    try:
-        global settings 
-        settings = get_global_settings()
-        text_speed = settings.text_speed
-    except:
-        text_speed = .01
+    text_speed = .01
     if type(text) == str:
         for i in range(len(text)):
             print(text[0:i+1],end='\r') 
@@ -860,74 +855,6 @@ class RollingTextList:
     
     def can_continue(self) -> bool:
         return self.index < len(self)
-        
-file_path = f"{os.getcwd()}\Armageddon\game_data"
-        
-# options and settings
-class Settings:
-    speeds = {
-        'slow':.03,
-        'medium':.015,
-        'fast':.01
-    }
-    difficulties = ['easy', 'balanced', 'hard', 'expert']
-    
-    def __init__(self):
-        self.text_speed = None
-        self.difficulty = None
-        self.autosave = None
-        self.box_style = None
-        
-    def __str__(self):
-        return f"text speed: {self.text_speed} ({int(self.speed*1000)} ms) | Autosave: {self.autosave}"
-        
-    def set_text_speed(self, _speed: float):
-        self.text_speed = self.speeds[_speed]
-        self.speed = _speed
-        
-    def set_difficulty(self, _difficulty: str):
-        if _difficulty not in self.difficulties:
-            self.difficulty = 'balanced'
-        else:
-            self.difficulty = _difficulty
-            
-    def set_box_style(self, style: str):
-        self.box_style = style
-
-def get_global_settings() -> Settings:
-    global settings 
-    global file_path 
-    file_path = f"{os.getcwd()}\Armageddon\game_data"
-    try:
-        os.chdir(file_path) # limits the files to the directory specified here
-        with open('game_options_save.txt', 'r') as settings_document:
-            settings_document = settings_document.readlines()
-            for i in range(len(settings_document)):
-                settings_document[i] = settings_document[i].split('=')
-                settings_document[i][1] = settings_document[i][1].split(';')
-                settings_document[i][1].pop(1)
-                settings_document[i] = settings_document[i][1][0]
-            # extract settings settings from settings text doc
-            settings = Settings()
-            settings.set_text_speed(settings_document[0])
-            settings.set_difficulty(settings_document[1])
-            if settings_document[2] == 'False':
-                settings.autosave = False
-            else:
-                settings.autosave = True
-            settings.set_box_style(settings_document[3])
-    except FileNotFoundError:
-        with open('game_options_save.txt', 'w') as new_settings_document:
-            new_settings_document.write(f"text_speed=medium;\n")
-            new_settings_document.write(f"difficulty=balanced;\n")
-            new_settings_document.write(f"autosave=True;\n")
-            new_settings_document.write(f"box_style=;█\n")
-            settings = Settings()
-            settings.set_text_speed('medium')
-            settings.set_difficulty('balanced')
-            settings.autosave = True
-            settings.set_box_style('█')
-    return settings
     
     
 if __name__ == '__main__':
