@@ -131,7 +131,8 @@ class LinearProbeTable(Generic[T]):
           from the previous result, we noticed that Amy has the biggest probing chain which means 5 is the probe_max
 
         -> rehash_count:
-
+            when the load factor > 0.5, we do rehash, in this case when we insert ...... (check it manually later), the load factor is > 0.5, and that's why we rehash the table.
+            In this case the rehash_count is 1
 
 
 
