@@ -129,8 +129,6 @@ class Game:
     # can be used in both SOLO games and MULTIPLAYER games
     def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = False) -> None:
         """
-        given a player and cave, changes the player's hunger and emerald balance, while
-        reducing the material count in the cave
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
         """
@@ -144,7 +142,6 @@ class Game:
         player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
  
         player.increase_balance(mined_quantity*selling_rate) 
-        cave.remove_quantity(mined_quantity)   
         cave.remove_quantity(mined_quantity)    
 
         player.check_hunger()
