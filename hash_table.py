@@ -36,9 +36,8 @@ class LinearProbeTable(Generic[T]):
         self.probe_total = 0
         self.probe_max = 0
         self.rehash_count = 0
-        self.expected_size = int(expected_size*1.2)
         if tablesize_override == -1:
-            prime_tablesize = LargestPrimeIterator(self.expected_size, 1)
+            prime_tablesize = LargestPrimeIterator(expected_size, 2)
             self.table_size = next(prime_tablesize)
         else:
             self.table_size = tablesize_override
@@ -251,8 +250,7 @@ class LinearProbeTable(Generic[T]):
         """
             Need to resize table and reinsert all values
         """
-
-        new_hash = LinearProbeTable(self.expected_size, int(self.table_size*1.2))
+        new_hash = LinearProbeTable(self.table_size*2)
 
         for i in range(len(self.table)):
             if self.table[i] is not None:
@@ -274,4 +272,3 @@ class LinearProbeTable(Generic[T]):
                 (key, value) = item
                 result += "(" + str(key) + "," + str(value) + ")\n"
         return result
-
