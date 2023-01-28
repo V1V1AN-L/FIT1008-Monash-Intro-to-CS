@@ -23,6 +23,7 @@ class TreeNode(Generic[K, I]):
         self.item = item
         self.left = None
         self.right = None
+        self.index = None
 
     def __str__(self):
         """

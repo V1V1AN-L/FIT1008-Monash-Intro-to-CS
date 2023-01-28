@@ -23,6 +23,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
 
         BinarySearchTree.__init__(self)
+        self.count = 0
 
     def get_height(self, current: AVLTreeNode) -> int:
         """
@@ -66,7 +67,17 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
         current = self.rebalance(current)
 
+        self.count = 0
+        self.set_index(current)
+
         return current
+
+    def set_index(self, root:AVLTreeNode) -> None:
+        if root != None:
+            self.set_index(root.left)
+            root.index = self.count
+            self.count += 1
+            self.set_index(root.right)
 
     def delete_aux(self, current: AVLTreeNode, key: K) -> AVLTreeNode:
         """
@@ -177,19 +188,33 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
     def range_between(self, i: int, j: int) -> List:
         """
         Returns a sorted list of all elements in the tree between the ith and jth indices, inclusive.
-        
+
         :complexity: O(j - i + log(N))
         """
-        all_keys = []
-        all_keys = self.inorder_traversal(self.root, all_keys) # O(log n) since tree is balanced
-        res = []
-        for k in range (i,j+1): # j - i iterations
-            res.append(all_keys[k])
-        return res
+
+    def range_between(self, i: int, j: int) -> List:
+        """
+        Returns a sorted list of all elements in the tree between the ith and jth indices, inclusive.
+
+        :complexity: O(j - i + log(N))
+        """
+        return self.range_between_aux(self.root, i, j, [])
+
+    def range_between_aux(self, root:AVLTreeNode, i, j, result: list):
+        if root is None:
+            return result
+        if root.index > i:
+            self.range_between_aux(root.left, i, j, result)
+        if i <= root.index <= j:
+            result.append(root.item)
+        if root.index < j:
+            self.range_between_aux(root.right, i, j, result)
+        return result
 
     def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
         if root != None:
             self.inorder_traversal(root.left, res)
             res.append(root.item)
+            print(root.index)
             self.inorder_traversal(root.right, res)
-            return res
+        return res
