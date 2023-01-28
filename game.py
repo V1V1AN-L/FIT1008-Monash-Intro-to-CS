@@ -6,7 +6,6 @@ from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
-import numpy
 
 class Game:
     """
@@ -137,17 +136,13 @@ class Game:
             player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
         else:
             mined_quantity = cave.get_quantity_given_energy_spend(player.get_hunger())
+            if mined_quantity == 0:
+                return cave
             player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
-        
-        if mined_quantity: # determine max amount mined with remaining hunger or mine the amount specified
-            if not mined_quantity:
-                mined_quantity = numpy.linalg.solve(cave.material.mining_rate, player.get_hunger())
-            player.increase_balance(mined_quantity*selling_rate) 
-            cave.remove_quantity(mined_quantity)    
-            
-        elif player.get_hunger() > 0:
-            player.increase_balance(cave.get_quantity()*selling_rate)
-            cave.clear_quantity()
+
+        player.increase_balance(mined_quantity*selling_rate) 
+        cave.remove_quantity(mined_quantity)   
+             
         player.check_hunger()
         
         return cave
