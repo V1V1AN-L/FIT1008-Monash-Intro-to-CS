@@ -273,12 +273,12 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
     
         return (chosen_food, self.get_balance(), chosen_caves)
     
-    def AI_select_food_and_caves(self):
+    def AI_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves
     
-    def multiplayer_AI_select_food_and_caves(self, offered_food):
+    def multiplayer_AI_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves()
         return chosen_food, chosen_cave
@@ -330,7 +330,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
     
     # MULTI
     
-    def multiplayer_choose_food(self, offered_food: Food):
+    def multiplayer_choose_food(self, offered_food: Food) -> Food | None:
         """_summary_
 
         Args:
@@ -345,13 +345,13 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             return offered_food
         return None
         
-    def multiplayer_choose_caves(self):
+    def multiplayer_choose_caves(self) -> Cave:
         """_summary_
 
         Returns:
             _type_: _description_
             
-        COMPLEXITY (best & worst) = O(C), C = amount of caves player can choose from
+        COMPLEXITY (best & worst) = O(C)
         """
         chosen_cave = None
         max_profit = 0

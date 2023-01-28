@@ -134,7 +134,7 @@ class Game:
         selling_rate = self.material_price_map[cave.get_material()]
 
         if type(mined_quantity) == bool:
-            mined_quantity = cave.get_quantity_given_energy_spend(player.get_hunger())
+            mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
             if mined_quantity == 0:
                 return cave
             
