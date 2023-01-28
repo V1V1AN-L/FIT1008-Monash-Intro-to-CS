@@ -157,6 +157,7 @@ class Cave:
         if quantity:
             return round(quantity * self.material.mining_rate, 4)
         return round(self.get_quantity() * self.material.mining_rate, 4)
+        
 
     @classmethod
     def random_cave(self, material_list: list[Material]) -> Cave:

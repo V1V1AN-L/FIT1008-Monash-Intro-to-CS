@@ -273,16 +273,14 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         return (chosen_food, self.get_balance(), chosen_caves)
     
     def AI_select_food_and_caves(self):
-        raise NotImplementedError
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves
     
     def multiplayer_AI_select_food_and_caves(self, offered_food):
-        raise NotImplementedError
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves()
-        return chosen_food, chosen_caves
+        return chosen_food, chosen_cave
     
     # SOLO
     
@@ -309,9 +307,23 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             list[Cave]: list of caves in order of mining to 
             
         COMPLEXITY TODO
+        
+        NOTE: TEMPORARY SOLUTION TO PASS TESTING
         """
-        raise NotImplementedError
+        # self.material_price_map
+        player_hunger_spent = 0
+        caves_and_profit = {}
+        for cave in self.get_caves():
+            caves_and_profit[round(float(self.material_price_map[cave.get_material()]*cave.get_quantity()), 2)] = cave
+            
         chosen_caves = []
+        while player_hunger_spent < player.get_hunger():
+            max_value = max(list(caves_and_profit.keys()))
+            chosen_cave = caves_and_profit[max_value]
+            del caves_and_profit[max_value]
+            chosen_caves.append(chosen_cave)
+            player_hunger_spent += cave.get_material().mining_rate*cave.get_quantity()
+        
         return chosen_caves
     
     
