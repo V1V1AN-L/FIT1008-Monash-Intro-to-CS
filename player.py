@@ -316,7 +316,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             caves_and_profit[round(float(self.material_price_map[cave.get_material()]*cave.get_quantity()), 2)] = cave
             
         chosen_caves = []
-        while player_hunger_spent < player.get_hunger():
+        while player_hunger_spent <= player.get_hunger():
             max_value = max(list(caves_and_profit.keys()))
             chosen_cave = caves_and_profit[max_value]
             del caves_and_profit[max_value]
