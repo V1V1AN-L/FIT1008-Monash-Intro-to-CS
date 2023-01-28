@@ -132,19 +132,16 @@ class Game:
         reducing the material count in the cave
         """
         selling_rate = self.material_price_map[cave.get_material()]
-        if type(mined_quantity) == float or type(mined_quantity) == int:
-            player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
-        else:
+
+        if type(mined_quantity) == bool:
             mined_quantity = cave.get_quantity_given_energy_spend(player.get_hunger())
             if mined_quantity == 0:
                 return cave
-            player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
-
+            
+        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
         player.increase_balance(mined_quantity*selling_rate) 
         cave.remove_quantity(mined_quantity)   
-             
         player.check_hunger()
-        
         return cave
     
     def generate_material_price_map(self):

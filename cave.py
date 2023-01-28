@@ -146,6 +146,8 @@ class Cave:
         return self.quantity
     
     def get_quantity_given_energy_spend(self, energy):
+        if energy <= 0:
+            return 0
         quantity = round(energy/self.material.mining_rate, 4)
         if quantity > self.get_quantity():
             quantity = self.get_quantity()
