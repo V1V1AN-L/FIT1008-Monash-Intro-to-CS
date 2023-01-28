@@ -59,9 +59,8 @@ class LinearProbeTable(Generic[T]):
             a = a * b % (self.table_size - 1)
         return value
 
-    def count_total_probe(self) -> int:
+    def get_load_factor(self) -> int:
         probe = 0
-        max = 0
         for index in range(self.table_size):
             count = 0
             pos = index
@@ -70,10 +69,8 @@ class LinearProbeTable(Generic[T]):
                 count += 1
                 if pos == index:
                     break
-            if max <= count:
-                max = count
             probe += count
-        return probe, max
+        return probe/self.table_size
 
     def statistics(self) -> tuple:
         '''
@@ -109,38 +106,27 @@ class LinearProbeTable(Generic[T]):
 
         from this example, we have:
         -> 4 conflict counts when:
-          --> we insert Tim, because we already had Amy on key 8
-          --> we insert Ann, because we already had Tim on key 8
-          --> we insert Jim, because we already had Jan on key 17
-          --> we insert Jon, because we already had Jim on key 17
+          --> we insert Tim with key 8, because we already had Amy on key 8
+          --> we insert Ann with key 8, because we already had Tim on key 8
+          --> we insert Jim with key 17, because we already had Jan on key 17
+          --> we insert Jon with key 17, because we already had Jim on key 17
 
         -> probe_total:
-          --> Jim has 2
-          --> Jon has 1
-          --> Ron has 1
-          --> Amy has 5
-          --> Tim has 4
-          --> Ann has 3
-          --> Dot has 2
-          --> Eva has 1
-          --> Jan has 4
-          --> Kim has 3
-          In total, the total distance of probing is 26
+          --> Tim 8 -> 1 (Amy 8 is filled, Tim will be at 9)
+          --> Ann 8 -> 2 (Amy 8 is filled, Tim 9 is filled, Ann will be at 10)
+          --> Jim 17 -> 2 (Jan 17 is filled, Kim 18 is filled, Jim will be at 0)
+          --> Jon 17 -> 3 (Jan 17 is filled, Kim 18 is filled, Jim 0 is filled, Jan will be at 1
+          probe_total = 6
 
         -> probe_max:
           from the previous result, we noticed that Amy has the biggest probing chain which means 5 is the probe_max
 
         -> rehash_count:
-            when the load factor > 0.5, we do rehash, in this case when we insert ...... (check it manually later), the load factor is > 0.5, and that's why we rehash the table.
-            In this case the rehash_count is 1
-
-
-
-        :return: conflict_count, probe_total, probe_max, rehash_count
+            when the load factor > 1.2, we do rehash, in this case when we insert the 10th element, the load factor is 1.37.
+            If a case where we insert the 11th element, it will resize and rehash the table which will increment the rehash_count
+            However, because we only have 10th element in this case, the rehash_count is 0.
         '''
 
-        # probe_total, probe_max = self.count_total_probe()
-        # return (self.conflict_count, probe_total, probe_max, self.rehash_count)
         return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
@@ -230,7 +216,7 @@ class LinearProbeTable(Generic[T]):
             :see: #self._linear_probe(key: str, is_insert: bool)
             :see: #self.__contains__(key: str)
         """
-        if self.count > self.table_size * 0.5:
+        if self.get_load_factor() > 1.2:
             self._rehash()
 
         position = self._linear_probe(key, True)
@@ -274,6 +260,7 @@ class LinearProbeTable(Generic[T]):
 
         self.count = new_hash.count
         self.table = new_hash.table
+        self.table_size = new_hash.table_size
         self.rehash_count +=1
     def __str__(self) -> str:
         """
