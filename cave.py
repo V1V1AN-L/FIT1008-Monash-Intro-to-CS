@@ -146,15 +146,15 @@ class Cave:
         return self.quantity
     
     def get_quantity_given_energy_spend(self, energy):
-        quantity = energy/self.material.mining_rate, 2
+        quantity = round(energy/self.material.mining_rate, 4)
         if quantity > self.get_quantity():
             quantity = self.get_quantity()
         return quantity
     
     def calculate_total_hunger_spent(self, quantity: float = False):
         if quantity:
-            return round(quantity * self.material.mining_rate, 2)
-        return round(self.get_quantity() * self.material.mining_rate, 2)
+            return round(quantity * self.material.mining_rate, 4)
+        return round(self.get_quantity() * self.material.mining_rate, 4)
 
     @classmethod
     def random_cave(self, material_list: list[Material]) -> Cave:

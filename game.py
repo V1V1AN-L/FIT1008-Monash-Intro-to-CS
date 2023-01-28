@@ -133,7 +133,11 @@ class Game:
         reducing the material count in the cave
         """
         selling_rate = self.material_price_map[cave.get_material()]
-        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
+        if type(mined_quantity) == float or type(mined_quantity) == int:
+            player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
+        else:
+            mined_quantity = cave.get_quantity_given_energy_spend(player.get_hunger())
+            player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
         
         if mined_quantity: # determine max amount mined with remaining hunger or mine the amount specified
             if not mined_quantity:
@@ -212,6 +216,7 @@ class SoloGame(Game):
 
         # update emerald balance
         self.player.decrease_balance(food.price)
+        assert self.player.get_balance() >= 0
         # update hunger levels
         self.player.set_hunger(food.hunger_bars)
 
