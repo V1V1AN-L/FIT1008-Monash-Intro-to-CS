@@ -211,7 +211,7 @@ class SoloGame(Game):
         assert balance > food.price
 
         # update emerald balance
-        self.player.set_balance(balance - food.price)
+        self.player.decrease_balance(food.price)
         # update hunger levels
         self.player.set_hunger(food.hunger_bars)
 
