@@ -310,7 +310,6 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         
         NOTE: TEMPORARY SOLUTION TO PASS TESTING
         """
-        # self.material_price_map
         player_hunger_spent = 0
         caves_and_profit = {}
         for cave in self.get_caves():
