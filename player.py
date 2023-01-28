@@ -245,9 +245,10 @@ SOLO food:
     Returns the food that has the most hunger filling while the balance is above 0
 
 SOLO caves:
-    TODO
+    Returns caves in order of mining based on how much profit you can make from them
     
-SOLO Complexity: (best & worst) = O(F + T + C)
+SOLO Complexity: (best & worst) = O(T + F + C)
+
 
 MULTIPLAYER food:
     If the player can afford the food, they buy it
@@ -290,7 +291,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         Returns:
             Food: chosen food
             
-        COMPLEXITY (best & worst) = O(F), F = amount of foods player can choose from
+        COMPLEXITY (best & worst) = O(F)
         """
         hunger = 0
         chosen_food: Food = None
@@ -306,9 +307,9 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         Returns:
             list[Cave]: list of caves in order of mining to 
             
-        COMPLEXITY TODO
-        
-        NOTE: TEMPORARY SOLUTION TO PASS TESTING
+        Returns caves in order of mining based on how much profit you can make from them
+            
+        COMPLEXITY COMPLEXITY (best & worst) = O(C)
         """
         player_hunger_spent = 0
         caves_and_profit = {}
