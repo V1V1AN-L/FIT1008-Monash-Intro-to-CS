@@ -184,6 +184,7 @@ class SoloGame(Game):
     def simulate_day(self):
         # 1. Traders make deals
         self.generate_trader_deals()
+        self.player.set_traders(self.get_traders())
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
@@ -210,18 +211,20 @@ class SoloGame(Game):
         """
         #### Not Finished #### i misread the damn task, so this method does the incorrect thing
         # ensure emerald balance is sufficent to purchase food
-        assert balance > food.price
+        if isinstance(food, Food):
+            assert balance > food.price
+        assert balance > 0
 
         # update emerald balance
-        self.player.decrease_balance(food.price)
-<<<<<<< HEAD
+        if isinstance(food, Food):
+            self.player.decrease_balance(food.price)
         assert self.player.get_balance() >= 0
         
-=======
->>>>>>> b4b96b0eee0f7bcae4d74db96d1545946c6fa040
         # update hunger levels
-        self.player.set_hunger(food.hunger_bars)
-
+        if isinstance(food, Food):
+            self.player.set_hunger(food.hunger_bars)
+        else:
+            self.player.set_hunger(0)
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
         
@@ -291,6 +294,8 @@ class MultiplayerGame(Game):
     def simulate_day(self):
         # 1. Traders make deals
         self.generate_trader_deals()
+        for i in range(len(self.players)):
+            self.players[i].set_traders(self.get_traders())
         print("Traders Deals:\n\t", end="")
         print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered

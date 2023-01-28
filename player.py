@@ -107,7 +107,6 @@ class Player():
         self.set_hunger() 
         self.set_traders()
         self.set_foods()
-        self.set_materials()
         self.set_caves()
         # extras
         try:
@@ -129,8 +128,11 @@ class Player():
 
     # mutators
     
+    def set_materials(self, materials):
+        pass
+    
     # hunger
-    def set_hunger(self, hunger: float = None) -> None: 
+    def set_hunger(self, hunger: float = 0) -> None: 
         if isinstance(hunger, int) or isinstance(hunger, float):
             self.hunger = round(hunger, 2)
         else:
@@ -140,7 +142,7 @@ class Player():
         self.set_hunger(self.hunger) # makes sure its rounded to two decimal places
         return self.hunger
     
-    def decrease_hunger(self, hunger: float = None) -> None: 
+    def decrease_hunger(self, hunger: float = 0) -> None: 
         if isinstance(hunger, int) or isinstance(hunger, float):
             self.hunger -= round(hunger, 2)
         else:
@@ -157,7 +159,7 @@ class Player():
         
     
     # balance
-    def set_balance(self, balance: float = None) -> None:
+    def set_balance(self, balance: float = 0) -> None:
         if isinstance(balance, int) or isinstance(balance, float):
             self.balance = round(balance, 2)
         else:
@@ -167,13 +169,13 @@ class Player():
         self.set_balance(self.balance) # makes sure its rounded to two decimal places
         return self.balance
     
-    def increase_balance(self, balance: float = None):
+    def increase_balance(self, balance: float = 0):
         if isinstance(balance, int) or isinstance(balance, float):
             self.balance += round(balance, 2)
         else:
             self.balance += balance
             
-    def decrease_balance(self, balance: float = None):
+    def decrease_balance(self, balance: float = 0):
         if isinstance(balance, int) or isinstance(balance, float):
             self.balance -= round(balance, 2)
         else:
@@ -198,16 +200,7 @@ class Player():
             self.foods_list = foods_list
             
     def get_foods(self) -> list[Food]:
-        return self.foods_list 
-    
-    
-    # materials 
-    def set_materials(self, materials_list: list[Material] = None) -> None:
-        self.materials_list = materials_list
-        
-    def get_materials(self) -> list[Material]:
-        return self.materials_list 
-    
+        return self.foods_list     
     
     # caves
     def set_caves(self, caves_list: list[Cave] = None) -> None:
@@ -314,11 +307,11 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         player_hunger_spent = 0
         caves_and_profit = {}
         for cave in self.get_caves():
-            profit_made = round(float(self.material_price_map[cave.get_material()]*cave.get_quantity()), 2)
+            profit_made = round(float(self.get_material_price(cave.get_material())*cave.get_quantity()), 2)
             caves_and_profit[profit_made] = cave
             
         chosen_caves = []
-        while player_hunger_spent <= player.get_hunger():
+        while player_hunger_spent <= self.get_hunger():
             max_value = max(list(caves_and_profit.keys()))
             chosen_cave = caves_and_profit[max_value]
             del caves_and_profit[max_value]
@@ -357,8 +350,8 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         max_profit = 0
         for cave in self.get_caves():
             try:
-                quantity = cave.get_quantity_given_energy_spend(self.get_hunger())
-                profit = self.material_price_map[cave.get_material()]*quantity
+                quantity = cave.get_quantity_given_energy_spent(self.get_hunger())
+                profit = self.get_material_price(cave.get_material())*quantity
             except KeyError:
                 profit = 0
             if profit > max_profit:
@@ -366,6 +359,12 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         return chosen_cave
     
     # helper methods
+    
+    def get_material_price(self, material: Material) -> float:
+        try:
+            return self.material_price_map[f"{material}"]
+        except KeyError:
+            return 0.00
     
     def generate_material_price_map(self):
         """_summary_
@@ -379,10 +378,11 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         for trader in self.get_traders():
             try:
                 material, selling_price = trader.current_deal()
-                material_map[material] = selling_price
+                material_map[f"{material}"] = selling_price
             except ValueError:
                 pass
             
+        
         self.material_price_map = material_map
         return self.material_price_map
     

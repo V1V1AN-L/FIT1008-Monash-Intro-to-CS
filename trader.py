@@ -81,7 +81,9 @@ class Trader(ABC):
             
         
     def __str__(self) -> str:
-        return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
+        if self.buying != None:
+            return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
+        return f"<{type(self).__name__}: {self.name}>"
     
     def __repr__(self):
         return self.__str__()

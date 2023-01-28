@@ -102,8 +102,10 @@ class Cave:
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
+    MIN_MATERIALS = 1
+    MAX_MATERIALS = 10
+    
     def __init__(self, name: str, material: Material, quantity: float = 0.0) -> None:
-        assert name in CAVE_NAMES, "Invalid cave name"
         self.name = name
         self.material = material
         self.quantity = quantity
@@ -160,13 +162,14 @@ class Cave:
         
 
     @classmethod
-    def random_cave(self, material_list: list[Material]) -> Cave:
+    def random_cave(cls, material_list: list[Material]) -> Cave:
         if isinstance(material_list, Material):
             return Cave(RandomGen.random_choice(CAVE_NAMES), material_list)
         elif isinstance(material_list, list):
             chosen_material = RandomGen.random_choice(material_list)
-            return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, material_list.count(chosen_material))
+            return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, RandomGen.randint(cls.MIN_MATERIALS, cls.MAX_MATERIALS))
         
 
 if __name__ == "__main__":
+    print(Cave.random_cave([Material.random_material() for _ in range(5)]))
     print(Cave("Mt Coronet", Material("Coal", 4.5), 3))
