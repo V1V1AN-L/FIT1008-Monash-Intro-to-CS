@@ -7,6 +7,7 @@ from cave import Cave
 from food import Food
 from random_gen import RandomGen
 
+
 class Game:
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
@@ -130,6 +131,8 @@ class Game:
         """
         given a player and cave, changes the player's hunger and emerald balance, while
         reducing the material count in the cave
+        Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
+        reducing the remaining material count in the cave.
         """
         selling_rate = self.material_price_map[cave.get_material()]
 
@@ -139,10 +142,16 @@ class Game:
                 return cave
             
         player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
+ 
         player.increase_balance(mined_quantity*selling_rate) 
         cave.remove_quantity(mined_quantity)   
+        cave.remove_quantity(mined_quantity)    
+
         player.check_hunger()
+        
         return cave
+
+
     
     def generate_material_price_map(self):
         trader_list = self.get_traders()
@@ -208,8 +217,11 @@ class SoloGame(Game):
 
         # update emerald balance
         self.player.decrease_balance(food.price)
+<<<<<<< HEAD
         assert self.player.get_balance() >= 0
         
+=======
+>>>>>>> b4b96b0eee0f7bcae4d74db96d1545946c6fa040
         # update hunger levels
         self.player.set_hunger(food.hunger_bars)
 
