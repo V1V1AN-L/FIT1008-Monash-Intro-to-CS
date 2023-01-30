@@ -8,15 +8,29 @@ __docformat__ = 'reStructuredText'
 class LargestPrimeIterator():
     """ iterator that yields largest prime less than upper_bound"""
     def __init__(self, upper_bound, factor):
+        """
+        Initialiser.
+
+        :param upper_bound: the prime number that is generated should be less strictly equal than the upper_bound
+        :param factor: update the new upper_bound for the next iteration by this factor.
+        """
         self.upper_bound = upper_bound
         self.factor = factor
 
     def __iter__(self):
+        """
+        Magic method when call it in iteration
+        :return: the value itself
+        """
         return self
 
     def __next__(self):
-        """ return the largest prime less than upper_bound
-            set upper bound to prime*factor"""
+        """
+        After return the nearest prime number
+        set the new upper bound to prime*factor
+
+        :return: the largest prime less than upper_bound
+        """
         prime = self.upper_bound
         while not is_prime(prime):
             prime -= 1
