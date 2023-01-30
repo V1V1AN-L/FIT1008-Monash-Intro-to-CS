@@ -73,6 +73,12 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         return current
 
     def set_index(self, root:AVLTreeNode) -> None:
+        """
+        Set the index of each value within the tree
+        the smallest value will have the smallest index
+
+        :param root: the root tree
+        """
         if root != None:
             self.set_index(root.left)
             root.index = self.count
@@ -191,16 +197,19 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
         :complexity: O(j - i + log(N))
         """
-
-    def range_between(self, i: int, j: int) -> List:
-        """
-        Returns a sorted list of all elements in the tree between the ith and jth indices, inclusive.
-
-        :complexity: O(j - i + log(N))
-        """
         return self.range_between_aux(self.root, i, j, [])
 
-    def range_between_aux(self, root:AVLTreeNode, i, j, result: list):
+    def range_between_aux(self, root:AVLTreeNode, i, j, result: list) -> list:
+        """
+        Attempts to find the value that is sorted within the index i and j
+        and save it inside the result
+
+        :param root: the tree root
+        :param i: the lower index (ith value)
+        :param j: the higher index (jth value)
+        :param result: the values that are located within ith and jth slot
+        :return: list that consists value from ith until jth (inclusive)
+        """
         if root is None:
             return result
         if root.index > i:
@@ -210,11 +219,3 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         if root.index < j:
             self.range_between_aux(root.right, i, j, result)
         return result
-
-    def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
-        if root != None:
-            self.inorder_traversal(root.left, res)
-            res.append(root.item)
-            print(root.index)
-            self.inorder_traversal(root.right, res)
-        return res
