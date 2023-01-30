@@ -25,6 +25,10 @@ class LinearProbeTable(Generic[T]):
             count: number of elements in the hash table
             table: used to represent our internal array
             tablesize: current size of the hash table
+            
+            probe_total: total distance of probe when inserting a new value
+            probe_max: maximum of distance of probe when inserting a new value compared with the others.
+            rehash_count: number of rehashing method called
     """
 
     def __init__(self, expected_size: int, tablesize_override: int = -1) -> None:
@@ -58,7 +62,14 @@ class LinearProbeTable(Generic[T]):
             a = a * b % (self.table_size - 1)
         return value
 
-    def get_load_factor(self) -> int:
+    def get_load_factor(self) -> float:
+        """
+        Calculate the load factor
+        by calculate the total probe that will happens in the hash table
+        and divide it by the table_size
+
+        :return: the value of laod factor
+        """
         probe = 0
         for index in range(self.table_size):
             count = 0
