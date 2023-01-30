@@ -72,6 +72,6 @@ def is_prime(n: int) -> bool:
 
 
 if __name__ == "__main__":
-    test = LargestPrimeIterator(6,2)
-    for i in range(0,23):
-        print(next(test))
+    test = LargestPrimeIterator(6)
+    for i in range(23):
+        print(test.__next__())

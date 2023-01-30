@@ -102,38 +102,74 @@ class Cave:
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
+    MIN_MATERIALS = 1
+    MAX_MATERIALS = 10
+    
     def __init__(self, name: str, material: Material, quantity: float = 0.0) -> None:
-        assert name in CAVE_NAMES, "Invalid cave name"
         self.name = name
         self.material = material
         self.quantity = quantity
         
+    def __str__(self) -> str:
+        return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
+        
     def __repr__(self):
         return self.__str__()
     
+    def __eq__(self, other):
+        return self.name == other.name and self.material == other.material
+    
+    # material
+    
+    def get_material(self):
+        return self.material
+    
+    # quantity
+    
+    def round_quantity(self):
+        self.quantity = round(self.quantity, 4)
+    
     def add_quantity(self, amount: float) -> None:
         self.quantity += amount
+        self.round_quantity()
     
     def remove_quantity(self, amount: float) -> None:
-        self.quantity -= amount
+        if amount > self.quantity:
+            self.clear_quantity()
+        else:
+            self.quantity -= amount
+            self.round_quantity()
+        
+    def clear_quantity(self):
+        self.quantity = 0
 
     def get_quantity(self) -> float:
+        self.round_quantity()
         return self.quantity
     
-    def calculate_total_hunger_spent(self):
-        return self.get_quantity() * self.material.mining_rate
-
-    def __str__(self) -> str:
-        return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
+    def get_quantity_given_energy_spent(self, energy):
+        if energy <= 0:
+            return 0
+        quantity = round(energy/self.material.mining_rate, 4)
+        if quantity > self.get_quantity():
+            quantity = self.get_quantity()
+        return quantity
+    
+    def calculate_total_hunger_spent(self, quantity: float = False):
+        if quantity:
+            return round(quantity * self.material.mining_rate, 4)
+        return round(self.get_quantity() * self.material.mining_rate, 4)
+        
 
     @classmethod
-    def random_cave(self, material_list: list[Material]) -> Cave:
+    def random_cave(cls, material_list: list[Material]) -> Cave:
         if isinstance(material_list, Material):
             return Cave(RandomGen.random_choice(CAVE_NAMES), material_list)
         elif isinstance(material_list, list):
             chosen_material = RandomGen.random_choice(material_list)
-            return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, material_list.count(chosen_material))
+            return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, RandomGen.randint(cls.MIN_MATERIALS, cls.MAX_MATERIALS))
         
 
 if __name__ == "__main__":
+    print(Cave.random_cave([Material.random_material() for _ in range(5)]))
     print(Cave("Mt Coronet", Material("Coal", 4.5), 3))
