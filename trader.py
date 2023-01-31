@@ -71,9 +71,21 @@ TRADER_NAMES = [
 class Trader(ABC):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
+
+    attributes:
+    name: name of the trader
+    materials: material that the trader will offer
+    buying: flag whether this trader wants to trade or not
+    buying_price: price of the material of the trading transaction
     """
     
     def __init__(self, name: str) -> None:
+        """
+        Initialisation.
+
+        param:
+            name: name of the trader
+        """
         self.name: str = name
         self.materials: list[Material] = []
         self.buying: Material = None
@@ -81,44 +93,55 @@ class Trader(ABC):
             
         
     def __str__(self) -> str:
+        """ Formatted string when print this class """
         if self.buying != None:
             return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
         return f"<{type(self).__name__}: {self.name}>"
     
     def __repr__(self):
+        """ Represents the object as str """
         return self.__str__()
 
     @classmethod
     def random_trader(cls):
+        """ Randomize the name of the trader  """
         return RandomTrader(RandomGen.random_choice(TRADER_NAMES))
     
     def get_materials(self):
+        """ get the material that the trader wants to trade """
         return self.materials
     
     def set_all_materials(self, mats: list[Material]) -> None:
+        """ set the material that the trader wants to trade """
         self.materials = mats
         
     def set_materials(self, mats: list[Material]) -> None:
+        """ set the material that the trader wants to trade """
         self.set_all_materials(mats)
     
     def add_material(self, mat: Material) -> None:
+        """ Add more material inside the Material list """
         if mat not in self.materials:
             self.materials.append(mat)
             
     # deal handling
     
     def is_currently_selling(self) -> bool:
+        """ Flag whether this trader wants to buy or not """
         return self.buying
 
     def current_deal(self) -> tuple[Material, float]:
+        """ Return the deal that the trader offers """
         if self.buying == None: raise ValueError
         return (self.buying, self.buying_price)
     
     def generate_deal(self) -> None:
+        """ Generate the deal that the trader wants to offer"""
         self.buying = self.get_market_material()
         self.buying_price = round(2 + 8 * RandomGen.random_float(), 2)
 
     def stop_deal(self) -> None:
+        """ Reset the deal to None """
         self.buying = None
         self.buying_price = 0.00
     
