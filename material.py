@@ -89,6 +89,14 @@ RANDOM_MATERIAL_NAMES = [
 class Material:
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
+
+    global attribute:
+        MIN_MINING_RATE: the minimum rate mining of consuming hunger points
+        MAX_MINING_RATE: the maximum rate mining of consuming hunger points
+
+    attribute:
+        name: name of the cave
+        mining_rate: the rate mining of consuming hunger points
     """
     
     MIN_MINING_RATE = 1
@@ -96,6 +104,7 @@ class Material:
     
     
     def __init__(self, name: str, mining_rate: float) -> None:
+        """ Initialization """
         self.name = name
         self.mining_rate = mining_rate
     
@@ -108,9 +117,11 @@ class Material:
         return f"{self.name}: {int(self.mining_rate)}🍗/💎"
     
     def __repr__(self):
+        """ Return string representation """
         return self.__str__()
     
     def get_material_plural(self, amount: int = 2):
+        """ Dictionary of singular-plural form of noun """
         mapping = {
         "Arrow":"Arrows",
         "Axe":"Axes",
@@ -197,6 +208,9 @@ class Material:
 
     @classmethod
     def random_material(cls):
+        """
+        Create Material object with a random mining_rate
+        """
         return Material(RandomGen.random_choice(RANDOM_MATERIAL_NAMES), RandomGen.randint(cls.MIN_MINING_RATE, cls.MAX_MINING_RATE)+RandomGen.random_float())
 
 
