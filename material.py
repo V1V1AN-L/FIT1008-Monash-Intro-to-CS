@@ -90,7 +90,7 @@ class Material:
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
 
-    global attribute:
+    Class attribute:
         MIN_MINING_RATE: the minimum rate mining of consuming hunger points
         MAX_MINING_RATE: the maximum rate mining of consuming hunger points
 

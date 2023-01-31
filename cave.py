@@ -100,40 +100,57 @@ CAVE_NAMES = [
 class Cave:
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
+
+    Class Attribute:
+        MIN_MATERIALS: minimum amount of material in the cave
+        MAX_MATERIALS: maximum amount of material in the cave
+
+    attribute:
+        name: name of the cave
+        material: material stored inside the cave (one only @cave)
+        quantity: amount of the material that can be mined in the cave
     """
     
     MIN_MATERIALS = 1
     MAX_MATERIALS = 10
     
     def __init__(self, name: str, material: Material, quantity: float = 0.0) -> None:
+        """ Initialization """
         self.name = name
         self.material = material
         self.quantity = quantity
         
     def __str__(self) -> str:
+        """ Formatted string representation """
         return f"{self.name}: {int(self.quantity)} {self.material.get_material_plural(int(self.quantity))}"
         
     def __repr__(self):
+        """ Formatted string representation """
         return self.__str__()
     
     def __eq__(self, other):
+        """ Checking whether two caves has the same name and material or not """
         return self.name == other.name and self.material == other.material
     
     # material
     
     def get_material(self):
+        """ Get the material inside the cave """
         return self.material
     
     # quantity
     
     def round_quantity(self):
+        """ Rounding the quantity of the material """
         self.quantity = round(self.quantity, 4)
     
     def add_quantity(self, amount: float) -> None:
+        """ Add more quantity of materials inside the cave """
         self.quantity += amount
         self.round_quantity()
     
     def remove_quantity(self, amount: float) -> None:
+        """ Decrease the quantity of material  inside the caves """
         if amount > self.quantity:
             self.clear_quantity()
         else:
@@ -141,13 +158,16 @@ class Cave:
             self.round_quantity()
         
     def clear_quantity(self):
+        """ Reset quantity of material to zero """
         self.quantity = 0
 
     def get_quantity(self) -> float:
+        """ Get the quantity of materials inside the caves """
         self.round_quantity()
         return self.quantity
     
     def get_quantity_given_energy_spent(self, energy):
+        """ Calculate the quantity of materials depends on how many energy spent by the player """
         if energy <= 0:
             return 0
         quantity = round(energy/self.material.mining_rate, 4)
@@ -156,6 +176,7 @@ class Cave:
         return quantity
     
     def calculate_total_hunger_spent(self, quantity: float = False):
+        """ Calculate the total hunger that player spent when mining in this cave """
         if quantity:
             return round(quantity * self.material.mining_rate, 4)
         return round(self.get_quantity() * self.material.mining_rate, 4)
@@ -163,8 +184,14 @@ class Cave:
 
     @classmethod
     def random_cave(cls, material_list: list[Material]) -> Cave:
+        """
+        Create an object of this class with two option
+        first: if the material_list consists one Material only
+        second: if the material_list contains more than one Material, we will choose random from that.
+
+        """
         if isinstance(material_list, Material):
-            return Cave(RandomGen.random_choice(CAVE_NAMES), material_list)
+            return Cave(RandomGen.random_choice(CAVE_NAMES), material_list, RandomGen.randint(cls.MIN_MATERIALS, cls.MAX_MATERIALS))
         elif isinstance(material_list, list):
             chosen_material = RandomGen.random_choice(material_list)
             return Cave(RandomGen.random_choice(CAVE_NAMES), chosen_material, RandomGen.randint(cls.MIN_MATERIALS, cls.MAX_MATERIALS))
