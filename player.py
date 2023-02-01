@@ -347,7 +347,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             if profit > max_profit:
                 chosen_quantity = quantity
                 chosen_cave = cave
-        return [chosen_cave, chosen_quantity]
+        return (chosen_cave, chosen_quantity)
     
     # helper methods
     
