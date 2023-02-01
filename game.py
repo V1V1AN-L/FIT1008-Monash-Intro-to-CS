@@ -133,20 +133,21 @@ class Game:
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
         """
-        selling_rate = self.material_price_map[cave.get_material()]
+        if isinstance(cave, Cave):
+            selling_rate = self.material_price_map[cave.get_material()]
 
-        if type(mined_quantity) == bool:
-            mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
-            if mined_quantity == 0:
-                return cave
+            if type(mined_quantity) == bool:
+                mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
+                if mined_quantity == 0:
+                    return cave
+                
+            player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
+    
+            player.increase_balance(mined_quantity*selling_rate) 
+            cave.remove_quantity(mined_quantity)    
+
+            player.check_hunger()
             
-        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
- 
-        player.increase_balance(mined_quantity*selling_rate) 
-        cave.remove_quantity(mined_quantity)    
-
-        player.check_hunger()
-        
         return cave
 
 
@@ -328,20 +329,15 @@ Motivation:
         foods = []
         balances = []
         caves = []
-        for i, player in enumerate(self.players):
-            food, balance, cave_tuple = player.select_food_and_caves(offered_food)
+        for i in range(len(self.players)):
+            food, balance, cave_tuple = self.players[i].select_food_and_caves(offered_food)
             foods.append(food)
             balances.append(balance)
             caves.append(cave_tuple)
             # update the quantities in game so that other players quantities will be updated (only players that need the quantities updated)
             self.update_cave_quantity(cave_tuple)
-            for j in range(i, self.players):
-                self.players[i].set_caves(self.get_caves())
-                
-        print('-'*get_screensize())
-        print(caves)
-        print('-'*get_screensize())
-        exit()
+            for j in range(i, len(self.players)):
+                self.players[j].set_caves(self.get_caves())
             
         return foods, balances, caves
             
@@ -355,15 +351,22 @@ Motivation:
             food = foods[i]
             balance = balances[i]
             cave, amount_of_material_mined = caves[i]
-            assert balance > food.price
+            if isinstance(food, Food):
+                assert balance >= food.price, f"{self.players[i]} {balance} should be >= {food.price}"
+                # update emerald balance
+                self.players[i].decrease_balance(food.price)
+                # update hunger levels
+                self.players[i].set_hunger(food.hunger_bars)
+            else:
+                assert balance >= 0, f"{self.players[i]} balance is {balance} when it is supposed to be >= 0"
 
-            # update emerald balance
-            self.players[i].decrease_balance(food.price)
-            # update hunger levels
-            self.players[i].set_hunger(food.hunger_bars)
+            
 
-            # verify hunger > amount mined
-            assert self.players[i].get_hunger() > cave.calculate_total_hunger_spent(amount_of_material_mined)
+            # verify hunger >= amount mined
+            if isinstance(cave, Cave):
+                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(amount_of_material_mined), f"{self.players[i]} total hunger should be >= than hunger spent"
+            else:
+                assert self.players[i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
             
             # add emeralds and update hunger and update quantites for caves
             self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
@@ -376,14 +379,13 @@ Motivation:
     
     def update_cave_quantity(self, chosen_cave_tuple: list[Cave, float]):
         chosen_cave, amount_mined = chosen_cave_tuple
-        
-        caves_list = self.get_caves()
-        for i in range(len(caves_list)):
-            if caves_list[i] == chosen_cave:
-                caves_list[i].remove_quantity(amount_mined)
-                break
-                
-        self.set_caves(caves_list)
+        if isinstance(chosen_cave, Cave):
+            caves_list = self.get_caves()
+            for i in range(len(caves_list)):
+                if caves_list[i] == chosen_cave:
+                    caves_list[i].remove_quantity(amount_mined)
+                    break
+            self.set_caves(caves_list)
                 
             
             

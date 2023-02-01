@@ -343,6 +343,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         """
         chosen_cave = None
         max_profit = 0
+        chosen_quantity = 0
         for cave in self.get_caves():
             try:
                 quantity = cave.get_quantity_given_energy_spent(self.get_hunger())
@@ -350,8 +351,9 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             except KeyError:
                 profit = 0
             if profit > max_profit:
+                chosen_quantity = quantity
                 chosen_cave = cave
-        return chosen_cave
+        return [chosen_cave, chosen_quantity]
     
     # helper methods
     
