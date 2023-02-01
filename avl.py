@@ -51,7 +51,22 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
             Attempts to insert an item into the tree, it uses the Key to insert it
             
         """
-        raise NotImplementedError()
+        # Find the correct location and insert the node
+        if current is None:
+            current = AVLTreeNode(key, item)
+        elif key < current.key:
+            current.left = self.insert_aux(current.left, key, item)
+        elif key > current.key:
+            current.right = self.insert_aux(current.right, key, item)
+        else:  # key == current.key
+            raise ValueError('Inserting duplicate item')
+
+        current.height = 1 + max(self.get_height(current.left),
+                              self.get_height(current.right))
+
+        current = self.rebalance(current)
+
+        return current
 
     def delete_aux(self, current: AVLTreeNode, key: K) -> AVLTreeNode:
         """
@@ -59,7 +74,22 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
             determine the node to delete.
         """
 
-        raise NotImplementedError()
+        if current is None:
+            raise ValueError('Deleting non-existent item')
+        elif key < current.key:
+            current.left = self.delete_aux(current.left, key)
+        elif key > current.key:
+            current.right = self.delete_aux(current.right, key)
+        else:
+            if current.left is None:
+                right_node = current.right
+                return right_node
+            elif current.right is None:
+                left_node = current.left
+                return left_node
+
+        current = self.rebalance(current)
+        return current
 
     def left_rotate(self, current: AVLTreeNode) -> AVLTreeNode:
         """
@@ -78,7 +108,17 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
             :complexity: O(1)
         """
 
-        raise NotImplementedError()
+        new_root = current.right
+        center = new_root.left
+        new_root.left = current
+        current.right = center
+
+        current.height = 1 + max(self.get_height(current.left),
+                           self.get_height(current.right))
+
+        new_root.height = 1 + max(self.get_height(new_root.left),
+                           self.get_height(new_root.right))
+        return new_root
 
     def right_rotate(self, current: AVLTreeNode) -> AVLTreeNode:
         """
@@ -97,7 +137,17 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
             :complexity: O(1)
         """
 
-        raise NotImplementedError()
+        new_root = current.left
+        center = new_root.right
+        new_root.right = current
+        current.left = center
+
+        current.height = 1 + max(self.get_height(current.left),
+                                 self.get_height(current.right))
+
+        new_root.height = 1 + max(self.get_height(new_root.left),
+                                  self.get_height(new_root.right))
+        return new_root
 
 
     def rebalance(self, current: AVLTreeNode) -> AVLTreeNode:
@@ -128,6 +178,18 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         Returns a sorted list of all elements in the tree between the ith and jth indices, inclusive.
         
-        :complexity ...
+        :complexity: O(j - i + log(N))
         """
-        raise NotImplementedError()
+        all_keys = []
+        all_keys = self.inorder_traversal(self.root, all_keys) # O(log n) since tree is balanced
+        res = []
+        for k in range (i,j+1): # j - i iterations
+            res.append(all_keys[k])
+        return res
+
+    def inorder_traversal(self,root:AVLTreeNode, res:list) -> List:
+        if root != None:
+            self.inorder_traversal(root.left, res)
+            res.append(root.item)
+            self.inorder_traversal(root.right, res)
+            return res

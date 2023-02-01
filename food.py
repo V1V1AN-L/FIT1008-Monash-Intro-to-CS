@@ -95,6 +95,13 @@ class Food:
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
     
+    MIN_PRICE = 1
+    MAX_PRICE = 70
+    
+    MIN_HUNGER = 70
+    MAX_HUNGER = 500
+    
+        
     def __init__(self, name: str, hunger_bars: int, price: int) -> None:
         self.name = name
         self.hunger_bars = hunger_bars
@@ -111,7 +118,9 @@ class Food:
 
     @classmethod
     def random_food(cls) -> Food:
-        return Food(RandomGen.random_choice(FOOD_NAMES))
+        price = RandomGen.randint(cls.MIN_PRICE, cls.MAX_PRICE)
+        hunger_restored = RandomGen.randint(cls.MIN_HUNGER, cls.MAX_HUNGER)
+        return Food(RandomGen.random_choice(FOOD_NAMES), hunger_restored, price)
 
 if __name__ == "__main__":
     print(Food.random_food())

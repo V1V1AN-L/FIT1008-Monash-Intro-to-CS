@@ -3,7 +3,7 @@ from game import MultiplayerGame, SoloGame
 from player import PLAYER_NAMES, Player
 from random_gen import RandomGen
 from cave import Cave
-from trader import HardTrader, RandomTrader, RangeTrader
+from trader import *
 from material import Material
 import unittest
 
@@ -138,7 +138,7 @@ class TestGame(unittest.TestCase):
         
         # Live a year in minecraft
         for _ in range(365):
-            g.simulate_day()
+            g.simulate_day(print_data=False)
             g.finish_day()
 
 if __name__ == '__main__':
