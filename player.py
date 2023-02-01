@@ -329,7 +329,7 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             
         COMPLEXITY (best & worst) = O(1)
         """
-        if offered_food.price > self.get_balance():
+        if offered_food.price <= self.get_balance():
             return offered_food
         return None
         
