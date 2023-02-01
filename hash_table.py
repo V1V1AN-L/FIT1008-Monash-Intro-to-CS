@@ -131,8 +131,7 @@ class LinearProbeTable(Generic[T]):
             _ = self[key]
         except KeyError:
             return False
-        else:
-            return True
+        return True
 
     def __getitem__(self, key: str) -> T:
         """
