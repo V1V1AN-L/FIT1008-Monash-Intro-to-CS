@@ -254,24 +254,18 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         self.generate_material_price_map() # O(T)
         
         if isinstance(offered_food, Food):
-            if self.AI:
-                chosen_food, chosen_caves = self.multiplayer_AI_select_food_and_caves(offered_food)
-            else:
-                chosen_food, chosen_caves = self.get_multiplayer_real_player_choices(offered_food)
+            chosen_food, chosen_caves = self.multiplayer_select_food_and_caves(offered_food)
         else:
-            if self.AI:
-                chosen_food, chosen_caves = self.AI_select_food_and_caves()
-            else:
-                chosen_food, chosen_caves = self.get_solo_real_player_choices()
+            chosen_food, chosen_caves = self.select_food_and_caves()
     
         return (chosen_food, self.get_balance(), chosen_caves)
     
-    def AI_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
+    def select_food_and_caves(self) -> tuple[Food, list[Cave]]:
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves
     
-    def multiplayer_AI_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
+    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves()
         return chosen_food, chosen_cave
@@ -386,107 +380,3 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         self.material_price_map = material_map
         return self.material_price_map
     
-    
-    
-    
-    # MANUAL CONTROL OF PLAYERS
-    
-    # SOLO 
-    
-    def get_solo_real_player_choices(self):
-        while True:
-            try:
-                try:
-                    chosen_food = self.choose_food_screen()
-                except AssertionError:
-                    chosen_food = None
-                chosen_caves = self.choose_cave_screen()
-                break
-            except AssertionError:
-                pass
-            except Exception as e:
-                raise e
-            
-            
-    def choose_food_screen(self):
-        raise NotImplementedError
-        clearConsole()
-        self.title = 'Food'
-        foods = FOOD_NAMES  
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-        
-        
-    def choose_cave_screen(self):
-        raise NotImplementedError
-        clearConsole()
-        self.title = 'Caves'
-        caves = CAVE_NAMES  
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-        
-    
-    # MULTI
-    def get_multiplayer_real_player_choices(self, offered_food: Food):
-        while True:
-            try:
-                try:
-                    chosen_food = self.multiplayer_choose_food_screen(offered_food)
-                except AssertionError:
-                    chosen_food = None
-                chosen_caves = self.multiplayer_choose_cave_screen()
-                break
-            except AssertionError:
-                pass
-            except Exception as e:
-                raise e 
-    
-    def multiplayer_choose_food_screen(self, offered_food):
-        raise NotImplementedError
-        clearConsole()
-        self.title = 'Food'
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-       
-        
-    def multiplayer_choose_cave_screen(self):
-        raise NotImplementedError
-        clearConsole()
-        self.title = 'Caves'
-        caves = CAVE_NAMES  
-        dark = '\033[90m'
-        clear = '\033[0m'
-        choice = 0
-        
-    
-    # SOLO + MULTI METHODS
-    
-    def display_title(self):
-        while True:
-            try:
-                title = self.title
-                break
-            except Exception as e:
-                self.title = f"{e}"
-        #
-        screensize = get_screensize()
-        big_text_len = len(big_text_print(title, 1))
-        title_white_space = ' '*(screensize//2-(big_text_len//2)-1)
-        #
-        print(
-f"""{title_white_space}{big_text_print(title, 1)}
-{title_white_space}{big_text_print(title, 2)}
-{title_white_space}{big_text_print(title, 3)}
-{title_white_space}{big_text_print(title, 4)}
-{title_white_space}{big_text_print(title, 5)}   
-{'-'*screensize}
-""")
-
-
-
-if __name__ == "__main__":
-    player = Player("Alex", emeralds=1000)
-    player.display_title()

@@ -6,6 +6,7 @@ from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
+from graphics_module import *
 
 
 class Game:
@@ -336,6 +337,10 @@ Motivation:
             self.update_cave_quantity(cave_tuple)
             for j in range(i, self.players):
                 self.players[i].set_caves(self.get_caves())
+                
+        print('-'*get_screensize())
+        print(caves)
+        print('-'*get_screensize())
             
         return foods, balances, caves
             

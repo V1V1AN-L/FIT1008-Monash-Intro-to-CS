@@ -856,6 +856,19 @@ class RollingTextList:
     def can_continue(self) -> bool:
         return self.index < len(self)
     
+def get_screensize(vertical = False) -> int:
+    try:
+        _raw = str(os.get_terminal_size())
+    except:
+        _raw = str(shutil.get_terminal_size()) #using shutil instead of os will work and not give OSError.
+    accepted_list = [',']
+    _raw = ''.join([char for char in _raw if (char.isdigit() or char in accepted_list) ])
+    if vertical:
+        screensize = _raw.split(',')[1]
+    else:
+        screensize = _raw.split(',')[0]
+    return int(screensize)
+
     
 if __name__ == '__main__':
     clearConsole()
