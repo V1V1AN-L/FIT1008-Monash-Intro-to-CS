@@ -98,22 +98,16 @@ class Player():
 
     DEFAULT_EMERALDS = 50
 
-    MIN_EMERALDS = 14
-    MAX_EMERALDS = 40
+    MIN_EMERALDS = 20
+    MAX_EMERALDS = 100
 
-    def __init__(self, name, emeralds=None, **kwargs) -> None:
+    def __init__(self, name, emeralds: float = None) -> None:
         self.name = name
         self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds)
         self.set_hunger() 
         self.set_traders()
         self.set_foods()
         self.set_caves()
-        # extras
-        try:
-            self.AI = bool(kwargs['AI'])
-            self.key_cooldown = int(time.time()*1000)
-        except KeyError:
-            self.AI = True
         
     def __str__(self) -> str:
         return f"{self.name}: {self.get_balance()}💰"

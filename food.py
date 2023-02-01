@@ -96,7 +96,7 @@ class Food:
     """
     
     MIN_PRICE = 1
-    MAX_PRICE = 150
+    MAX_PRICE = 70
     
     MIN_HUNGER = 70
     MAX_HUNGER = 500

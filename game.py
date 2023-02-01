@@ -183,20 +183,23 @@ class SoloGame(Game):
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
 
-    def simulate_day(self):
+    def simulate_day(self, print_data: bool = True):
         # 1. Traders make deals
         self.generate_trader_deals()
         self.player.set_traders(self.get_traders())
-        print("Traders Deals:\n\t", end="")
-        print("\n\t".join(map(str, self.get_traders())))
+        if print_data:
+            print("Traders Deals:\n\t", end="")
+            print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
         foods = self.generate_food()
         self.player.set_foods(foods)
-        print("\nFoods:\n\t", end="")
-        print("\n\t".join(map(str, foods)))
+        if print_data:
+            print("\nFoods:\n\t", end="")
+            print("\n\t".join(map(str, foods)))
         # 3. Select one food item to purchase
         food, balance, caves = self.player.select_food_and_caves()
-        print(f"{self.player} | Chosen Food: {food} | Chosen Caves: {caves}")
+        if print_data:
+            print(f"{self.player} | Chosen Food: {food} | Chosen Caves: {caves}")
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
@@ -293,20 +296,23 @@ class MultiplayerGame(Game):
         print("Players:\n\t", end="")
         print("\n\t".join(map(str, self.players)))
 
-    def simulate_day(self):
+    def simulate_day(self, print_data: bool = True):
         # 1. Traders make deals
         self.generate_trader_deals()
         for i in range(len(self.players)):
             self.players[i].set_traders(self.get_traders())
-        print("Traders Deals:\n\t", end="")
-        print("\n\t".join(map(str, self.get_traders())))
+        if print_data:
+            print("Traders Deals:\n\t", end="")
+            print("\n\t".join(map(str, self.get_traders())))
         # 2. Food is offered
         offered_food = Food.random_food()
-        print(f"\nFoods:\n\t{offered_food}")
+        if print_data:
+            print(f"\nFoods:\n\t{offered_food}")
         # 3. Each player selects a cave - The game does this instead.
         foods, balances, caves = self.select_for_players(offered_food)
-        for i in range(len(self.players)):
-            print(f"{self.players[i]} | Chosen Food: {foods[i]} | Chosen Caves: {caves[i][0]}")
+        if print_data:
+            for i in range(len(self.players)):
+                print(f"{self.players[i]} | Chosen Food: {foods[i]} | Chosen Caves: {caves[i][0]}")
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(foods, balances, caves)
 
