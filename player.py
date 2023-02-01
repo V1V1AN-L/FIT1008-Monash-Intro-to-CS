@@ -256,11 +256,12 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         if isinstance(offered_food, Food):
             chosen_food, chosen_caves = self.multiplayer_select_food_and_caves(offered_food)
         else:
-            chosen_food, chosen_caves = self.select_food_and_caves()
+            chosen_food, chosen_caves = self.solo_select_food_and_caves()
     
         return (chosen_food, self.get_balance(), chosen_caves)
     
-    def select_food_and_caves(self) -> tuple[Food, list[Cave]]:
+    
+    def solo_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         return chosen_food, chosen_caves

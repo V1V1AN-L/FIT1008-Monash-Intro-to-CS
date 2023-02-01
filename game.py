@@ -341,6 +341,7 @@ Motivation:
         print('-'*get_screensize())
         print(caves)
         print('-'*get_screensize())
+        exit()
             
         return foods, balances, caves
             

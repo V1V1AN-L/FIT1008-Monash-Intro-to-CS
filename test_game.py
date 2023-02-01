@@ -3,7 +3,7 @@ from game import MultiplayerGame, SoloGame
 from player import PLAYER_NAMES, Player
 from random_gen import RandomGen
 from cave import Cave
-from trader import HardTrader, RandomTrader, RangeTrader
+from trader import *
 from material import Material
 import unittest
 
