@@ -67,13 +67,13 @@ class Game:
         self.traders = traders
 
     def get_materials(self) -> list[Material]:
-        return self.materials 
+        return self.materials
 
     def get_caves(self) -> list[Cave]:
-        return self.caves 
+        return self.caves
 
     def get_traders(self) -> list[Trader]:
-        return self.traders 
+        return self.traders
 
     def generate_random_materials(self, amount):
         """
@@ -82,7 +82,7 @@ class Game:
         (You may have to call Material.random_material more than <amount> times.)
         """
         self.set_materials([Material.random_material() for _ in range(amount)])
-        
+
     def generate_random_caves(self, amount):
         """
         Generates <amount> random caves using Cave.random_cave
@@ -101,7 +101,7 @@ class Game:
         """
         trader_list = []
         for i in range(amount):
-            _trader = Trader.random_trader() 
+            _trader = Trader.random_trader()
             _trader.set_all_materials(self.get_materials())
             trader_list.append(_trader)
         self.set_traders(trader_list)
@@ -117,17 +117,18 @@ class Game:
             else:
                 cave.add_quantity(round(RandomGen.random_float() * 10, 2))
             cave.quantity = round(cave.quantity, 2)
-            
+
     # user defined helper methods
-    
+
     def generate_trader_deals(self):
         """_summary_
         """
         for trader in self.get_traders():
             trader.generate_deal()
-            
+
     # can be used in both SOLO games and MULTIPLAYER games
-    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = False) -> None:
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave,
+                                                  mined_quantity: float = False) -> None:
         """
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
@@ -138,31 +139,29 @@ class Game:
             mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
             if mined_quantity == 0:
                 return cave
-            
-        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))  
- 
-        player.increase_balance(mined_quantity*selling_rate) 
-        cave.remove_quantity(mined_quantity)    
+
+        player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))
+
+        player.increase_balance(mined_quantity * selling_rate)
+        cave.remove_quantity(mined_quantity)
 
         player.check_hunger()
-        
+
         return cave
 
-
-    
     def generate_material_price_map(self):
         trader_list = self.get_traders()
         material_map = {}
         for trader in trader_list:
             material, selling_price = trader.current_deal()
             material_map[material] = selling_price
-            
+
         self.material_price_map = material_map
         return self.material_price_map
 
 
 class SoloGame(Game):
-    
+
     def __init__(self) -> None:
         super().__init__()
         self.player: Player = None
@@ -174,7 +173,8 @@ class SoloGame(Game):
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float]):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
+                             player_names: list[int], emerald_info: list[float]):
         super().initialise_with_data(materials, caves, traders)
         self.player: Player = Player(player_names[0], emeralds=emerald_info[0])
         self.player.set_materials(self.get_materials())
@@ -198,7 +198,8 @@ class SoloGame(Game):
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
-    def verify_output_and_update_quantities(self, food: Food, balance: float, caves: list[Cave]):    #(self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
+    def verify_output_and_update_quantities(self, food: Food, balance: float, caves: list[
+        Cave]):  # (self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
         """
         verifies the result of a round of gameplay is consistent with expected values
         raises an error if expectations are not met
@@ -219,7 +220,7 @@ class SoloGame(Game):
         if isinstance(food, Food):
             self.player.decrease_balance(food.price)
         assert self.player.get_balance() >= 0
-        
+
         # update hunger levels
         if isinstance(food, Food):
             self.player.set_hunger(food.hunger_bars)
@@ -227,21 +228,20 @@ class SoloGame(Game):
             self.player.set_hunger(0)
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
-        
+
         # map all materials to a price
         self.material_price_map = self.generate_material_price_map()
 
         # add emeralds and update hunger and update quantites for caves
         for i, cave in enumerate(caves):
             caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
-            
+
         # updates the quantities
         self.player.clear_hunger()
         self.set_caves(caves)
 
-    
     # user defined helper methods
-    
+
     def generate_food(self):
         food_num = RandomGen.randint(self.MIN_FOOD, self.MAX_FOOD)
         foods = []
@@ -249,16 +249,9 @@ class SoloGame(Game):
             foods.append(Food.random_food())
         self.player.set_foods(foods)
         return foods
-    
-    
-    
-    
-    
-    
-    
+
 
 class MultiplayerGame(Game):
-
     MIN_PLAYERS = 2
     MAX_PLAYERS = 5
 
@@ -281,7 +274,8 @@ class MultiplayerGame(Game):
         """Generate <amount> random players. Don't need anything unique, but you can do so if you'd like."""
         raise NotImplementedError()
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float]):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
+                             player_names: list[int], emerald_info: list[float]):
         super().initialise_with_data(materials, caves, traders)
         for player, emerald in zip(player_names, emerald_info):
             self.players.append(Player(player, emeralds=emerald))
@@ -308,15 +302,16 @@ class MultiplayerGame(Game):
         # 4. Quantites for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(foods, balances, caves)
 
-    def select_for_players(self, offered_food: Food) -> tuple[list[Food | None], list[float], list[tuple[Cave, float] | None]]:
+    def select_for_players(self, offered_food: Food) -> tuple[
+        list[Food | None], list[float], list[tuple[Cave, float] | None]]:
         """_summary_
 
 Complexity Requirement!
-Given that M=#Materials, T=#Traders, C=#Caves, P=#Players, 
+Given that M=#Materials, T=#Traders, C=#Caves, P=#Players,
 the select_for_players method should have complexity at most O(M + T + C + P * log C).
 
 Documentation Requirement!
-For your solution to select_for_players, please leave a lengthy docstring describing the motivation for your approach in full. 
+For your solution to select_for_players, please leave a lengthy docstring describing the motivation for your approach in full.
 Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
 
 Motivation:
@@ -336,14 +331,14 @@ Motivation:
             self.update_cave_quantity(cave_tuple)
             for j in range(i, self.players):
                 self.players[i].set_caves(self.get_caves())
-            
+
         return foods, balances, caves
-            
-            
-    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float]|None]) -> None:
+
+    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float],
+                                            caves: list[tuple[Cave, float] | None]) -> None:
         self.generate_material_price_map()
         # modify other players lists so that mining happens real time
-        
+
         for i in range(len(self.players)):
             # ensure emerald balance is sufficent to purchase food
             food = foods[i]
@@ -358,33 +353,30 @@ Motivation:
 
             # verify hunger > amount mined
             assert self.players[i].get_hunger() > cave.calculate_total_hunger_spent(amount_of_material_mined)
-            
+
             # add emeralds and update hunger and update quantites for caves
             self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
-            
+
             # updates the quantities
-            self.players[i].set_caves(self.get_caves()) # updates all players caves
+            self.players[i].set_caves(self.get_caves())  # updates all players caves
             self.players[i].clear_hunger()
-            
+
     # helper functions
-    
+
     def update_cave_quantity(self, chosen_cave_tuple: list[Cave, float]):
         chosen_cave, amount_mined = chosen_cave_tuple
-        
+
         caves_list = self.get_caves()
         for i in range(len(caves_list)):
             if caves_list[i] == chosen_cave:
                 caves_list[i].remove_quantity(amount_mined)
                 break
-                
+
         self.set_caves(caves_list)
-                
-            
-            
+
 
 if __name__ == "__main__":
-
-    r = RandomGen.seed # Change this to set a fixed seed.
+    r = RandomGen.seed  # Change this to set a fixed seed.
     RandomGen.set_seed(r)
     print(r)
 
