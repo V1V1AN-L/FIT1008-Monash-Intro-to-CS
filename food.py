@@ -124,3 +124,4 @@ class Food:
 
 if __name__ == "__main__":
     print(Food.random_food())
+
