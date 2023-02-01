@@ -74,7 +74,7 @@ class Game:
         return self.caves 
 
     def get_traders(self) -> list[Trader]:
-        return self.traders 
+        return self.traders
 
     def generate_random_materials(self, amount):
         """
@@ -82,15 +82,27 @@ class Game:
         Generated materials must all have different names and different mining_rates.
         (You may have to call Material.random_material more than <amount> times.)
         """
-        self.set_materials([Material.random_material() for _ in range(amount)])
-        
+        materials = []
+        while len(materials) < amount:
+            material = Material.random_material()
+            name = [each.name for each in materials]
+            if material.name not in name:
+                materials.append(material)
+        self.set_materials(materials)
+
     def generate_random_caves(self, amount):
         """
         Generates <amount> random caves using Cave.random_cave
         Generated caves must all have different names
         (You may have to call Cave.random_cave more than <amount> times.)
         """
-        self.set_caves([Cave.random_cave(self.get_materials()) for _ in range(amount)])
+        caves = []
+        while len(caves) < amount:
+            cave = Cave.random_cave(self.get_materials())
+            name = [each.name for each in caves]
+            if cave.name not in name:
+                caves.append(cave)
+        self.set_caves(caves)
 
     def generate_random_traders(self, amount):
         """
