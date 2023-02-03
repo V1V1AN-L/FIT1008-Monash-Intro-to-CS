@@ -20,7 +20,6 @@ class MaterialSet(ASet):
         """ Adds an element to the set. Note that an element already
         present in the set should not be added.
         :pre: the set is not full
-        :raises Exception: if the set is full.
         """
         if self.is_full():
             self.refactor_array()
