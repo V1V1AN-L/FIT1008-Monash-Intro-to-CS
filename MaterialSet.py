@@ -6,7 +6,7 @@ class MaterialSet(ASet):
     Set ADT for storing the trader's materials
     """
 
-    def init(self, capacity: int = 1, items: list[Material] = None) -> None:
+    def __init__(self, capacity: int = 1, items: list[Material] = None) -> None:
         ASet.__init__(self)
         self.array = ArrayR(max(1, capacity))
         if isinstance(items, list):
