@@ -4,6 +4,7 @@ from material import *
 class MaterialSet(ASet):
     """
     Set ADT for storing the trader's materials
+    Built from an array set
     """
 
     def __init__(self, capacity: int = 1, items: list[Material] = None) -> None:
@@ -14,6 +15,9 @@ class MaterialSet(ASet):
                 self.add(material)
         
     def get_list(self) -> list[Material]:
+        """
+        returns a list of the trader's materials
+        """
         return self.array.array[:self.size]
     
     def add(self, item: T) -> None:
@@ -29,9 +33,16 @@ class MaterialSet(ASet):
             
             
     def refactor_array(self):
-        # refactor array
+        """
+        resizes the array to fit more materials
+        """
         old_array = self.array
         new_array = ArrayR(len(old_array) + 10)
         self.array = new_array
         for i in range(len(old_array)):
             self.array[i] = old_array[i]
+
+if __name__ == '__main__':
+    MS = MaterialSet(8,["Stone","Cobblestone","Stone Bricks","Stone Slabs","Stone stairs","Furnace"])
+    MS.add("Stone Wall")
+    print(MS.get_list())
