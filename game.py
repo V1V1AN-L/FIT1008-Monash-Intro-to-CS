@@ -6,7 +6,7 @@ from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
-from graphics_module import *
+#from graphics_module import *
 
 
 class Game:

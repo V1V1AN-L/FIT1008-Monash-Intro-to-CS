@@ -1,5 +1,5 @@
 from random_gen import RandomGen
-from graphics_module import *
+#from graphics_module import *
 
 # Material names taken from https://minecraft-archive.fandom.com/wiki/Items
 RANDOM_MATERIAL_NAMES = [

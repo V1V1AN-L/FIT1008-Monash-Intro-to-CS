@@ -76,7 +76,7 @@ class Trader(ABC):
     
     def __init__(self, name: str) -> None:
         self.name: str = name
-        self.materials: MaterialSet = None
+        self.materials: MaterialSet = MaterialSet()
         self.buying: Material = None
         self.buying_price: float = 0.00
             

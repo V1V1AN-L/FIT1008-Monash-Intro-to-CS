@@ -1,6 +1,6 @@
 from __future__ import annotations
 from random_gen import *
-from graphics_module import *
+#from graphics_module import *
 from cave import *
 from material import *  
 from food import *

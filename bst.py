@@ -181,7 +181,7 @@ class BinarySearchTree(Generic[K, I]):
         """
         if current.right is None:  # right element is greater
             return None
-        return self.get_minimal(current)
+        return self.get_minimal(current.right)
 
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
