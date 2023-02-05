@@ -6,7 +6,7 @@ from material import *
 from food import *
 from trader import Trader
 from hash_table import *
-
+from merge_sort import *
 
 # List taken from https://minecraft.fandom.com/wiki/Mob
 PLAYER_NAMES = [
@@ -253,8 +253,6 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
         else:
             chosen_food, chosen_caves = self.solo_select_food_and_caves()
 
-        print(f'player choose food:{chosen_food} chose cave: {chosen_caves}')
-
 
         return (chosen_food, self.get_balance(), chosen_caves)
     
@@ -267,12 +265,9 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             self.hunger -= round(cave.get_material().mining_rate * cave.get_quantity(), 4)
             if self.get_hunger() > 0:
                 self.balance += profit_made
-                print(f'CAVE:{cave.name} {self.balance}')
             else:
                 quantity = round(self.hunger*-1 / cave.get_material().mining_rate, 4)
-                print(f'QUANTITY{quantity}')
                 self.balance += round(self.get_material_price(cave.get_material()) * quantity, 4)
-                print(f'CAVE:{cave.name} {self.balance}')
 
 
         return chosen_food, chosen_caves
@@ -292,23 +287,15 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             
         COMPLEXITY (best & worst) = O(F)
         """
-        # hunger = 0
-        # chosen_food: Food = None
-        # for food in self.get_foods():
-        #     if food.hunger_bars > hunger and food.price <= self.get_balance():
-        #         hunger = food.hunger_bars
-        #         chosen_food: Food = food
-        # return chosen_food
 
-        # food_dic = LinearProbeTable(len(self.get_foods()))
-        food_dic = {}
+
+        food_dic = LinearProbeTable(len(self.get_foods()))
         unit_price_lst = []
         for food in self.get_foods():
             unit_price = food.hunger_bars / food.price
-            # food_dic.insert(str(round(unit_price,2)), food)
-            food_dic.__setitem__(str(round(unit_price,4)), food)
+            food_dic.insert(str(round(unit_price,4)), food)
             unit_price_lst.append(round(unit_price,4))
-        unit_price_lst.sort()
+        unit_price_lst = msort(unit_price_lst)
         food_choice:Food = food_dic[str(unit_price_lst[len(unit_price_lst) - 1])]
         self.set_hunger(food_choice.hunger_bars)
 
@@ -324,23 +311,8 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             
         COMPLEXITY COMPLEXITY (best & worst) = O(C)
         """
-        # player_hunger_spent = 0
-        # caves_and_profit = {}
-        # for cave in self.get_caves():
-        #     profit_made = round(float(self.get_material_price(cave.get_material())*cave.get_quantity()), 2)
-        #     caves_and_profit[profit_made] = cave
-        #
-        # chosen_caves = []
-        # while player_hunger_spent <= self.get_hunger():
-        #     max_value = max(list(caves_and_profit.keys()))
-        #     chosen_cave = caves_and_profit[max_value]
-        #     del caves_and_profit[max_value]
-        #     chosen_caves.append(chosen_cave)
-        #     player_hunger_spent += cave.get_material().mining_rate*cave.get_quantity()
-        #
-        # return chosen_caves
-        # cave_dic = LinearProbeTable(len(self.get_caves()))
-        cave_dic = {}
+
+        cave_dic = LinearProbeTable(len(self.get_caves()))
 
         unit_price_lst = []
         cave_after_sort = []
@@ -348,19 +320,15 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
             if self.get_material_price(cave.get_material()) != 0:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
                 unit_price += cave.get_quantity() / 1000
-                print(f'unit_price::::{unit_price}')
-                # cave_dic.insert(str(round(unit_price, 2)), cave)
-                cave_dic.__setitem__(str(round(unit_price, 4)), cave)
-
+                cave_dic.insert(str(round(unit_price, 4)), cave)
                 unit_price_lst.append(round(unit_price, 4))
-        unit_price_lst.sort(reverse=True)
-        print(f'unit price list: {unit_price_lst}')
-        for i in unit_price_lst:
-            cave_after_sort.append(cave_dic[str(i)])
+
+        unit_price_lst = msort(unit_price_lst)
+        for j in unit_price_lst[::-1]:
+            cave_after_sort.append(cave_dic[str(j)])
 
         player_hunger_spent= 0
         res = []
-        print(f'player hunger!!: {self.get_hunger()}')
         for i in cave_after_sort:
             if player_hunger_spent <= self.get_hunger():
                 player_hunger_spent += i.get_material().mining_rate*i.get_quantity()
