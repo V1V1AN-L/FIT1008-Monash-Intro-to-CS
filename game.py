@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from player import Player
+from player import *
 from trader import Trader
 from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
-#from graphics_module import *
 
 
 class Game:
@@ -139,6 +138,12 @@ class Game:
         for trader in self.get_traders():
             trader.generate_deal()
             
+    def get_material_price(self, material: Material) -> float:
+        try:
+            return self.material_price_map[f"{material}"]
+        except KeyError:
+            return 0.00
+    
     def generate_material_price_map(self):
         """_summary_
 
@@ -147,7 +152,7 @@ class Game:
             
         COMPLEXITY (best & worst) = O(T), T = amount of traders avaliable to trade
         """
-        material_map = {}
+        material_map = LinearProbeTable(len(self.get_traders()))
         for trader in self.get_traders():
             try:
                 material, selling_price = trader.current_deal()
@@ -158,12 +163,6 @@ class Game:
         
         self.material_price_map = material_map
         return self.material_price_map
-    
-    def get_material_price(self, material: Material) -> float:
-        try:
-            return self.material_price_map[f"{material}"]
-        except KeyError:
-            return 0.00
             
     # can be used in both SOLO games and MULTIPLAYER games
     def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = False) -> None:
