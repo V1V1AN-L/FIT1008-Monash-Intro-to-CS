@@ -10,9 +10,9 @@ __docformat__ = 'reStructuredText'
 __modified__ = '21/05/2020'
 __since__ = '14/05/2020'
 
+
 from referential_array import ArrayR
 from typing import TypeVar, Generic
-
 T = TypeVar('T')
 
 
@@ -25,10 +25,6 @@ class LinearProbeTable(Generic[T]):
             count: number of elements in the hash table
             table: used to represent our internal array
             tablesize: current size of the hash table
-
-            probe_total: total distance of probe when inserting a new value
-            probe_max: maximum of distance of probe when inserting a new value compared with the others.
-            rehash_count: number of rehashing method called
     """
 
     def __init__(self, expected_size: int, tablesize_override: int = -1) -> None:
@@ -40,8 +36,9 @@ class LinearProbeTable(Generic[T]):
         self.probe_total = 0
         self.probe_max = 0
         self.rehash_count = 0
+        self.expected_size = int(expected_size*2)
         if tablesize_override == -1:
-            prime_tablesize = LargestPrimeIterator(expected_size, 2)
+            prime_tablesize = LargestPrimeIterator(self.expected_size*2, 1)
             self.table_size = next(prime_tablesize)
         else:
             self.table_size = tablesize_override
@@ -62,36 +59,8 @@ class LinearProbeTable(Generic[T]):
             a = a * b % (self.table_size - 1)
         return value
 
-    def get_load_factor(self) -> float:
-        """
-        Calculate the load factor
-        by calculate the total probe that will happens in the hash table
-        and divide it by the table_size
-
-        :return: the value of laod factor
-        """
-        probe = 0
-        for index in range(self.table_size):
-            count = 0
-            pos = index
-            while self.table[pos] is not None:
-                pos = (pos + 1) % self.table_size
-                count += 1
-                if pos == index:
-                    break
-            probe += count
-        return probe / self.table_size
-
     def statistics(self) -> tuple:
-        '''
-        Return:
-        1. conflict_count: total number of conflicts (two or more values have the same key value)
-        2. probe_total: total probe_chain throughout the hash table
-        3. probe_max: longest probe chain
-        4. rehash_count: how many rehashing has been done if the load factor is > 0.5
-        '''
-
-        return (self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
+        return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
         """
@@ -126,8 +95,8 @@ class LinearProbeTable(Generic[T]):
                 return position
             else:  # there is something but not the key, try next
                 position = (position + 1) % len(self.table)
-                self.probe_total += 1
-                self.probe_max = max(self.probe_max, self.probe_total - probe_temp)
+                self.probe_total +=1
+                self.probe_max = max(self.probe_max, self.probe_total-probe_temp)
                 if self.conflict_count == conflict_temp:
                     self.conflict_count += 1
 
@@ -165,6 +134,7 @@ class LinearProbeTable(Generic[T]):
         else:
             return True
 
+
     def __getitem__(self, key: str) -> T:
         """
             Get the item at a certain key
@@ -180,7 +150,7 @@ class LinearProbeTable(Generic[T]):
             :see: #self._linear_probe(key: str, is_insert: bool)
             :see: #self.__contains__(key: str)
         """
-        if self.get_load_factor() > 1.2:
+        if self.count > self.table_size * 0.5:
             self._rehash()
 
         position = self._linear_probe(key, True)
@@ -215,7 +185,8 @@ class LinearProbeTable(Generic[T]):
         """
             Need to resize table and reinsert all values
         """
-        new_hash = LinearProbeTable(self.table_size * 2)
+
+        new_hash = LinearProbeTable(self.expected_size, int(self.table_size*2))
 
         for i in range(len(self.table)):
             if self.table[i] is not None:
@@ -223,9 +194,7 @@ class LinearProbeTable(Generic[T]):
 
         self.count = new_hash.count
         self.table = new_hash.table
-        self.table_size = new_hash.table_size
-        self.rehash_count += 1
-
+        self.rehash_count +=1
     def __str__(self) -> str:
         """
             Returns all they key/value pairs in our hash table (no particular
