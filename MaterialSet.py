@@ -17,10 +17,10 @@ class MaterialSet(ASet):
         
     def get_list(self) -> list[Material]:
         """
-        returns a list of the trader's materials
+        returns a list of the trader's materials    
         """
         
-        return msort(self.array.array[:self.size])
+        return self.array.array[:self.size]
     
     def add(self, item: T) -> None:
         """ Adds an element to the set. Note that an element already
