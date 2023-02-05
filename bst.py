@@ -171,18 +171,6 @@ class BinarySearchTree(Generic[K, I]):
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
-            # node with one child
-            # if current.left is None:
-            #     return current.right
-            #
-            # elif current.right is None:
-            #     return current.left
-            #
-            # # node with two kids
-            # temp = self.get_minimal(current.right)
-            # current.key = temp.key
-            # current.right = self.delete_aux(current.right, temp.key)
-
         return current
 
     def get_successor(self, current: TreeNode) -> TreeNode:
