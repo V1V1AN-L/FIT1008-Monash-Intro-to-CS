@@ -118,7 +118,7 @@ class Player():
     MIN_EMERALDS = 20
     MAX_EMERALDS = 100
 
-    def __init__(self, name, emeralds=None, **kwargs) -> None:
+    def __init__(self, name, emeralds=None) -> None:
         """ Initialization """
         self.name = name
         self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds)

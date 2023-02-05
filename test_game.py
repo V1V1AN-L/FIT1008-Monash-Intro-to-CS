@@ -81,7 +81,7 @@ class TestGame(unittest.TestCase):
         # Spend some time in minecraft
         # Note that this will crash if you generate a HardTrader with less than 3 materials.
         for _ in range(3):
-            g.simulate_day()
+            g.simulate_day(print_data=False)
             g.finish_day()
     
     def test_unique(self):
@@ -135,7 +135,6 @@ class TestGame(unittest.TestCase):
             players,
             balances,
         )
-        
         # Live a year in minecraft
         for _ in range(365):
             g.simulate_day()
