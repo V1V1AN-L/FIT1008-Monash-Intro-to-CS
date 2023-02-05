@@ -84,57 +84,11 @@ class LinearProbeTable(Generic[T]):
 
     def statistics(self) -> tuple:
         '''
-        Analysis
-
-        Expectation of these values:
+        Return:
         1. conflict_count: total number of conflicts (two or more values have the same key value)
         2. probe_total: total probe_chain throughout the hash table
         3. probe_max: longest probe chain
         4. rehash_count: how many rehashing has been done if the load factor is > 0.5
-
-        Example:
-        Eva, Amy, Tim, Ron, Jan, Kim, Dot, Ann, Jim, Jon
-
-        Hash key result:
-        Eva 12
-        Amy 8
-        Tim 8
-        Ron 6
-        Jan 17
-        Kim 18
-        Dot 11
-        Ann 8
-        Jim 17
-        Jon 17
-
-        The result of the hash table is:
-        ('Jim', 'Jim-value'), ('Jon', 'Jon-value'), None, None,
-        None, None, ('Ron', 'Ron-value'), None,
-        ('Amy', 'Amy-value'), ('Tim', 'Tim-value'), ('Ann', 'Ann-value'), ('Dot', 'Dot-value'),
-        ('Eva', 'Eva-value'), None, None, None,
-        None, ('Jan', 'Jan-value'), ('Kim', 'Kim-value')
-
-        from this example, we have:
-        -> 4 conflict counts when:
-          --> we insert Tim with key 8, because we already had Amy on key 8
-          --> we insert Ann with key 8, because we already had Tim on key 8
-          --> we insert Jim with key 17, because we already had Jan on key 17
-          --> we insert Jon with key 17, because we already had Jim on key 17
-
-        -> probe_total:
-          --> Tim 8 -> 1 (Amy 8 is filled, Tim will be at 9)
-          --> Ann 8 -> 2 (Amy 8 is filled, Tim 9 is filled, Ann will be at 10)
-          --> Jim 17 -> 2 (Jan 17 is filled, Kim 18 is filled, Jim will be at 0)
-          --> Jon 17 -> 3 (Jan 17 is filled, Kim 18 is filled, Jim 0 is filled, Jan will be at 1
-          probe_total = 6
-
-        -> probe_max:
-          from the previous result, we noticed that Amy has the biggest probing chain which means 5 is the probe_max
-
-        -> rehash_count:
-            when the load factor > 1.2, we do rehash, in this case when we insert the 10th element, the load factor is 1.37.
-            If a case where we insert the 11th element, it will resize and rehash the table which will increment the rehash_count
-            However, because we only have 10th element in this case, the rehash_count is 0.
         '''
 
         return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
