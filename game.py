@@ -391,7 +391,7 @@ Motivation:
 
             # verify hunger >= amount mined
             if isinstance(cave, Cave):
-                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(amount_of_material_mined), f"{self.players[i]} total hunger should be >= than hunger spent"
+                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
             else:
                 assert self.players[i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
             

@@ -121,7 +121,7 @@ class Player():
     def __init__(self, name, emeralds=None) -> None:
         """ Initialization """
         self.name = name
-        self.set_balance(self.DEFAULT_EMERALDS if emeralds is None else emeralds)
+        self.set_balance(self.DEFAULT_EMERALDS if emeralds == None else emeralds)
         self.set_hunger() 
         self.set_traders()
         self.set_foods()
@@ -181,10 +181,7 @@ class Player():
     # balance
     def set_balance(self, balance: float = 0) -> None:
         """ Rounding the emerald balance of the player by 2 number behind the decimal """
-        if isinstance(balance, int) or isinstance(balance, float):
-            self.balance = round(balance, 2)
-        else:
-            self.balance = balance
+        self.balance = round(balance, 2)
         
     def get_balance(self) -> float:
         """ Get the emerald balance of the player"""
@@ -288,7 +285,7 @@ class Player():
     
     def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
         chosen_food = self.multiplayer_choose_food(offered_food)
-        chosen_cave = self.multiplayer_choose_caves()
+        chosen_cave = self.multiplayer_choose_caves(chosen_food)
         return chosen_food, chosen_cave #O(C)
     
     # SOLO
@@ -370,7 +367,7 @@ class Player():
             return offered_food
         return None
         
-    def multiplayer_choose_caves(self) -> Cave:
+    def multiplayer_choose_caves(self, chosen_food) -> Cave:
         """_summary_
 
         Returns:
@@ -381,16 +378,17 @@ class Player():
         chosen_cave = None
         max_profit = 0
         chosen_quantity = 0
+        projected_hunger = 0
+        if isinstance(chosen_food, Food):
+            projected_hunger = chosen_food.hunger_bars
         for cave in self.get_caves():
-            try:
-                quantity = cave.get_quantity_given_energy_spent(self.get_hunger())
-                profit = self.get_material_price(cave.get_material())*quantity
-            except KeyError:
-                profit = 0
-            if profit > max_profit:
+            quantity = cave.get_quantity_given_energy_spent(projected_hunger)
+            profit = self.get_material_price(cave.get_material())*quantity
+            if profit >= max_profit:
                 chosen_quantity = quantity
                 chosen_cave = cave
-        return (chosen_cave, chosen_quantity)
+                max_profit = profit
+        return (chosen_cave, float(chosen_quantity))
     
     # helper methods
     

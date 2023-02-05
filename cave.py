@@ -166,7 +166,7 @@ class Cave:
         self.round_quantity()
         return self.quantity
     
-    def get_quantity_given_energy_spent(self, energy):
+    def get_quantity_given_energy_spent(self, energy) -> float:
         """ Calculate the quantity of materials depends on how many energy spent by the player """
         if energy <= 0:
             return 0
@@ -175,11 +175,11 @@ class Cave:
             quantity = self.get_quantity()
         return quantity
     
-    def calculate_total_hunger_spent(self, quantity: float = False):
+    def calculate_total_hunger_spent(self, quantity: float = None):
         """ Calculate the total hunger that player spent when mining in this cave """
-        if quantity:
-            return round(quantity * self.material.mining_rate, 4)
-        return round(self.get_quantity() * self.material.mining_rate, 4)
+        if quantity != None:
+            return int(quantity * self.material.mining_rate)
+        return int(self.get_quantity() * self.material.mining_rate)
         
 
     @classmethod
