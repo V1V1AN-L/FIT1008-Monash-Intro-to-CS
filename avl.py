@@ -50,7 +50,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
     def insert_aux(self, current: AVLTreeNode, key: K, item: I) -> AVLTreeNode:
         """
             Attempts to insert an item into the tree, it uses the Key to insert it
-            
+            :complexity: O(log n)
         """
         # Find the correct location and insert the node
         if current is None:
@@ -77,7 +77,9 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         Set the index of each value within the tree
         the smallest value will have the smallest index
 
-        :param root: the root tree
+            :complexity: O(n) because we iterate into every element
+
+            :param root: the root tree
         """
         if root != None:
             self.set_index(root.left)
@@ -89,6 +91,8 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
             Attempts to delete an item from the tree, it uses the Key to
             determine the node to delete.
+
+            :Complexity: O(log n)
         """
 
         if current is None:
@@ -203,6 +207,10 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         Attempts to find the value that is sorted within the index i and j
         and save it inside the result
+
+        complexity: O(j-i + log(N))
+            it happens because we don't go through into every element, we just go into the element that within the ith and jth elements which makes it O(j-i)
+            Then, O(log n) comes from the recursion that happens with the depth of the tree which is log n
 
         :param root: the tree root
         :param i: the lower index (ith value)

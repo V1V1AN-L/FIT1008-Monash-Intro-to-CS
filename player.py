@@ -269,6 +269,10 @@ class Player():
     
     
     def solo_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
+        """
+        Select the food and caves for solo player
+        Complexity: O(C) but in this case, C is the chosen caves that is chosen by the player
+        """
         chosen_food = self.choose_food()
         chosen_caves = self.choose_caves()
         for cave in chosen_caves:
@@ -284,6 +288,12 @@ class Player():
         return chosen_food, chosen_caves
     
     def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
+        """
+        Multiplayer mode, choose the food and the caves
+
+        @see multiplayer_choose_caves()
+        Complexity : O(C)
+        """
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves(chosen_food)
         return chosen_food, chosen_cave #O(C)
@@ -291,7 +301,8 @@ class Player():
     # SOLO
     
     def choose_food(self) -> Food:
-        """_summary_
+        """
+        Choose the food
 
         Returns:
             Food: chosen food
@@ -313,7 +324,8 @@ class Player():
         return food_choice
 
     def choose_caves(self) -> list[Cave]:
-        """_summary_
+        """
+        Choose the caves with the best output
 
         Returns:
             list[Cave]: list of caves in order of mining to 
@@ -327,7 +339,7 @@ class Player():
 
         unit_price_lst = []
         cave_after_sort = []
-        for cave in self.get_caves():
+        for cave in self.get_caves(): #(C)
             if self.get_material_price(cave.get_material()) != 0:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
                 unit_price += cave.get_quantity() / 1000
@@ -368,10 +380,11 @@ class Player():
         return None
         
     def multiplayer_choose_caves(self, chosen_food) -> Cave:
-        """_summary_
+        """
+        Choose 1 cave for each player
 
         Returns:
-            _type_: _description_
+            the chosen caves for each player and the quantity that can be mined
             
         COMPLEXITY (best & worst) = O(C)
         """

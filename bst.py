@@ -179,6 +179,11 @@ class BinarySearchTree(Generic[K, I]):
             It should be a node in the subtree rooted at current having the smallest key among all the
             larger keys.
             If no such node exists, then none should be returned.
+
+            Time complexity: @see get_minimal
+            best case: O(1)
+            average case: O(log n)
+            worst case: O(n)
         """
         if current.right is None:  # right element is greater
             return None
@@ -187,6 +192,8 @@ class BinarySearchTree(Generic[K, I]):
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
             Get the node with the smallest key in the current sub-tree.
+            complexity: O(log n) because we iterate with the depth of the tree
+            worst case: O(n - 1) if the tree is unbalanced
         """
 
         #finding the leftmost leaf

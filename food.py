@@ -103,21 +103,29 @@ class Food:
     
         
     def __init__(self, name: str, hunger_bars: int, price: int) -> None:
+        """ Initialization """
         self.name = name
         self.hunger_bars = hunger_bars
         self.price = price
     
     def __str__(self) -> str:
+        """ Formatted string representation """
         return f"{self.name}: {self.hunger_bars}🍗 for {self.price}💰"
     
     def __repr__(self):
+        """ Formatted string representation """
         return self.__str__()
     
     def get_ratio(self):
+        """ Get the ratio of hunger per price """
         return self.hunger_bars/self.price
 
     @classmethod
     def random_food(cls) -> Food:
+        """
+        Randomized the food name and food price
+        Returns: Food itself
+        """
         price = RandomGen.randint(cls.MIN_PRICE, cls.MAX_PRICE)
         hunger_restored = RandomGen.randint(cls.MIN_HUNGER, cls.MAX_HUNGER)
         return Food(RandomGen.random_choice(FOOD_NAMES), hunger_restored, price)

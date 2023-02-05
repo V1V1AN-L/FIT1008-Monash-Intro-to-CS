@@ -25,6 +25,11 @@ class LinearProbeTable(Generic[T]):
             count: number of elements in the hash table
             table: used to represent our internal array
             tablesize: current size of the hash table
+            
+            probe_total: total distance of probe when inserting a new value
+            probe_max: maximum of distance of probe when inserting a new value compared with the others.
+            rehash_count: number of rehashing method called
+
     """
 
     def __init__(self, expected_size: int, tablesize_override: int = -1) -> None:
@@ -60,6 +65,13 @@ class LinearProbeTable(Generic[T]):
         return value
 
     def statistics(self) -> tuple:
+        '''
+        Return:
+        1. conflict_count: total number of conflicts (two or more values have the same key value)
+        2. probe_total: total probe_chain throughout the hash table
+        3. probe_max: longest probe chain
+        4. rehash_count: how many rehashing has been done if the load factor is > 0.5
+        '''
         return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
