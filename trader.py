@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from material import Material
 from random_gen import RandomGen
+from MaterialSet import *
 
 # Generated with https://www.namegenerator.co/real-names/english-name-generator
 TRADER_NAMES = [
@@ -75,7 +76,7 @@ class Trader(ABC):
     
     def __init__(self, name: str) -> None:
         self.name: str = name
-        self.materials: list[Material] = []
+        self.materials: MaterialSet = MaterialSet()
         self.buying: Material = None
         self.buying_price: float = 0.00
             
@@ -93,17 +94,16 @@ class Trader(ABC):
         return RandomTrader(RandomGen.random_choice(TRADER_NAMES))
     
     def get_materials(self):
-        return self.materials
+        return self.materials.get_list()
     
     def set_all_materials(self, mats: list[Material]) -> None:
-        self.materials = mats
+        self.materials = MaterialSet(len(mats), mats)
         
     def set_materials(self, mats: list[Material]) -> None:
         self.set_all_materials(mats)
     
     def add_material(self, mat: Material) -> None:
-        if mat not in self.materials:
-            self.materials.append(mat)
+        self.materials.add(mat)
             
     # deal handling
     

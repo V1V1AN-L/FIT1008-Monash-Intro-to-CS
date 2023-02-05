@@ -6,7 +6,7 @@ from material import Material
 from cave import Cave
 from food import Food
 from random_gen import RandomGen
-from graphics_module import *
+#from graphics_module import *
 
 
 class Game:
@@ -59,7 +59,7 @@ class Game:
 
     def set_materials(self, mats: list[Material] = None) -> None:
         self.materials = mats
-        self.material_price_map: dict
+        self.material_price_map: dict = None
 
     def set_caves(self, caves: list[Cave] = None) -> None:
         self.caves = caves
@@ -139,6 +139,32 @@ class Game:
         for trader in self.get_traders():
             trader.generate_deal()
             
+    def generate_material_price_map(self):
+        """_summary_
+
+        Returns:
+            _type_: _description_
+            
+        COMPLEXITY (best & worst) = O(T), T = amount of traders avaliable to trade
+        """
+        material_map = {}
+        for trader in self.get_traders():
+            try:
+                material, selling_price = trader.current_deal()
+                material_map[f"{material}"] = selling_price
+            except ValueError:
+                pass
+            
+        
+        self.material_price_map = material_map
+        return self.material_price_map
+    
+    def get_material_price(self, material: Material) -> float:
+        try:
+            return self.material_price_map[f"{material}"]
+        except KeyError:
+            return 0.00
+            
     # can be used in both SOLO games and MULTIPLAYER games
     def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = False) -> None:
         """
@@ -146,7 +172,7 @@ class Game:
         reducing the remaining material count in the cave.
         """
         if isinstance(cave, Cave):
-            selling_rate = self.material_price_map[cave.get_material()]
+            selling_rate = self.get_material_price(cave.get_material())
 
             if type(mined_quantity) == bool:
                 mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
@@ -161,18 +187,6 @@ class Game:
             player.check_hunger()
             
         return cave
-
-
-    
-    def generate_material_price_map(self):
-        trader_list = self.get_traders()
-        material_map = {}
-        for trader in trader_list:
-            material, selling_price = trader.current_deal()
-            material_map[material] = selling_price
-            
-        self.material_price_map = material_map
-        return self.material_price_map
 
 
 class SoloGame(Game):
