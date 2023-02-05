@@ -69,6 +69,7 @@ TRADER_NAMES = [
     "Taylor Schultz",
 ]
 
+
 class Trader(ABC):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
@@ -79,7 +80,7 @@ class Trader(ABC):
     buying: flag whether this trader wants to trade or not
     buying_price: price of the material of the trading transaction
     """
-    
+
     def __init__(self, name: str) -> None:
         """
         Initialisation.
@@ -91,14 +92,13 @@ class Trader(ABC):
         self.materials: MaterialSet = MaterialSet()
         self.buying: Material = None
         self.buying_price: float = 0.00
-            
-        
+
     def __str__(self) -> str:
         """ Formatted string when print this class """
         if self.buying != None:
             return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
         return f"<{type(self).__name__}: {self.name}>"
-    
+
     def __repr__(self):
         """ Represents the object as str """
         return self.__str__()
@@ -107,22 +107,22 @@ class Trader(ABC):
     def random_trader(cls):
         """ Randomize the name of the trader  """
         return RandomTrader(RandomGen.random_choice(TRADER_NAMES))
-    
+
     def get_materials(self):
         return self.materials.get_list()
-    
+
     def set_all_materials(self, mats: list[Material]) -> None:
         self.materials = MaterialSet(len(mats), mats)
-        
+
     def set_materials(self, mats: list[Material]) -> None:
         """ set the material that the trader wants to trade """
         self.set_all_materials(mats)
-    
+
     def add_material(self, mat: Material) -> None:
         self.materials.add(mat)
-            
+
     # deal handling
-    
+
     def is_currently_selling(self) -> bool:
         """ Flag whether this trader wants to buy or not """
         return self.buying
@@ -131,7 +131,7 @@ class Trader(ABC):
         """ Return the deal that the trader offers """
         if self.buying == None: raise ValueError
         return (self.buying, self.buying_price)
-    
+
     def generate_deal(self) -> None:
         """ Generate the deal that the trader wants to offer"""
         self.buying = self.get_market_material()
@@ -141,16 +141,17 @@ class Trader(ABC):
         """ Reset the deal to None """
         self.buying = None
         self.buying_price = 0.00
-    
+
     @abstractmethod
     def get_market_material(self):
         pass
+
 
 class RandomTrader(Trader):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
-    
+
     def get_market_material(self):
         """_summary_
 
@@ -159,21 +160,22 @@ class RandomTrader(Trader):
         """
         return RandomGen.random_choice(self.get_materials())
 
+
 class RangeTrader(Trader):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
-    
+
     def get_market_material(self):
         """_summary_
 
         Returns:
             Material: random material chosen from the avaliable list of materials the trader is buying within the bounds of lower and upper (see RangeTrader.materials_between)
         """
-        lower = RandomGen.randint(0, len(self.get_materials())-1)
-        upper = RandomGen.randint(lower, len(self.get_materials())-1)
+        lower = RandomGen.randint(0, len(self.get_materials()) - 1)
+        upper = RandomGen.randint(lower, len(self.get_materials()) - 1)
         return RandomGen.random_choice(self.materials_between(lower, upper))
-    
+
     def materials_between(self, i: int, j: int) -> list[Material]:
         """_summary_
 
@@ -184,13 +186,25 @@ class RangeTrader(Trader):
         Returns:
             list[Material]: spliced list of materials, bound to the lower and upper indexes (inclusive)
         """
-        return self.get_materials()[i:j+1]
+        dic = {}
+        material_list = self.get_materials()
+        mining_rate_lst = []
+        for material in material_list:
+            mining_rate_lst.append(material.mining_rate)
+            dic.__setitem__(material.mining_rate, material)
+        mining_rate_lst.sort()
+        res = []
+        for mining_rate in mining_rate_lst:
+            res.append(dic.get(mining_rate))
+
+        return res[i:j + 1]
+
 
 class HardTrader(Trader):
     """
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
-    
+
     def get_market_material(self):
         """_summary_
 
@@ -203,7 +217,7 @@ class HardTrader(Trader):
             if material.mining_rate > hardest_to_mine_value:
                 hardest_to_mine = material
         return hardest_to_mine
-            
+
 
 if __name__ == "__main__":
     trader = RangeTrader("Jackson")
@@ -217,4 +231,3 @@ if __name__ == "__main__":
     print(trader)
     trader.stop_deal()
     print(trader)
-
