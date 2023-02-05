@@ -369,8 +369,7 @@ Motivation:
             
         return foods, balances, caves
 
-    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float],
-                                            caves: list[tuple[Cave, float] | None]) -> None:
+    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float] | None]) -> None:
         self.generate_material_price_map()
         # modify other players lists so that mining happens real time
 
