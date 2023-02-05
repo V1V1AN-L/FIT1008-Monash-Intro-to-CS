@@ -378,31 +378,3 @@ MULTIPLAYER Complexity: (best & worst) = O(C + T)
                 chosen_cave = cave
         return (chosen_cave, chosen_quantity)
     
-    # helper methods
-    
-    def get_material_price(self, material: Material) -> float:
-        try:
-            return self.material_price_map[f"{material}"]
-        except KeyError:
-            return 0.00
-    
-    def generate_material_price_map(self):
-        """_summary_
-
-        Returns:
-            _type_: _description_
-            
-        COMPLEXITY (best & worst) = O(T), T = amount of traders avaliable to trade
-        """
-        material_map = {}
-        for trader in self.get_traders():
-            try:
-                material, selling_price = trader.current_deal()
-                material_map[f"{material}"] = selling_price
-            except ValueError:
-                pass
-            
-        
-        self.material_price_map = material_map
-        return self.material_price_map
-    
