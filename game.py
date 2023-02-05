@@ -167,16 +167,15 @@ class Game:
         return self.material_price_map
             
     # can be used in both SOLO games and MULTIPLAYER games
-    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave,
-                                                  mined_quantity: float = False) -> None:
-        """
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = None) -> None:
+        """ 
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
         """
         if isinstance(cave, Cave):
             selling_rate = self.get_material_price(cave.get_material())
 
-            if type(mined_quantity) == bool:
+            if mined_quantity == None:
                 mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
                 if mined_quantity == 0:
                     return cave
@@ -243,7 +242,6 @@ class SoloGame(Game):
         cave material quantity
 
         """
-        #### Not Finished #### i misread the damn task, so this method does the incorrect thing
         # ensure emerald balance is sufficent to purchase food
         if isinstance(food, Food):
             assert balance > food.price
