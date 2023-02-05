@@ -138,7 +138,7 @@ class TestGame(unittest.TestCase):
         
         # Live a year in minecraft
         for _ in range(365):
-            g.simulate_day(print_data=False)
+            g.simulate_day()
             g.finish_day()
 
 if __name__ == '__main__':
