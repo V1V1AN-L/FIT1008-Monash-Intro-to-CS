@@ -148,7 +148,8 @@ class BinarySearchTree(Generic[K, I]):
         """
 
         if current is None:  # key not found
-            raise ValueError('Deleting non-existent item')
+            #raise ValueError('Deleting non-existent item')
+            return current
         elif key < current.key:
             current.left  = self.delete_aux(current.left, key)
         elif key > current.key:
@@ -170,6 +171,18 @@ class BinarySearchTree(Generic[K, I]):
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
+            # node with one child
+            # if current.left is None:
+            #     return current.right
+            #
+            # elif current.right is None:
+            #     return current.left
+            #
+            # # node with two kids
+            # temp = self.get_minimal(current.right)
+            # current.key = temp.key
+            # current.right = self.delete_aux(current.right, temp.key)
+
         return current
 
     def get_successor(self, current: TreeNode) -> TreeNode:
@@ -181,7 +194,7 @@ class BinarySearchTree(Generic[K, I]):
         """
         if current.right is None:  # right element is greater
             return None
-        return self.get_minimal(current)
+        return self.get_minimal(current.right)
 
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
