@@ -120,6 +120,9 @@ class Material:
         """ Return string representation """
         return self.__str__()
     
+    def __lt__(self, other):
+        return self.mining_rate > other.mining_rate
+    
     def get_material_plural(self, amount: int = 2):
         """ Dictionary of singular-plural form of noun """
         mapping = {

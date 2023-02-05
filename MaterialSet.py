@@ -1,5 +1,6 @@
 from aset import *
 from material import *
+from merge_sort import * 
 
 class MaterialSet(ASet):
     """
@@ -18,7 +19,8 @@ class MaterialSet(ASet):
         """
         returns a list of the trader's materials
         """
-        return self.array.array[:self.size]
+        
+        return msort(self.array.array[:self.size])
     
     def add(self, item: T) -> None:
         """ Adds an element to the set. Note that an element already
