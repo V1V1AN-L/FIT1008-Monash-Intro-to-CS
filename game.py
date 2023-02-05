@@ -30,31 +30,33 @@ class Game:
         self.set_caves()
         self.set_traders()
 
-    def initialise_game(self) -> None:
+    def initialise_game(self, print_data: bool = True) -> None:
         """Initialise all game objects: Materials, Caves, Traders."""
         N_MATERIALS = RandomGen.randint(self.MIN_MATERIALS, self.MAX_MATERIALS)
         self.generate_random_materials(N_MATERIALS)
-        print("Materials:\n\t", end="")
-        print("\n\t".join(map(str, self.get_materials())))
         N_CAVES = RandomGen.randint(self.MIN_CAVES, self.MAX_CAVES)
         self.generate_random_caves(N_CAVES)
-        print("Caves:\n\t", end="")
-        print("\n\t".join(map(str, self.get_caves())))
         N_TRADERS = RandomGen.randint(self.MIN_TRADERS, self.MAX_TRADERS)
         self.generate_random_traders(N_TRADERS)
-        print("Traders:\n\t", end="")
-        print("\n\t".join(map(str, self.get_traders())))
+        if print_data:
+            print("Materials:\n\t", end="")
+            print("\n\t".join(map(str, self.get_materials())))
+            print("Caves:\n\t", end="")
+            print("\n\t".join(map(str, self.get_caves())))
+            print("Traders:\n\t", end="")
+            print("\n\t".join(map(str, self.get_traders())))
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader]):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], print_data: bool = True):
         self.set_materials(materials)
-        print("Materials:\n\t", end="")
-        print("\n\t".join(map(str, self.get_materials())))
         self.set_caves(caves)
-        print("Caves:\n\t", end="")
-        print("\n\t".join(map(str, self.get_caves())))
         self.set_traders(traders)
-        print("Traders:\n\t", end="")
-        print("\n\t".join(map(str, self.get_traders())))
+        if print_data:
+            print("Materials:\n\t", end="")
+            print("\n\t".join(map(str, self.get_materials())))
+            print("Caves:\n\t", end="")
+            print("\n\t".join(map(str, self.get_caves())))
+            print("Traders:\n\t", end="")
+            print("\n\t".join(map(str, self.get_traders())))
 
     def set_materials(self, mats: list[Material] = None) -> None:
         self.materials = mats
@@ -202,9 +204,8 @@ class SoloGame(Game):
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
-                             player_names: list[int], emerald_info: list[float]):
-        super().initialise_with_data(materials, caves, traders)
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float], print_data: bool = True):
+        super().initialise_with_data(materials, caves, traders, print_data)
         self.player: Player = Player(player_names[0], emeralds=emerald_info[0])
         self.player.set_materials(self.get_materials())
         self.player.set_caves(self.get_caves())
@@ -291,31 +292,32 @@ class MultiplayerGame(Game):
         super().__init__()
         self.players: list[Player] = []
 
-    def initialise_game(self) -> None:
-        super().initialise_game()
+    def initialise_game(self, print_data: bool = True) -> None:
+        super().initialise_game(print_data)
         N_PLAYERS = RandomGen.randint(self.MIN_PLAYERS, self.MAX_PLAYERS)
         self.generate_random_players(N_PLAYERS)
         for player in self.players:
             player.set_materials(self.get_materials())
             player.set_caves(self.get_caves())
             player.set_traders(self.get_traders())
-        print("Players:\n\t", end="")
-        print("\n\t".join(map(str, self.players)))
+        if print_data:
+            print("Players:\n\t", end="")
+            print("\n\t".join(map(str, self.players)))
 
     def generate_random_players(self, amount) -> None:
         """Generate <amount> random players. Don't need anything unique, but you can do so if you'd like."""
         raise NotImplementedError()
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
-                             player_names: list[int], emerald_info: list[float]):
-        super().initialise_with_data(materials, caves, traders)
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float], print_data: bool = True):
+        super().initialise_with_data(materials, caves, traders, print_data)
         for player, emerald in zip(player_names, emerald_info):
             self.players.append(Player(player, emeralds=emerald))
             self.players[-1].set_materials(self.get_materials())
             self.players[-1].set_caves(self.get_caves())
             self.players[-1].set_traders(self.get_traders())
-        print("Players:\n\t", end="")
-        print("\n\t".join(map(str, self.players)))
+        if print_data:
+            print("Players:\n\t", end="")
+            print("\n\t".join(map(str, self.players)))
 
     def simulate_day(self, print_data: bool = True):
         # 1. Traders make deals
