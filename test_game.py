@@ -8,7 +8,7 @@ from material import Material
 import unittest
 
 
-class TestGame(unittest.TestCase):
+class TestGame(unittest.TestCase):  
     """ Testing Game functionality. """
 
     def test_example(self):
