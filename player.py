@@ -406,6 +406,31 @@ class Player:
         return res
 
     # MULTI
+    
+    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, tuple[Cave, float]]:
+        """
+        Multiplayer mode, choose the food and the caves
+
+        @see multiplayer_choose_caves()
+        Complexity : O(C)
+        
+        Approach:
+        - if the player can afford the food, choose it
+        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
+        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
+        
+        """
+        chosen_food = self.multiplayer_choose_food(offered_food)
+        chosen_cave = self.multiplayer_choose_caves(chosen_food)
+        if not chosen_cave is None:
+            cave, quantity = chosen_cave
+            if isinstance(cave, Cave):
+                profit_from_cave = self.get_material_price(cave.get_material())*quantity
+                if isinstance(chosen_food, Food) and chosen_food.price > profit_from_cave:
+                    chosen_food = None
+                    chosen_cave = None
+
+        return chosen_food, chosen_cave
 
     def multiplayer_choose_food(self, offered_food: Food) -> Food | None:
         """_summary_
@@ -431,7 +456,7 @@ class Player:
                 return None
             return offered_food
 
-    def multiplayer_choose_caves(self, chosen_food) -> Cave:
+    def multiplayer_choose_caves(self, chosen_food) -> tuple[Cave, float]:
         """
         Choose 1 cave for each player
 
@@ -445,7 +470,7 @@ class Player:
         chosen_quantity = 0
         projected_hunger = 0
         if chosen_food is None:
-            return None
+            return (None, 0)
         if isinstance(chosen_food, Food):
             projected_hunger = chosen_food.hunger_bars
         for cave in self.get_caves():

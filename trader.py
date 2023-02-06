@@ -181,7 +181,7 @@ class RangeTrader(Trader):
             name: name of the trader
         """
         Trader.__init__(self, name)
-
+        # reassign materials to use an AVL instead
         self.materials: MaterialAVL = MaterialAVL()
 
 
