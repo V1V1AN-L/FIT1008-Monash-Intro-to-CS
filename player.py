@@ -393,7 +393,7 @@ class Player:
         player_hunger_spent = 0
         res = []
         for i in cave_after_sort:
-            if player_hunger_spent <= self.get_hunger():
+            if player_hunger_spent < self.get_hunger():
                 player_hunger_spent += i.get_material().mining_rate * i.get_quantity()
                 res.append(i)
             else:
