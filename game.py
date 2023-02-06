@@ -57,7 +57,8 @@ class Game:
         N_TRADERS = RandomGen.randint(self.MIN_TRADERS, self.MAX_TRADERS)
         self.generate_random_traders(N_TRADERS)
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], print_data: bool = True):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
+                             print_data: bool = True):
         """ Initialization all game objects but the data is inputted in the parameter """
         self.set_materials(materials)
         self.set_caves(caves)
@@ -133,9 +134,9 @@ class Game:
         trader_list = []
         for i in range(amount):
             _trader = Trader.random_trader()
-            print('++++',self.get_materials())
+            print('++++', self.get_materials())
             _trader.set_all_materials(self.get_materials())
-            print('|||||',_trader.get_materials())
+            print('|||||', _trader.get_materials())
             trader_list.append(_trader)
         self.set_traders(trader_list)
 
@@ -175,7 +176,7 @@ class Game:
 
         Returns:
             the material price map
-            
+
         COMPLEXITY (best & worst) = O(T), T = amount of traders available to trade
         """
         material_map = LinearProbeTable(len(self.get_traders()))
@@ -236,7 +237,8 @@ class SoloGame(Game):
         self.player.set_caves(self.get_caves())
         self.player.set_traders(self.get_traders())
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float], print_data: bool = True):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
+                             player_names: list[int], emerald_info: list[float], print_data: bool = True):
         """ Initialize the game, set the materials, caves, and the traders accordance to the input"""
         super().initialise_with_data(materials, caves, traders, print_data)
         self.player: Player = Player(player_names[0], emeralds=emerald_info[0])
@@ -286,6 +288,10 @@ class SoloGame(Game):
             assert self.player.chosen_food.price < self.player.original_emerld
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
+
+        # map all materials to a price
+        # self.material_price_map = self.generate_material_price_map()
+
         # add emeralds and update hunger and update quantities for caves
         if caves is not None:
             for i, cave in enumerate(caves):
@@ -347,7 +353,8 @@ class MultiplayerGame(Game):
         for _ in range(amount):
             self.players.append(Player(random_gen.RandomGen.random_choice(PLAYER_NAMES)))
 
-    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader], player_names: list[int], emerald_info: list[float], print_data: bool = True):
+    def initialise_with_data(self, materials: list[Material], caves: list[Cave], traders: list[Trader],
+                             player_names: list[int], emerald_info: list[float], print_data: bool = True):
         """ Initialize the game with a set of data of players.
         Complexity: O(P)
         """
@@ -401,7 +408,8 @@ class MultiplayerGame(Game):
 
         return foods, balances, caves
 
-    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float], caves: list[tuple[Cave, float] | None]) -> None:
+    def verify_output_and_update_quantities(self, foods: list[Food | None], balances: list[float],
+                                            caves: list[tuple[Cave, float] | None]) -> None:
         """
         Update the balance of each player
 
@@ -414,33 +422,31 @@ class MultiplayerGame(Game):
             # ensure emerald balance is sufficient to purchase food
             food = foods[i]
             balance = balances[i]
-            if caves[i] is None:
-                cave, amount_of_material_mined = None, 0
-            else:
+            if caves[i] is not None:
                 cave, amount_of_material_mined = caves[i]
-            if isinstance(food, Food):
-                assert balance >= food.price, f"{self.players[i]} {balance} should be >= {food.price}"
-                # update emerald balance
-                self.players[i].decrease_balance(food.price)
-                # update hunger levels
-                self.players[i].set_hunger(food.hunger_bars)
-            else:
-                assert balance >= 0, f"{self.players[i]} balance is {balance} when it is supposed to be >= 0"
+                if isinstance(food, Food):
+                    assert balance >= food.price, f"{self.players[i]} {balance} should be >= {food.price}"
+                    # update emerald balance
+                    self.players[i].decrease_balance(food.price)
+                    # update hunger levels
+                    self.players[i].set_hunger(food.hunger_bars)
+                else:
+                    assert balance >= 0, f"{self.players[i]} balance is {balance} when it is supposed to be >= 0"
 
-            # verify hunger >= amount mined
-            if isinstance(cave, Cave):
-                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(
-                    amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
-            else:
-                assert self.players[
-                           i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
+                # verify hunger >= amount mined
+                if isinstance(cave, Cave):
+                    assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(
+                        amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
+                else:
+                    assert self.players[
+                               i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
 
-            # add emeralds and update hunger and update quantities for caves
-            self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
+                # add emeralds and update hunger and update quantities for caves
+                self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
 
-            # updates the quantities
-            self.players[i].set_caves(self.get_caves())  # updates all players caves
-            self.players[i].clear_hunger()
+                # updates the quantities
+                self.players[i].set_caves(self.get_caves())  # updates all players caves
+                self.players[i].clear_hunger()
 
     # helper functions
 

@@ -86,7 +86,7 @@ PLAYER_NAMES = [
     "Zoglin",
     "Zombie",
     "Zombie Villager",
-    "H̴͉͙̠̥̹͕͌̋͐e̸̢̧̟͈͍̝̮̹̰͒̀͌̈̆r̶̪̜͙̗̠̱̲̔̊̎͊̑̑̚o̷̧̮̙̗̖̦̠̺̞̾̓͆͛̅̉̽͘͜͝b̸̨̛̟̪̮̹̿́̒́̀͋̂̎̕͜r̸͖͈͚̞͙̯̲̬̗̅̇̑͒͑ͅi̶̜̓̍̀̑n̴͍̻̘͖̥̩͊̅͒̏̾̄͘͝͝ę̶̥̺̙̰̻̹̓̊̂̈́̆́̕͘͝͝"
+    "H̴͉͙̠̥̹͕͌̋͐e̸̢̧̟͈͍̝̮̹̰͒̀͌̈̆r̶̪̜͙̗̠̱̲̔̊̎͊̑̑̚o̷̧̮̙̗̖̦̠̺̞̾̓͆͛̅̉̽͘͜͝b̸̨̛̟̪̮̹̿́̒́̀͋̂̎̕͜r̸͖͈͚̞͙̯̲̬̗̅̇̑͒͑ͅi̶̜̓̍̀̑n̴͍̻̘͖̥̩͊̅͒̏̾̄͘͝͝ę̶̥̺̙̰̻̹̓̊̂̈́̆́̕͘͝͝"
 ]
 
 
@@ -125,7 +125,7 @@ class Player:
         self.set_traders()
         self.set_foods()
         self.set_caves()
-        self.chosen_food:Food = None
+        self.chosen_food: Food = None
 
     def __str__(self) -> str:
         """ Formatted string representation """
@@ -264,7 +264,8 @@ class Player:
         else:
             self.chosen_food, chosen_caves = self.solo_select_food_and_caves()
             print(f"Player hunger is {self.get_hunger()}")
-            print(f"Food selected:::{self.chosen_food}, player balance::::{self.get_balance()}, Cave chosen: {chosen_caves}")
+            print(
+                f"Food selected:::{self.chosen_food}, player balance::::{self.get_balance()}, Cave chosen: {chosen_caves}")
         return (self.chosen_food, self.get_balance(), chosen_caves)
 
     def solo_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
@@ -276,7 +277,7 @@ class Player:
         self.chosen_food = self.choose_food()
         print(f'FOOD BALANCE: {self.balance}')
         chosen_caves = self.choose_caves()
-        if len(chosen_caves)!= 0:
+        if len(chosen_caves) != 0:
             for cave in chosen_caves:
                 profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
                 print(f'hunger before::::{self.hunger}')
@@ -305,6 +306,24 @@ class Player:
 
         return self.chosen_food, chosen_caves
 
+    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food | None, Cave]:
+        """
+        Multiplayer mode, choose the food and the caves
+
+        @see multiplayer_choose_caves()
+        Complexity : O(C)
+
+        Approach:
+        - if the player can afford the food, choose it
+        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
+        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
+
+        """
+        chosen_food = self.multiplayer_choose_food(offered_food)
+        chosen_cave = self.multiplayer_choose_caves(chosen_food)
+
+        return chosen_food, chosen_cave
+
     # SOLO
 
     def choose_food(self) -> Food:
@@ -317,7 +336,6 @@ class Player:
         COMPLEXITY (best & worst) = O(F)
         """
 
-
         food_dic = LinearProbeTable(len(self.get_foods()))
 
         sort_based_on_hunger = []
@@ -329,7 +347,7 @@ class Player:
                 sort_based_on_hunger.append(food.hunger_bars)
                 food_dic.__setitem__(str(food.hunger_bars), food)
 
-        if len(sort_based_on_hunger) !=0:
+        if len(sort_based_on_hunger) != 0:
             sort_based_on_hunger = msort(sort_based_on_hunger)
             food_choice = food_dic[str(sort_based_on_hunger[-1])]
             self.set_hunger(food_choice.hunger_bars)
@@ -360,12 +378,12 @@ class Player:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
                 print(
                     f'Material:{cave.get_material().name} :::Mining rate is::{cave.get_material().mining_rate} Price:::{self.get_material_price(cave.get_material())}')
-                unit_price += cave.get_quantity() / 1000 #This is used to differ the caves with same materials
+                unit_price += cave.get_quantity() / 1000  # This is used to differ the caves with same materials
                 cave_dic.insert(str(round(unit_price, 8)), cave)
                 unit_price_lst.append(round(unit_price, 8))
         print(f'Here UNIT PRICE LIST = {unit_price_lst}')
 
-        if len(unit_price_lst)== 0: #If no cave to mine, the player shouldn't buy the food-> added back the price for buying food & set the food to None
+        if len(unit_price_lst) == 0:  # If no cave to mine, the player shouldn't buy the food-> added back the price for buying food & set the food to None
             print("This line should be print!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.balance += self.chosen_food.price
             self.chosen_food = None
@@ -426,8 +444,17 @@ class Player:
         COMPLEXITY (best & worst) = O(1)
         """
         if offered_food.price <= self.get_balance():
+            max_profit = 0
+            for cave in self.get_caves():
+                quantity = cave.get_quantity_given_energy_spent(offered_food.hunger_bars)
+                profit = self.get_material_price(cave.get_material()) * quantity
+                if profit >= max_profit:
+                    chosen_quantity = quantity
+                    chosen_cave = cave
+                    max_profit = profit
+            if offered_food.price >= max_profit:
+                return None
             return offered_food
-        return None
 
     def multiplayer_choose_caves(self, chosen_food) -> tuple[Cave, float]:
         """
