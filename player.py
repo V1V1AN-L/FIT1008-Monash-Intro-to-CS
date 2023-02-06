@@ -254,6 +254,8 @@ class Player:
             As you can only choose one cave, you want the most amount of profit possible from a single cave
 
         MULTIPLAYER Complexity: (best & worst) = O(C + T)
+        
+        NOTE: for motivations see multiplayer_select_food_and_caves and solo_select_food_and_caves docstrings
         """
         self.generate_material_price_map()  # O(T)
 
@@ -305,24 +307,6 @@ class Player:
             chosen_caves = []
 
         return self.chosen_food, chosen_caves
-
-    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food | None, Cave]:
-        """
-        Multiplayer mode, choose the food and the caves
-
-        @see multiplayer_choose_caves()
-        Complexity : O(C)
-
-        Approach:
-        - if the player can afford the food, choose it
-        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
-        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
-
-        """
-        chosen_food = self.multiplayer_choose_food(offered_food)
-        chosen_cave = self.multiplayer_choose_caves(chosen_food)
-
-        return chosen_food, chosen_cave
 
     # SOLO
 
@@ -414,10 +398,10 @@ class Player:
         @see multiplayer_choose_caves()
         Complexity : O(C)
         
-        Approach:
+        Approach/Motivation:
         - if the player can afford the food, choose it
-        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
-        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
+        - the player will then pick out the best cave they can mine from (calculated from price*quantity) within the constraints of the hunger the food can provide
+        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything, so nothing is chosen
         
         """
         chosen_food = self.multiplayer_choose_food(offered_food)
@@ -443,18 +427,9 @@ class Player:
 
         COMPLEXITY (best & worst) = O(1)
         """
-        if offered_food.price <= self.get_balance():
-            max_profit = 0
-            for cave in self.get_caves():
-                quantity = cave.get_quantity_given_energy_spent(offered_food.hunger_bars)
-                profit = self.get_material_price(cave.get_material()) * quantity
-                if profit >= max_profit:
-                    chosen_quantity = quantity
-                    chosen_cave = cave
-                    max_profit = profit
-            if offered_food.price >= max_profit:
-                return None
+        if isinstance(offered_food, Food) and offered_food.price <= self.get_balance():
             return offered_food
+        return None
 
     def multiplayer_choose_caves(self, chosen_food) -> tuple[Cave, float]:
         """
