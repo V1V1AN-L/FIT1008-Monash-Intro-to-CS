@@ -133,7 +133,9 @@ class Game:
         trader_list = []
         for i in range(amount):
             _trader = Trader.random_trader()
+            print('++++',self.get_materials())
             _trader.set_all_materials(self.get_materials())
+            print('|||||',_trader.get_materials())
             trader_list.append(_trader)
         self.set_traders(trader_list)
 
@@ -390,17 +392,9 @@ class MultiplayerGame(Game):
 
     def select_for_players(self, offered_food: Food) -> tuple[
         list[Food | None], list[float], list[tuple[Cave, float] | None]]:
-        """_summary_
+        """
+        Motivation:
 
-Complexity Requirement!
-Given that M=#Materials, T=#Traders, C=#Caves, P=#Players,
-the select_for_players method should have complexity at most O(M + T + C + P * log C).
-
-Documentation Requirement!
-For your solution to select_for_players, please leave a lengthy docstring describing the motivation for your approach in full.
-Please use a small example to demonstrate your approach. Additionally, you need to fully justify the complexity of your approach - Give line comments to summarise the complexity of blocks of your code.
-
-Motivation:
 
 
 
@@ -464,6 +458,8 @@ Motivation:
         """ Update the quantity material within the caves
         Complexity: O(C)
         """
+        if chosen_cave_tuple is None:
+            return
         chosen_cave, amount_mined = chosen_cave_tuple
         if isinstance(chosen_cave, Cave):
             caves_list = self.get_caves()

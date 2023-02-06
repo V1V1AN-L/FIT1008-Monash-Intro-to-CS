@@ -309,6 +309,7 @@ class Player:
         """
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves(chosen_food)
+
         return chosen_food, chosen_cave  # O(C)
 
     # SOLO
@@ -443,6 +444,8 @@ class Player:
         max_profit = 0
         chosen_quantity = 0
         projected_hunger = 0
+        if chosen_food is None:
+            return None
         if isinstance(chosen_food, Food):
             projected_hunger = chosen_food.hunger_bars
         for cave in self.get_caves():
@@ -452,6 +455,8 @@ class Player:
                 chosen_quantity = quantity
                 chosen_cave = cave
                 max_profit = profit
+        self.increase_balance(max_profit)
+
         return (chosen_cave, float(chosen_quantity))
 
     # helper methods
