@@ -396,9 +396,9 @@ class MultiplayerGame(Game):
 
         the relevant quantities are then updated and lists of the selected food, expected emerald balance and cave + materials mined
         
-        each player then undergoes an update of avaliable caves as the previous players have updated the quantities of existing mines in the game
+        the next player then gets an updated version of all caves mined, this way it reduces runtimes as all players will eventually have all caves updated in verify_output_and_update_quantities
 
-        COMPLEXITY: O(P*(T + C + P) + C)
+        COMPLEXITY: O(P*(T + C) + C)
         """
         foods = []
         balances = []
@@ -410,8 +410,10 @@ class MultiplayerGame(Game):
             caves.append(cave_tuple)
             # update the quantities in game so that other players quantities will be updated (only players that need the quantities updated)
             self.update_cave_quantity(cave_tuple)  # O(C)
-            for j in range(i, len(self.players)): # O(P)
-                self.players[j].set_caves(self.get_caves())
+            try:
+                self.players[i+1].set_caves(self.get_caves())
+            except IndexError:
+                pass
 
         return foods, balances, caves
 
@@ -451,9 +453,10 @@ class MultiplayerGame(Game):
                 # add emeralds and update hunger and update quantities for caves
                 self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
 
-                # updates the quantities
-                self.players[i].set_caves(self.get_caves())  # updates all players caves
-                self.players[i].clear_hunger()
+        for i in range(len(self.players)):
+            # updates the quantities
+            self.players[i].set_caves(self.get_caves())  # updates all players caves
+            self.players[i].clear_hunger()
 
     # helper functions
 
