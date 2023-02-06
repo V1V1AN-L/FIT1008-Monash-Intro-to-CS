@@ -445,20 +445,8 @@ class Player:
 
         COMPLEXITY (best & worst) = O(1)
         """
-        if isinstance(offered_food, Food):
-            if offered_food.price <= self.get_balance():
-                max_profit = 0
-                for cave in self.get_caves():
-                    quantity = cave.get_quantity_given_energy_spent(offered_food.hunger_bars)
-                    profit = self.get_material_price(cave.get_material()) * quantity
-                    if profit >= max_profit:
-                        chosen_quantity = quantity
-                        chosen_cave = cave
-                        max_profit = profit
-                if offered_food.price >= max_profit:
-                    return None
-                
-                return offered_food
+        if isinstance(offered_food, Food) and offered_food.price <= self.get_balance():
+            return offered_food
         return None
 
     def multiplayer_choose_caves(self, chosen_food) -> tuple[Cave, float]:
