@@ -476,8 +476,7 @@ class Player:
 
         COMPLEXITY (best & worst) = O(T), T = amount of traders available to trade
         """
-        # material_map = LinearProbeTable(len(self.get_traders()))
-        material_map = {}
+        material_map = LinearProbeTable(len(self.get_traders()))
         for trader in self.get_traders():
             try:
                 material, selling_price = trader.current_deal()
