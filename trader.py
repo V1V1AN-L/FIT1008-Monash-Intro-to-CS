@@ -202,6 +202,7 @@ class HardTrader(Trader):
         for material in self.get_materials():
             if material.mining_rate > hardest_to_mine_value:
                 hardest_to_mine = material
+                hardest_to_mine_value = material.mining_rate
         return hardest_to_mine
             
 
