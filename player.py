@@ -254,6 +254,8 @@ class Player:
             As you can only choose one cave, you want the most amount of profit possible from a single cave
 
         MULTIPLAYER Complexity: (best & worst) = O(C + T)
+        
+        NOTE: for motivations see multiplayer_select_food_and_caves and solo_select_food_and_caves docstrings
         """
         self.generate_material_price_map()  # O(T)
 
