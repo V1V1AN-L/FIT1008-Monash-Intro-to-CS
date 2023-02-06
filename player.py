@@ -270,6 +270,7 @@ class Player:
         Complexity: O(C) but in this case, C is the chosen caves that is chosen by the player
         """
         expected_balance = self.get_balance()
+        
         # food
         chosen_food = self.choose_food()
         if isinstance(chosen_food, Food):
@@ -278,12 +279,17 @@ class Player:
         else:
             projected_hunger = 0
         print(f'FOOD BALANCE: {expected_balance}')
+        
         # caves
         chosen_caves = self.choose_caves()
         cave_profit = 0
         for cave in chosen_caves:
             quantity = cave.get_quantity_given_energy_spent(projected_hunger)
-            profit = self.get_material_price(cave.get_material()) * quantity
+            if quantity > 0:
+                projected_hunger -= cave.calculate_total_hunger_spent(quantity)
+                cave_profit += self.get_material_price(cave.get_material()) * quantity
+            else:
+                break
         
         expected_balance += cave_profit
         
