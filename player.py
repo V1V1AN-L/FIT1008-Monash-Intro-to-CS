@@ -258,50 +258,59 @@ class Player:
         # if the offered food only one
         # refers to multiplayer gameplay
         if isinstance(offered_food, Food):
-            chosen_food, chosen_caves = self.multiplayer_select_food_and_caves(offered_food)
+            chosen_food, expected_balance, chosen_caves = self.multiplayer_select_food_and_caves(offered_food)
         else:
-            chosen_food, chosen_caves = self.solo_select_food_and_caves()
+            chosen_food, expected_balance, chosen_caves = self.solo_select_food_and_caves()
 
-        return (chosen_food, self.get_balance(), chosen_caves)
+        return (chosen_food, expected_balance, chosen_caves)
 
     def solo_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
         """
         Select the food and caves for solo player
         Complexity: O(C) but in this case, C is the chosen caves that is chosen by the player
         """
+        expected_balance = self.get_balance()
+        # food
         chosen_food = self.choose_food()
         if isinstance(chosen_food, Food):
-            print(f'FOOD BALANCE: {self.balance-chosen_food.price}')
+            expected_balance -= chosen_food.price
+            projected_hunger = chosen_food.hunger_bars
         else:
-            print(f'FOOD BALANCE: {self.balance}')
+            projected_hunger = 0
+        print(f'FOOD BALANCE: {expected_balance}')
+        # caves
         chosen_caves = self.choose_caves()
-        if isinstance(chosen_food, Food):
-            total_hunger = chosen_food.hunger_bars
-        else:
-            total_hunger = 0
-        total_profit = 0
-            
+        cave_profit = 0
         for cave in chosen_caves:
-            profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
-            print(f'hunger before::::{self.hunger}')
-            print(f'hunger TAKEN::::{round(cave.get_material().mining_rate * cave.get_quantity(), 8)}')
-            hunger_taken = round(cave.get_material().mining_rate * cave.get_quantity(), 8)
-            total_hunger -= hunger_taken
-            print(f'hunger after::::{self.hunger}')
+            quantity = cave.get_quantity_given_energy_spent(projected_hunger)
+            profit = self.get_material_price(cave.get_material()) * quantity
+        
+        expected_balance += cave_profit
+        
+        
+        # getting expected balance and printing out shit
+        
+        #for cave in chosen_caves:
+        #    quantity = cave.get_quantity_given_energy_spent(total_hunger)
+        #    profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
+        #    print(f'hunger before::::{self.hunger}')
+        #    print(f'hunger TAKEN::::{round(cave.get_material().mining_rate * cave.get_quantity(), 8)}')
+        #    hunger_taken = round(cave.get_material().mining_rate * cave.get_quantity(), 8)
+        #    total_hunger -= hunger_taken
+        #    print(f'hunger after::::{self.hunger}')
+        #
+        #    if total_hunger > 0:
+        #        expected_balance += profit_made
+        #        print(f'Profit made:::{profit_made}')
+        #        print(f'BALANCE NOW:::{expected_balance}')
+        #    else:
+        #        quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
+        #        total_hunger = 0
+        #        expected_balance += round(self.get_material_price(cave.get_material()) * quantity, 8)
+        #        print(f'Profit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')
+        #        print(f'BALANCE NOW:::{expected_balance}')
 
-            if total_hunger > 0:
-                total_profit += profit_made
-                print(f'Profit made:::{profit_made}')
-                print(f'BALANCE NOW:::{total_profit}')
-            else:
-
-                quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
-                self.hunger = 0
-                total_profit += round(self.get_material_price(cave.get_material()) * quantity, 8)
-                print(f'DDDDProfit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')
-                print(f'BALANCE NOW:::{total_profit}')
-
-        return chosen_food, chosen_caves
+        return chosen_food, expected_balance, chosen_caves
 
     def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
         """
@@ -310,9 +319,16 @@ class Player:
         @see multiplayer_choose_caves()
         Complexity : O(C)
         """
+        expected_balance = self.get_balance()
         chosen_food = self.multiplayer_choose_food(offered_food)
+        if isinstance(chosen_food, Food):
+            expected_balance -= chosen_food.price   
         chosen_cave = self.multiplayer_choose_caves(chosen_food)
-        return chosen_food, chosen_cave  # O(C)
+        cave, quantity = chosen_cave
+        if isinstance(cave, Cave) and quantity > 0:
+            expected_balance += self.get_material_price(cave.get_material()) * quantity
+            
+        return chosen_food, expected_balance, chosen_cave  # O(C)
 
     # SOLO
 
@@ -422,7 +438,7 @@ class Player:
             return offered_food
         return None
 
-    def multiplayer_choose_caves(self, chosen_food) -> Cave:
+    def multiplayer_choose_caves(self, chosen_food) -> tuple[Cave, float]:
         """
         Choose 1 cave for each player
 

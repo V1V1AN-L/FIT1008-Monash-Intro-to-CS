@@ -440,11 +440,12 @@ Motivation:
                 self.players[i].set_hunger(food.hunger_bars)
             else:
                 assert balance >= 0, f"{self.players[i]} balance is {balance} when it is supposed to be >= 0"
+                
+                self.players[i].set_hunger(0)
 
             # verify hunger >= amount mined
             if isinstance(cave, Cave):
-                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(
-                    amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
+                assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
             else:
                 assert self.players[
                            i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
