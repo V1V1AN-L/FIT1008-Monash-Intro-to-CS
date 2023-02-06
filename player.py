@@ -251,7 +251,7 @@ class Player:
             If the player can afford the food, they buy it. O(1)
 
         MULTIPLAYER caves:
-            As you can only choose one cave, you want the most amount of profit possible from a single cave
+            As you can only choose one cave, you want the most amount of profit possible from a single cave O(C)
 
         MULTIPLAYER Complexity: (best & worst) = O(C + T)
         
