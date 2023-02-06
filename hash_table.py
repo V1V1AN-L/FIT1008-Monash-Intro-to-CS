@@ -53,7 +53,8 @@ class LinearProbeTable(Generic[T]):
 
     def hash(self, key: str) -> int:
         """
-            Hash a key for insertion into the hashtable.
+            Hashes a key for insertion into the hashtable.
+            Returns the hash value
         """
 
         value = 0
@@ -195,7 +196,7 @@ class LinearProbeTable(Generic[T]):
 
     def _rehash(self) -> None:
         """
-            Need to resize table and reinsert all values
+            Resizes and rehashes the table and reinserts all values
         """
 
         new_hash = LinearProbeTable(self.expected_size, int(self.table_size*2))
