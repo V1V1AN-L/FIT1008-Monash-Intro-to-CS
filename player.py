@@ -311,6 +311,12 @@ class Player:
 
         @see multiplayer_choose_caves()
         Complexity : O(C)
+        
+        Approach:
+        - if the player can afford the food, choose it
+        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
+        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
+        
         """
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves(chosen_food)
@@ -320,9 +326,8 @@ class Player:
             if chosen_food.price > profit_from_cave:
                 chosen_food = None
                 chosen_cave = [None, 0]
-                
 
-        return chosen_food, chosen_cave  # O(C)
+        return chosen_food, chosen_cave
 
     # SOLO
 
