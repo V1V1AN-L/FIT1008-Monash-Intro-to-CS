@@ -183,25 +183,25 @@ class Player:
         self.balance = round(balance, 4)
 
     def get_balance(self) -> float:
-        """ Get the emerald balance of the player"""
-        self.set_balance(self.balance)  # makes sure its rounded to 4 decimal places
+        """ Returns the emerald balance of the player"""
+        self.set_balance(self.balance)  # makes sure it's rounded to 4 decimal places
         return self.balance
 
     def increase_balance(self, balance: float = 0):
-        """ Increase emerald balance of the player"""
+        """ Increases the emerald balance of the player"""
         self.set_balance(self.balance + balance)
 
     def decrease_balance(self, balance: float = 0):
-        """ Decrease emerald balance of the player """
+        """ Decreases the emerald balance of the player """
         self.set_balance(self.balance - balance)
 
     # traders
     def set_traders(self, traders_list: list[Trader] = None) -> None:
-        """ Set the trader for each turn """
+        """ Sets the trader for each turn """
         self.traders_list = traders_list
 
     def get_traders(self) -> list[Trader]:
-        """ Get the list of traders """
+        """ Returns the list of traders """
         return self.traders_list
 
         # foods
@@ -254,6 +254,8 @@ class Player:
             As you can only choose one cave, you want the most amount of profit possible from a single cave
 
         MULTIPLAYER Complexity: (best & worst) = O(C + T)
+        
+        NOTE: for motivations see multiplayer_select_food_and_caves and solo_select_food_and_caves docstrings
         """
         self.generate_material_price_map()  # O(T)
 
@@ -454,8 +456,7 @@ class Player:
 
         COMPLEXITY (best & worst) = O(T), T = amount of traders available to trade
         """
-        # material_map = LinearProbeTable(len(self.get_traders()))
-        material_map = {}
+        material_map = LinearProbeTable(len(self.get_traders()))
         for trader in self.get_traders():
             try:
                 material, selling_price = trader.current_deal()

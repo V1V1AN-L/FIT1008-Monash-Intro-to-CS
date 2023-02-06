@@ -117,11 +117,12 @@ class Material:
         return f"{self.name}: {int(self.mining_rate)}🍗/💎"
     
     def __repr__(self):
-        """ Return string representation """
+        """ Returns string representation """
         return self.__str__()
     
     def __lt__(self, other):
-        return self.mining_rate > other.mining_rate
+        """ compares two materials based on their mining rate """
+        return self.mining_rate < other.mining_rate
     
     def get_material_plural(self, amount: int = 2):
         """ Dictionary of singular-plural form of noun """

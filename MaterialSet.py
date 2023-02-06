@@ -10,6 +10,9 @@ class MaterialSet(ASet):
     """
 
     def __init__(self, capacity: int = 1, items: list[Material] = None) -> None:
+        """
+        initialiser
+        """
         ASet.__init__(self)
         self.array = ArrayR(max(1, capacity))
         if isinstance(items, list):
@@ -71,11 +74,6 @@ class MaterialAVL(AVLTree):
         for item in self.tree:
             node_list.append(item)
         return node_list
-
-
-
-
-
 
 if __name__ == '__main__':
     # MS = MaterialSet(8,["Stone","Cobblestone","Stone Bricks","Stone Slabs","Stone stairs","Furnace"])
