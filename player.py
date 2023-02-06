@@ -282,11 +282,13 @@ class Player:
 
             if self.get_hunger() > 0:
                 self.balance += profit_made
+                cave.mined_quantity = cave.get_quantity()
                 print(f'Profit made:::{profit_made}')
                 print(f'BALANCE NOW:::{self.balance}')
             else:
 
                 quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
+                cave.mined_quantity = quantity
                 self.hunger = 0
                 self.balance += round(self.get_material_price(cave.get_material()) * quantity, 8)
                 print(f'DDDDProfit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')

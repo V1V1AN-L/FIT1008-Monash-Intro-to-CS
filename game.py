@@ -297,11 +297,11 @@ class SoloGame(Game):
 
         # add emeralds and update hunger and update quantities for caves
         for i, cave in enumerate(caves):
-            caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
+            caves[i].remove_quantity(cave.mined_quantity)
 
         # updates the quantities
         self.player.clear_hunger()
-        self.set_caves(caves)
+        # self.set_caves(caves)
 
     # user defined helper methods
 
