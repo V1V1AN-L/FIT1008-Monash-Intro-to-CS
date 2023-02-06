@@ -264,7 +264,7 @@ class SoloGame(Game):
         self.verify_output_and_update_quantities(food, balance, caves)
 
     def verify_output_and_update_quantities(self, food: Food, balance: float, caves: list[
-        Cave]):  # (self, food: Food | None, balance: float, caves: list[tuple[Cave, float]]) -> None:
+        Cave]) -> None:
         """
         verifies the result of a round of gameplay is consistent with expected values
         raises an error if expectations are not met
