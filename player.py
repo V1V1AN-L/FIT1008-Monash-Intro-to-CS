@@ -270,27 +270,36 @@ class Player:
         Complexity: O(C) but in this case, C is the chosen caves that is chosen by the player
         """
         chosen_food = self.choose_food()
-        print(f'FOOD BALANCE: {self.balance}')
+        if isinstance(chosen_food, Food):
+            print(f'FOOD BALANCE: {self.balance-chosen_food.price}')
+        else:
+            print(f'FOOD BALANCE: {self.balance}')
         chosen_caves = self.choose_caves()
+        if isinstance(chosen_food, Food):
+            total_hunger = chosen_food.hunger_bars
+        else:
+            total_hunger = 0
+        total_profit = 0
+            
         for cave in chosen_caves:
             profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
             print(f'hunger before::::{self.hunger}')
             print(f'hunger TAKEN::::{round(cave.get_material().mining_rate * cave.get_quantity(), 8)}')
             hunger_taken = round(cave.get_material().mining_rate * cave.get_quantity(), 8)
-            self.hunger -= hunger_taken
+            total_hunger -= hunger_taken
             print(f'hunger after::::{self.hunger}')
 
-            if self.get_hunger() > 0:
-                self.balance += profit_made
+            if total_hunger > 0:
+                total_profit += profit_made
                 print(f'Profit made:::{profit_made}')
-                print(f'BALANCE NOW:::{self.balance}')
+                print(f'BALANCE NOW:::{total_profit}')
             else:
 
                 quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
                 self.hunger = 0
-                self.balance += round(self.get_material_price(cave.get_material()) * quantity, 8)
+                total_profit += round(self.get_material_price(cave.get_material()) * quantity, 8)
                 print(f'DDDDProfit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')
-                print(f'BALANCE NOW:::{self.balance}')
+                print(f'BALANCE NOW:::{total_profit}')
 
         return chosen_food, chosen_caves
 
@@ -345,15 +354,13 @@ class Player:
             print(f'food price is::{food.price}')
             print(f'food huNGER is::{food.hunger_bars}')
 
-            if food.price <= self.balance:
+            if food.price <= self.get_balance():
                 res.append(food)
                 sort_based_on_hunger.append(food.hunger_bars)
                 dic.__setitem__(food.hunger_bars, food)
         if res is not None:
             sort_based_on_hunger.sort()
             food_choice = dic[sort_based_on_hunger[-1]]
-            self.set_hunger(food_choice.hunger_bars)
-            self.balance -= food_choice.price
             return food_choice
         else:
             return None
