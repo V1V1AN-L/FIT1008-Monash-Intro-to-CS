@@ -433,13 +433,15 @@ Motivation:
             balance = balances[i]
             cave, amount_of_material_mined = caves[i]
             if isinstance(food, Food):
-                assert balance >= food.price, f"{self.players[i]} {balance} should be >= {food.price}"
+                assert self.players[i].get_balance() >= food.price, f"{self.players[i]} {self.players[i].get_balance()} should be >= {food.price}"
                 # update emerald balance
                 self.players[i].decrease_balance(food.price)
+                assert self.players[i].get_balance() >= 0, f"{self.players[i]} balance is {self.players[i].get_balance()} when it is supposed to be >= 0"
                 # update hunger levels
                 self.players[i].set_hunger(food.hunger_bars)
+                
             else:
-                assert balance >= 0, f"{self.players[i]} balance is {balance} when it is supposed to be >= 0"
+                assert self.players[i].get_balance() >= 0, f"{self.players[i]} balance is {self.players[i].get_balance()} when it is supposed to be >= 0"
                 
                 self.players[i].set_hunger(0)
 
@@ -447,8 +449,7 @@ Motivation:
             if isinstance(cave, Cave):
                 assert self.players[i].get_hunger() >= cave.calculate_total_hunger_spent(amount_of_material_mined), f"{self.players[i]} {self.players[i].get_hunger()} >!= {cave.calculate_total_hunger_spent(amount_of_material_mined)}"
             else:
-                assert self.players[
-                           i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
+                assert self.players[i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
 
             # add emeralds and update hunger and update quantities for caves
             self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
