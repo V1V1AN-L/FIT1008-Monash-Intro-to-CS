@@ -29,22 +29,27 @@ caves = [
 waldo = RandomTrader("Waldo Morgan")
 waldo.add_material(fishing_rod)
 waldo.generate_deal()
+waldo.buying_price = 7.44
 waldo.sell = (fishing_rod, 7.44) # This is how my solution can hackily set the selling price - your solution does NOT need to support the same.
 orson = RandomTrader("Orson Hoover")
 orson.add_material(gold)
 orson.generate_deal()
+orson.buying_price = 7.70
 orson.sell = (gold, 7.70) # This is how my solution can hackily set the selling price - your solution does NOT need to support the same.
 lea = RandomTrader("Lea Carpenter")
 lea.add_material(prismarine)
 lea.generate_deal()
+lea.buying_price = 7.63
 lea.sell = (prismarine, 7.63) # This is how my solution can hackily set the selling price - your solution does NOT need to support the same.
 ruby = RandomTrader("Ruby Goodman")
 ruby.add_material(netherite)
 ruby.generate_deal()
+ruby.buying_price =9.78
 ruby.sell = (netherite, 9.78) # This is how my solution can hackily set the selling price - your solution does NOT need to support the same.
 mable = RandomTrader("Mable Hodge")
 mable.add_material(gold)
 mable.generate_deal()
+mable.buying_price = 5.40
 mable.sell = (gold, 5.40) # This is how my solution can hackily set the selling price - your solution does NOT need to support the same.
 
 traders = [
@@ -70,10 +75,10 @@ food, balance, caves = g.player.select_food_and_caves()
 # Food = Cooked Chicken Cuts
 # Balance = 209.21473449684368
 # Caves = [
-    # (<Cave: Castle Karstaag Ruins. 4 of [Netherite Ingot: 20.95🍗/💎]>, 4.0), 
+    # (<Cave: Castle Karstaag Ruins. 4 of [Netherite Ingot: 20.95🍗/💎]>, 4.0),
     # (<Cave: Red Eagle Redoubt. 3 of [Fishing Rod: 26.93🍗/💎]>, 3.0),
-    # (<Cave: Glacial Cave. 3 of [Gold Nugget: 27.24🍗/💎]>, 3.0), 
-    # (<Cave: Boulderfall Cave. 10 of [Prismarine Crystal: 11.48🍗/💎]>, 10.0), 
-    # (<Cave: Orotheim. 6 of [Fishing Rod: 26.93🍗/💎]>, 2.335313776457482), 
+    # (<Cave: Glacial Cave. 3 of [Gold Nugget: 27.24🍗/💎]>, 3.0),
+    # (<Cave: Boulderfall Cave. 10 of [Prismarine Crystal: 11.48🍗/💎]>, 10.0),
+    # (<Cave: Orotheim. 6 of [Fishing Rod: 26.93🍗/💎]>, 2.335313776457482),
 # ]
 print(food, balance, caves)

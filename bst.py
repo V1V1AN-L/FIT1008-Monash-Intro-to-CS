@@ -38,7 +38,7 @@ class BSTInOrderIterator:
 
     def __next__(self) -> K:
         """ The main body of the iterator.
-            Returns keys of the BST one by one respecting the in-order.
+            Returns the keys of the BST one by one respecting the in-order.
         """
 
         while self.current:
@@ -148,10 +148,9 @@ class BinarySearchTree(Generic[K, I]):
         """
 
         if current is None:  # key not found
-            #raise ValueError('Deleting non-existent item')
-            return current
+            raise ValueError('Deleting non-existent item')
         elif key < current.key:
-            current.left  = self.delete_aux(current.left, key)
+            current.left = self.delete_aux(current.left, key)
         elif key > current.key:
             current.right = self.delete_aux(current.right, key)
         else:  # we found our key => do actual deletion
@@ -167,7 +166,7 @@ class BinarySearchTree(Generic[K, I]):
 
             # general case => find a successor
             succ = self.get_successor(current)
-            current.key  = succ.key
+            current.key = succ.key
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
@@ -179,6 +178,11 @@ class BinarySearchTree(Generic[K, I]):
             It should be a node in the subtree rooted at current having the smallest key among all the
             larger keys.
             If no such node exists, then none should be returned.
+
+            Time complexity: @see get_minimal
+            best case: O(1)
+            average case: O(log n)
+            worst case: O(n)
         """
         if current.right is None:  # right element is greater
             return None
@@ -187,10 +191,12 @@ class BinarySearchTree(Generic[K, I]):
     def get_minimal(self, current: TreeNode) -> TreeNode:
         """
             Get the node with the smallest key in the current sub-tree.
+            complexity: O(log n) because we iterate with the depth of the tree
+            worst case: O(n - 1) if the tree is unbalanced
         """
 
-        #finding the leftmost leaf
-        while (current != None):
+        # finding the leftmost leaf
+        while current is not None:
             if current.left is None:
                 break
             current = current.left

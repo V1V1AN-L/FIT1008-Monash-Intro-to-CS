@@ -49,8 +49,8 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def insert_aux(self, current: AVLTreeNode, key: K, item: I) -> AVLTreeNode:
         """
-            Attempts to insert an item into the tree, it uses the Key to insert it
-            
+            Inserts an item into the tree, using the key
+            :complexity: O(log n)
         """
         # Find the correct location and insert the node
         if current is None:
@@ -72,14 +72,16 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
         return current
 
-    def set_index(self, root:AVLTreeNode) -> None:
+    def set_index(self, root: AVLTreeNode) -> None:
         """
         Set the index of each value within the tree
         the smallest value will have the smallest index
 
-        :param root: the root tree
+            :complexity: O(n) because we iterate into every element
+
+            :param root: the root tree
         """
-        if root != None:
+        if root is not None:
             self.set_index(root.left)
             root.index = self.count
             self.count += 1
@@ -89,6 +91,8 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
             Attempts to delete an item from the tree, it uses the Key to
             determine the node to delete.
+
+            :Complexity: O(log n)
         """
 
         if current is None:
@@ -199,10 +203,14 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         return self.range_between_aux(self.root, i, j, [])
 
-    def range_between_aux(self, root:AVLTreeNode, i, j, result: list) -> list:
+    def range_between_aux(self, root: AVLTreeNode, i, j, result: list) -> list:
         """
         Attempts to find the value that is sorted within the index i and j
         and save it inside the result
+
+        complexity: O(j-i + log(N))
+            it happens because we don't go through into every element, we just go into the element that within the ith and jth elements which makes it O(j-i)
+            Then, O(log n) comes from the recursion that happens with the depth of the tree which is log n
 
         :param root: the tree root
         :param i: the lower index (ith value)
