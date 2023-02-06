@@ -183,7 +183,10 @@ class Game:
         for trader in self.get_traders():
             try:
                 material, selling_price = trader.current_deal()
-                material_map[f"{material}"] = selling_price
+                if material_map.__contains__(f"{material}") and selling_price < material_map.__getitem__(f"{material}"):
+                    break
+                else:
+                    material_map[f"{material}"] = selling_price
             except ValueError:
                 pass
 
