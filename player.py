@@ -265,9 +265,6 @@ class Player:
             self.chosen_food, chosen_caves = self.multiplayer_select_food_and_caves(offered_food)
         else:
             self.chosen_food, chosen_caves = self.solo_select_food_and_caves()
-            print(f"Player hunger is {self.get_hunger()}")
-            print(
-                f"Food selected:::{self.chosen_food}, player balance::::{self.get_balance()}, Cave chosen: {chosen_caves}")
         return (self.chosen_food, self.get_balance(), chosen_caves)
 
     def solo_select_food_and_caves(self) -> tuple[Food, list[Cave]]:
@@ -277,29 +274,21 @@ class Player:
         """
 
         self.chosen_food = self.choose_food()
-        print(f'FOOD BALANCE: {self.balance}')
         chosen_caves = self.choose_caves()
         if len(chosen_caves) != 0:
             for cave in chosen_caves:
                 profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
-                print(f'hunger before::::{self.hunger}')
-                print(f'hunger TAKEN::::{round(cave.get_material().mining_rate * cave.get_quantity(), 8)}')
                 hunger_taken = round(cave.get_material().mining_rate * cave.get_quantity(), 8)
                 self.hunger -= hunger_taken
-                print(f'hunger after::::{self.hunger}')
 
                 if self.get_hunger() > 0:
                     self.balance += profit_made
                     cave.mined_quantity = cave.get_quantity()
-                    print(f'Profit made:::{profit_made}')
-                    print(f'BALANCE NOW:::{self.balance}')
                 else:
                     quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
                     cave.mined_quantity = quantity
                     self.hunger = 0
                     self.balance += round(self.get_material_price(cave.get_material()) * quantity, 8)
-                    print(f'DDDDProfit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')
-                    print(f'BALANCE NOW:::{self.balance}')
         if self.balance < self.original_emerld:
             self.balance += self.chosen_food.price
             self.hunger = 0
@@ -324,9 +313,6 @@ class Player:
 
         sort_based_on_hunger = []
         for food in self.get_foods():
-            print(f'food price is::{food.price}')
-            print(f'food huNGER is::{food.hunger_bars}')
-
             if food.price <= self.balance:
                 sort_based_on_hunger.append(food.hunger_bars)
                 food_dic.__setitem__(str(food.hunger_bars), food)
@@ -360,27 +346,21 @@ class Player:
         for cave in self.get_caves():  # (C)
             if self.get_material_price(cave.get_material()) != 0:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
-                print(
-                    f'Material:{cave.get_material().name} :::Mining rate is::{cave.get_material().mining_rate} Price:::{self.get_material_price(cave.get_material())}')
                 unit_price += cave.get_quantity() / 1000  # This is used to differ the caves with same materials
                 cave_dic.insert(str(round(unit_price, 8)), cave)
                 unit_price_lst.append(round(unit_price, 8))
-        print(f'Here UNIT PRICE LIST = {unit_price_lst}')
 
         if len(unit_price_lst) == 0:  # If no cave to mine, the player shouldn't buy the food-> added back the price for buying food & set the food to None
-            print("This line should be print!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.balance += self.chosen_food.price
             self.chosen_food = None
             self.hunger = 0
             return res
 
         unit_price_lst = msort(unit_price_lst)
-        print(f'UNIT PRICE LIST = {unit_price_lst}')
         for j in unit_price_lst[::-1]:
             cave_after_sort.append(cave_dic[str(j)])
 
         player_hunger_spent = 0
-
         for i in cave_after_sort:
             if player_hunger_spent < self.get_hunger():
                 player_hunger_spent += i.get_material().mining_rate * i.get_quantity()

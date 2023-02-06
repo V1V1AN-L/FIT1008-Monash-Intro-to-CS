@@ -292,9 +292,6 @@ class SoloGame(Game):
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
 
-        # map all materials to a price
-        # self.material_price_map = self.generate_material_price_map()
-
         # add emeralds and update hunger and update quantities for caves
         if caves is not None:
             for i, cave in enumerate(caves):
