@@ -443,7 +443,7 @@ class Player:
         chosen_quantity = 0
         projected_hunger = 0
         if chosen_food is None:
-            return (None, 0)
+            return None
         if isinstance(chosen_food, Food):
             projected_hunger = chosen_food.hunger_bars
         for cave in self.get_caves():
