@@ -188,8 +188,7 @@ class Game:
         return self.material_price_map
 
     # can be used in both SOLO games and MULTIPLAYER games
-    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave,
-                                                  mined_quantity: float = None) -> Cave:
+    def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave, mined_quantity: float = None) -> Cave:
         """
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
@@ -200,7 +199,7 @@ class Game:
             if mined_quantity is None:
                 mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
                 if mined_quantity == 0:
-                    return cave
+                    return cave, 0
 
             player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))
 
@@ -209,8 +208,34 @@ class Game:
 
             player.check_hunger()
 
-        return cave
+        return cave, mined_quantity
+    
+    # helper functions
 
+    def update_cave_quantity(self, chosen_cave_tuple: list[Cave, float]):
+        """ Update the quantity material within the caves
+        Complexity: O(C)
+        """
+        chosen_cave, amount_mined = chosen_cave_tuple
+        if isinstance(chosen_cave, Cave):
+            caves_list = self.get_caves()
+            for i in range(len(caves_list)):
+                if caves_list[i] == chosen_cave:
+                    caves_list[i].remove_quantity(amount_mined)
+                    break
+            self.set_caves(caves_list)
+            
+    def update_cave_quantity_solo(self, edit_cave_list: list[Cave], amount_mined_list: list[float]):
+        """ Update the quantity material within the caves
+        Complexity: O(C^2)
+        """
+        caves_list = self.get_caves()
+        for i in range(len(caves_list)):
+            for j in range(len(edit_cave_list)):
+                if caves_list[i] == edit_cave_list[j] and amount_mined_list[j] > 0:
+                    caves_list[i].remove_quantity(amount_mined_list[j])
+                    break
+        self.set_caves(caves_list)
 
 class SoloGame(Game):
     """
@@ -274,34 +299,26 @@ class SoloGame(Game):
 
         Complexity: O(C) because we will go through all the caves that is run by the player.
         """
-        # ensure emerald balance is sufficient to purchase food
-        # if isinstance(food, Food):
-        #     assert balance > food.price
-        # assert balance > 0
-        #
-        # # update emerald balance
-        # if isinstance(food, Food):
-        #     self.player.decrease_balance(food.price)
-        assert self.player.get_balance() >= 0
-        #
-        # # update hunger levels
-        # if isinstance(food, Food):
-        #     self.player.set_hunger(food.hunger_bars)
-        # else:
-        #     self.player.set_hunger(0)
-        # verify hunger > 0
-        assert self.player.get_hunger() >= 0
+        # ensure emerald balance is sufficient to purchase food and related food checks
+        if isinstance(food, Food):
+            assert self.player.get_balance() > food.price
+            self.player.set_hunger(food.hunger_bars)
+            self.player.decrease_balance(food.price)
+            
+            
+        assert self.player.get_balance() > 0
 
         # map all materials to a price
-        self.material_price_map = self.generate_material_price_map()
+        self.generate_material_price_map()
 
         # add emeralds and update hunger and update quantities for caves
+        amount_mined = [None]*len(caves)
         for i, cave in enumerate(caves):
-            caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
+            caves[i], amount_mined[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
 
         # updates the quantities
         self.player.clear_hunger()
-        self.set_caves(caves)
+        self.update_cave_quantity_solo(caves, amount_mined)
 
     # user defined helper methods
 
@@ -457,21 +474,6 @@ Motivation:
             # updates the quantities
             self.players[i].set_caves(self.get_caves())  # updates all players caves
             self.players[i].clear_hunger()
-
-    # helper functions
-
-    def update_cave_quantity(self, chosen_cave_tuple: list[Cave, float]):
-        """ Update the quantity material within the caves
-        Complexity: O(C)
-        """
-        chosen_cave, amount_mined = chosen_cave_tuple
-        if isinstance(chosen_cave, Cave):
-            caves_list = self.get_caves()
-            for i in range(len(caves_list)):
-                if caves_list[i] == chosen_cave:
-                    caves_list[i].remove_quantity(amount_mined)
-                    break
-            self.set_caves(caves_list)
 
 
 if __name__ == "__main__":
