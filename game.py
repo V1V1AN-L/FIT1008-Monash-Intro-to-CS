@@ -430,7 +430,10 @@ class MultiplayerGame(Game):
             # ensure emerald balance is sufficient to purchase food
             food = foods[i]
             balance = balances[i]
-            cave, amount_of_material_mined = caves[i]
+            if caves[i] is None:
+                cave, amount_of_material_mined = None, 0
+            else:
+                cave, amount_of_material_mined = caves[i]
             if isinstance(food, Food):
                 assert balance >= food.price, f"{self.players[i]} {balance} should be >= {food.price}"
                 # update emerald balance
