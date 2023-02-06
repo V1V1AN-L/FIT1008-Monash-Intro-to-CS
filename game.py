@@ -251,6 +251,9 @@ class SoloGame(Game):
         self.generate_trader_deals()
         self.player.set_traders(self.get_traders())
 
+        self.material_price_map = self.generate_material_price_map()
+
+
         # 2. Food is offered
         foods = self.generate_food()
         self.player.set_foods(foods)
@@ -267,10 +270,8 @@ class SoloGame(Game):
         verifies the result of a round of gameplay is consistent with expected values
         raises an error if expectations are not met
 
-        the results verified and updated are:
-        Player emerald balance
-        Player hunger levels
-        cave material quantity
+        Player balance & player hunger were updated in player.py -> solo_select_food_and_caves method.
+        Cave quantity after mining is updated inside this method.
 
         Complexity: O(C) because we will go through all the caves that is run by the player.
         """
@@ -293,7 +294,7 @@ class SoloGame(Game):
         assert self.player.get_hunger() >= 0
 
         # map all materials to a price
-        self.material_price_map = self.generate_material_price_map()
+        # self.material_price_map = self.generate_material_price_map()
 
         # add emeralds and update hunger and update quantities for caves
         for i, cave in enumerate(caves):
