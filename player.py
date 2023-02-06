@@ -5,6 +5,8 @@ from food import *
 from trader import Trader
 from hash_table import *
 from merge_sort import *
+from heap import  *
+from node import *
 
 # List taken from https://minecraft.fandom.com/wiki/Mob
 PLAYER_NAMES = [
@@ -271,6 +273,8 @@ class Player:
         """
         Select the food and caves for solo player
         Complexity: O(C) but in this case, C is the chosen caves that is chosen by the player
+        Motivation: player's balance & hungers are updated here, based on the output of chosen_food & chosen_cave
+        If the player's balance is lower than original balance, then the player shouldn't buy food & do mining at all. Therefore reset those variable to before.
         """
 
         self.chosen_food = self.choose_food()
@@ -307,6 +311,10 @@ class Player:
             Food: chosen food
 
         COMPLEXITY (best & worst) = O(F)
+
+        Approach: 1. Player should have enough money to buy the food
+        2. the food was sorted based on the hunger bars, player should buy the most hunger bars food in order to go mining
+
         """
 
         food_dic = LinearProbeTable(len(self.get_foods()))
@@ -326,6 +334,8 @@ class Player:
         else:
             return None
 
+
+
     def choose_caves(self) -> list[Cave]:
         """
         Choose the caves with the best output
@@ -336,6 +346,9 @@ class Player:
         Returns the caves in order of mining based on how much profit you can make from them
 
         COMPLEXITY COMPLEXITY (best & worst) = O(C)
+
+        Approach: cave is selected based on the the most unit price/ money player can get after mining it
+        Also make sure player have enough hunger to mine
         """
 
         cave_dic = LinearProbeTable(len(self.get_caves()))
