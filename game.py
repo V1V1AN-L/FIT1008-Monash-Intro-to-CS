@@ -253,9 +253,6 @@ class SoloGame(Game):
         self.generate_trader_deals()
         self.player.set_traders(self.get_traders())
 
-        # self.material_price_map = self.generate_material_price_map()
-
-
         # 2. Food is offered
         foods = self.generate_food()
         self.player.set_foods(foods)

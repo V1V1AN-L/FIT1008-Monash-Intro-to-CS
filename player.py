@@ -290,7 +290,6 @@ class Player:
                     print(f'Profit made:::{profit_made}')
                     print(f'BALANCE NOW:::{self.balance}')
                 else:
-
                     quantity = round((hunger_taken + self.hunger) / cave.get_material().mining_rate, 8)
                     cave.mined_quantity = quantity
                     self.hunger = 0
@@ -324,48 +323,28 @@ class Player:
         COMPLEXITY (best & worst) = O(F)
         """
 
-        # food_dic = LinearProbeTable(len(self.get_foods()))
-        # unit_price_lst = []
-        # for food in self.get_foods():
-        #     print(f'food price is::{food.price}')
-        #     print(f'food huNGER is::{food.hunger_bars}')
-        #
-        #     if food.price<= self.balance:
-        #         unit_price = food.hunger_bars / food.price
-        #         food_dic.insert(str(round(unit_price,4)), food)
-        #         unit_price_lst.append(round(unit_price,4))
-        # print(f'FOODDDD UNIT PRICE LIST = {unit_price_lst}')
-        #
-        # unit_price_lst = msort(unit_price_lst)
-        # food_choice = food_dic[str(unit_price_lst[len(unit_price_lst) - 1])]
-        # # if self.balance< food_choice.price:
-        # #     food_choice = food_dic[str(unit_price_lst[len(unit_price_lst) - 2])]
-        # self.set_hunger(food_choice.hunger_bars)
-        # self.balance -= food_choice.price
-        # print(f'FOOD CHOICE: {food_choice}')
-        #
-        # return food_choice
-        dic = {}
-        res = []
+
+        food_dic = LinearProbeTable(len(self.get_foods()))
+
         sort_based_on_hunger = []
         for food in self.get_foods():
             print(f'food price is::{food.price}')
             print(f'food huNGER is::{food.hunger_bars}')
 
             if food.price <= self.balance:
-                res.append(food)
                 sort_based_on_hunger.append(food.hunger_bars)
-                dic.__setitem__(food.hunger_bars, food)
-        if len(res) !=0:
-            sort_based_on_hunger.sort()
-            food_choice = dic[sort_based_on_hunger[-1]]
+                food_dic.__setitem__(str(food.hunger_bars), food)
+
+        if len(sort_based_on_hunger) !=0:
+            sort_based_on_hunger = msort(sort_based_on_hunger)
+            food_choice = food_dic[str(sort_based_on_hunger[-1])]
             self.set_hunger(food_choice.hunger_bars)
             self.balance -= food_choice.price
             return food_choice
         else:
             return None
 
-    def choose_caves(self) -> list[Cave]|None:
+    def choose_caves(self) -> list[Cave]:
         """
         Choose the caves with the best output
 
@@ -379,20 +358,20 @@ class Player:
 
         cave_dic = LinearProbeTable(len(self.get_caves()))
         res = []
-
         unit_price_lst = []
         cave_after_sort = []
+
         for cave in self.get_caves():  # (C)
             if self.get_material_price(cave.get_material()) != 0:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
                 print(
                     f'Material:{cave.get_material().name} :::Mining rate is::{cave.get_material().mining_rate} Price:::{self.get_material_price(cave.get_material())}')
-                unit_price += cave.get_quantity() / 1000
+                unit_price += cave.get_quantity() / 1000 #This is used to differ the caves with same materials
                 cave_dic.insert(str(round(unit_price, 8)), cave)
                 unit_price_lst.append(round(unit_price, 8))
         print(f'Here UNIT PRICE LIST = {unit_price_lst}')
 
-        if len(unit_price_lst)== 0:
+        if len(unit_price_lst)== 0: #If no cave to mine, the player shouldn't buy the food-> added back the price for buying food & set the food to None
             print("This line should be print!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.balance += self.chosen_food.price
             self.chosen_food = None
