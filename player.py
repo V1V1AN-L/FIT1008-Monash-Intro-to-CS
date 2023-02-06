@@ -275,7 +275,7 @@ class Player:
         self.chosen_food = self.choose_food()
         print(f'FOOD BALANCE: {self.balance}')
         chosen_caves = self.choose_caves()
-        if chosen_caves!= None:
+        if len(chosen_caves)!= 0:
             for cave in chosen_caves:
                 profit_made = round(self.get_material_price(cave.get_material()) * cave.get_quantity(), 8)
                 print(f'hunger before::::{self.hunger}')
@@ -377,6 +377,7 @@ class Player:
         """
 
         cave_dic = LinearProbeTable(len(self.get_caves()))
+        res = []
 
         unit_price_lst = []
         cave_after_sort = []
@@ -395,7 +396,7 @@ class Player:
             self.balance += self.chosen_food.price
             self.chosen_food = None
             self.hunger = 0
-            return None
+            return res
 
         unit_price_lst = msort(unit_price_lst)
         print(f'UNIT PRICE LIST = {unit_price_lst}')
@@ -403,7 +404,7 @@ class Player:
             cave_after_sort.append(cave_dic[str(j)])
 
         player_hunger_spent = 0
-        res = []
+
         for i in cave_after_sort:
             if player_hunger_spent < self.get_hunger():
                 player_hunger_spent += i.get_material().mining_rate * i.get_quantity()
