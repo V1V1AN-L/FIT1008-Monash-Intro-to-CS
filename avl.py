@@ -60,7 +60,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         elif key > current.key:
             current.right = self.insert_aux(current.right, key, item)
         else:  # key == current.key
-            raise ValueError('Inserting duplicate item')
+            raise ValueError('Error! Duplicate key.')
 
         current.height = 1 + max(self.get_height(current.left),
                               self.get_height(current.right))
@@ -96,7 +96,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
 
         if current is None:
-            raise ValueError('Deleting non-existent item')
+            raise ValueError('Error! Key not found.')
         elif key < current.key:
             current.left = self.delete_aux(current.left, key)
         elif key > current.key:

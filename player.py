@@ -355,7 +355,7 @@ class Player:
                 res.append(food)
                 sort_based_on_hunger.append(food.hunger_bars)
                 dic.__setitem__(food.hunger_bars, food)
-        if res is not None:
+        if len(res) !=0:
             sort_based_on_hunger.sort()
             food_choice = dic[sort_based_on_hunger[-1]]
             self.set_hunger(food_choice.hunger_bars)
