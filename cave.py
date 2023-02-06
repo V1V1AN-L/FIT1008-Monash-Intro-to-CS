@@ -130,7 +130,7 @@ class Cave:
         return self.__str__()
     
     def __eq__(self, other):
-        """ Checking whether two caves has the same name and material or not """
+        """ Determines whether two caves have the same name and material """
         return self.name == other.name and self.material == other.material
     
     # material
@@ -151,7 +151,7 @@ class Cave:
         self.round_quantity()
     
     def remove_quantity(self, amount: float) -> None:
-        """ Decrease the quantity of material  inside the caves """
+        """ Decrease the quantity of material inside the cave """
         if amount > self.quantity:
             self.clear_quantity()
         else:
@@ -163,12 +163,12 @@ class Cave:
         self.quantity = 0
 
     def get_quantity(self) -> float:
-        """ Get the quantity of materials inside the caves """
+        """ Returns the quantity of material inside the cave """
         self.round_quantity()
         return self.quantity
     
     def get_quantity_given_energy_spent(self, energy) -> float:
-        """ Calculate the quantity of materials depends on how many energy spent by the player """
+        """ Calculates the quantity of materials based on how much energy is spent by the player """
         if energy <= 0:
             return 0
         quantity = round(energy/self.material.mining_rate, 4)
@@ -177,7 +177,7 @@ class Cave:
         return quantity
     
     def calculate_total_hunger_spent(self, quantity: float = None):
-        """ Calculate the total hunger that player spent when mining in this cave """
+        """ Calculates the total hunger that player spent while mining in this cave """
         if quantity != None:
             return int(quantity * self.material.mining_rate)
         return int(self.get_quantity() * self.material.mining_rate)

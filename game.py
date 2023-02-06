@@ -65,28 +65,28 @@ class Game:
         self.set_traders(traders)
 
     def set_materials(self, mats: list[Material] = None) -> None:
-        """ Set the materials list"""
+        """ Set the materials list """
         self.materials = mats
         self.material_price_map = None
 
     def set_caves(self, caves: list[Cave] = None) -> None:
-        """ Set the caves list """
+        """ Sets the caves list """
         self.caves = caves
 
     def set_traders(self, traders: list[Trader] = None) -> None:
-        """ Set the traders list"""
+        """ Sets the traders list"""
         self.traders = traders
 
     def get_materials(self) -> list[Material]:
-        """ Return the materials list """
+        """ Returns the materials list """
         return self.materials
 
     def get_caves(self) -> list[Cave]:
-        """ Return the caves list """
+        """ Returns the caves list """
         return self.caves
 
     def get_traders(self) -> list[Trader]:
-        """ Return the traders list """
+        """ Returns the traders list """
         return self.traders
 
     def generate_random_materials(self, amount):
@@ -172,7 +172,7 @@ class Game:
 
     def generate_material_price_map(self):
         """
-        Generate the material price
+        Generates the material price
 
         Returns:
             the material price map
@@ -389,7 +389,11 @@ class MultiplayerGame(Game):
         """
         Motivation:
 
+        for each player, select_food_and_caves is called for that player.
+        This sees each player select a food (from the single option) and make the optimal cave choice
 
+        the relevant quantities are then updated and lists of the selected food, expected emerald balance and cave + materials mined
+        for each player is returned
 
 
         """

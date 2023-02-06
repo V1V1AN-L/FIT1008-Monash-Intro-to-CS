@@ -49,7 +49,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def insert_aux(self, current: AVLTreeNode, key: K, item: I) -> AVLTreeNode:
         """
-            Inserts an item into the tree, using the key
+            Inserts an item into the tree, using its key
             :complexity: O(log n)
         """
         # Find the correct location and insert the node
@@ -114,7 +114,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def left_rotate(self, current: AVLTreeNode) -> AVLTreeNode:
         """
-            Perform left rotation of the sub-tree.
+            Performs a left rotation of the sub-tree.
             Right child of the current node, i.e. of the root of the target
             sub-tree, should become the new root of the sub-tree.
             returns the new root of the subtree.
@@ -143,7 +143,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def right_rotate(self, current: AVLTreeNode) -> AVLTreeNode:
         """
-            Perform right rotation of the sub-tree.
+            Performs a right rotation of the sub-tree.
             Left child of the current node, i.e. of the root of the target
             sub-tree, should become the new root of the sub-tree.
             returns the new root of the subtree.
