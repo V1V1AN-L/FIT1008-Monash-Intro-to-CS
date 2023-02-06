@@ -275,43 +275,27 @@ class SoloGame(Game):
         Complexity: O(C) because we will go through all the caves that is run by the player.
         """
         # ensure emerald balance is sufficient to purchase food
-        # if isinstance(food, Food):
-        #     assert balance > food.price
-        # assert balance > 0
-        #
-        # # update emerald balance
-        # if isinstance(food, Food):
-        #     self.player.decrease_balance(food.price)
+        if isinstance(food, Food):
+            assert self.player.get_balance() > food.price
+        # verify balance remains above zero
         assert self.player.get_balance() >= 0
 
         assert self.player.get_balance() >= self.player.original_emerld
 
-        if self.player.chosen_food != None:
+        if self.player.chosen_food is not None:
             assert self.player.chosen_food.price < self.player.original_emerld
-        #
-        # # update hunger levels
-        # if isinstance(food, Food):
-        #     self.player.set_hunger(food.hunger_bars)
-        # else:
-        #     self.player.set_hunger(0)
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
-
-
-        # map all materials to a price
-        # self.material_price_map = self.generate_material_price_map()
-
         # add emeralds and update hunger and update quantities for caves
-        if caves != None:
+        if caves is not None:
             for i, cave in enumerate(caves):
                 caves[i].remove_quantity(cave.mined_quantity)
 
         # updates the quantities
         self.player.clear_hunger()
-        # self.set_caves(caves)
+
 
     # user defined helper methods
-
     def generate_food(self):
         """ Generate the food
         Complexity: O(F)"""
