@@ -283,11 +283,6 @@ class SoloGame(Game):
         # if isinstance(food, Food):
         #     self.player.decrease_balance(food.price)
         assert self.player.get_balance() >= 0
-
-        assert self.player.get_balance() >= self.player.original_emerld
-
-        if self.player.chosen_food != None:
-            assert self.player.chosen_food.price < self.player.original_emerld
         #
         # # update hunger levels
         # if isinstance(food, Food):
@@ -296,7 +291,6 @@ class SoloGame(Game):
         #     self.player.set_hunger(0)
         # verify hunger > 0
         assert self.player.get_hunger() >= 0
-
 
         # map all materials to a price
         # self.material_price_map = self.generate_material_price_map()

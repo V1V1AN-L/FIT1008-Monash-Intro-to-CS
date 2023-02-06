@@ -120,7 +120,6 @@ class Player:
         """ Initialization """
         self.name = name
         self.set_balance(self.DEFAULT_EMERALDS if emeralds == None else emeralds)
-        self.original_emerld = self.balance
         self.set_hunger()
         self.set_traders()
         self.set_foods()
@@ -297,11 +296,6 @@ class Player:
                     self.balance += round(self.get_material_price(cave.get_material()) * quantity, 8)
                     print(f'DDDDProfit made:::{round(self.get_material_price(cave.get_material()) * quantity, 8)}')
                     print(f'BALANCE NOW:::{self.balance}')
-        if self.balance < self.original_emerld:
-            self.balance += self.chosen_food.price
-            self.hunger = 0
-            self.chosen_food = None
-            chosen_caves = []
 
         return self.chosen_food, chosen_caves
 
