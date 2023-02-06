@@ -49,7 +49,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
     def insert_aux(self, current: AVLTreeNode, key: K, item: I) -> AVLTreeNode:
         """
-            Attempts to insert an item into the tree, it uses the Key to insert it
+            Inserts an item into the tree, using the key
             :complexity: O(log n)
         """
         # Find the correct location and insert the node

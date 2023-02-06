@@ -172,6 +172,18 @@ class RangeTrader(Trader):
     NOTE: unless specified all methods have a best and worst case complexity of O(1)
     """
 
+    def __init__(self, name: str) -> None:
+        """
+        Initialisation. Range trader needs a separate init to use an AVL tree instead of a set
+
+        param:
+            name: name of the trader
+        """
+        Trader.__init__(self, name)
+
+        self.materials: MaterialAVL = MaterialAVL()
+
+
     def get_market_material(self):
         """_summary_
 
@@ -195,18 +207,19 @@ class RangeTrader(Trader):
 
         Complexity: O(M)
         """
-        dic = {}
-        material_list = self.get_materials()
-        mining_rate_lst = []
-        for material in material_list:
-            mining_rate_lst.append(material.mining_rate)
-            dic.__setitem__(material.mining_rate, material)
-        mining_rate_lst.sort()
-        res = []
-        for mining_rate in mining_rate_lst:
-            res.append(dic.get(mining_rate))
-
-        return res[i:j + 1]
+        # dic = {}
+        # material_list = self.get_materials()
+        # mining_rate_lst = []
+        # for material in material_list:
+        #     mining_rate_lst.append(material.mining_rate)
+        #     dic.__setitem__(material.mining_rate, material)
+        # mining_rate_lst.sort()
+        # res = []
+        # for mining_rate in mining_rate_lst:
+        #     res.append(dic.get(mining_rate))
+        #
+        # return res[i:j + 1]
+        return self.materials.tree.range_between(i,j)
 
 
 class HardTrader(Trader):
