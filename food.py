@@ -92,32 +92,42 @@ FOOD_NAMES = [
 class Food:
     """
     NOTE: unless specified all methods have best and worst case complexity of O(1)
+
+    class variables:
+        MIN_PRICE   : Minimum price of the food
+        MAX_PRICE   : Maximum price of the food
+        MIN_HUNGER  : Minimum energy that player can get from the Food
+        MAX_HUNGER  : Maximum energy that player can get from the Food
+
+    Object variables:
+        name        : name of the food
+        hunger_bars : Energy that we get from the food
+        price       : price of the food
     """
-    
+
     MIN_PRICE = 1
     MAX_PRICE = 70
-    
+
     MIN_HUNGER = 70
     MAX_HUNGER = 500
-    
-        
+
     def __init__(self, name: str, hunger_bars: int, price: int) -> None:
         """ Initialization """
         self.name = name
         self.hunger_bars = hunger_bars
         self.price = price
-    
+
     def __str__(self) -> str:
         """ Formatted string representation """
         return f"{self.name}: {self.hunger_bars}🍗 for {self.price}💰"
-    
+
     def __repr__(self):
         """ Formatted string representation """
         return self.__str__()
-    
+
     def get_ratio(self):
         """ Get the ratio of hunger per price """
-        return self.hunger_bars/self.price
+        return self.hunger_bars / self.price
 
     @classmethod
     def random_food(cls) -> Food:
