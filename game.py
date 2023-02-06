@@ -410,7 +410,7 @@ class MultiplayerGame(Game):
             caves.append(cave_tuple)
             # update the quantities in game so that other players quantities will be updated (only players that need the quantities updated)
             self.update_cave_quantity(cave_tuple)  # O(C)
-            for j in range(i, len(self.players)):
+            for j in range(i, len(self.players)): # O(P)
                 self.players[j].set_caves(self.get_caves())
 
         return foods, balances, caves
