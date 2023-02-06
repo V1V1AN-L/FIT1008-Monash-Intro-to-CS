@@ -198,8 +198,6 @@ class Game:
 
             if mined_quantity is None:
                 mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
-                if mined_quantity == 0:
-                    return cave, 0
 
             player.decrease_hunger(cave.calculate_total_hunger_spent(mined_quantity))
 

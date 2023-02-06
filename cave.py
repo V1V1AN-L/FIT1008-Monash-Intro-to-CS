@@ -153,6 +153,8 @@ class Cave:
         """ Decrease the quantity of material  inside the caves """
         if amount > self.quantity:
             self.clear_quantity()
+        elif amount <= 0:
+            pass
         else:
             self.quantity -= amount
             self.round_quantity()
