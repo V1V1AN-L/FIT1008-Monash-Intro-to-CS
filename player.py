@@ -306,26 +306,6 @@ class Player:
 
         return self.chosen_food, chosen_caves
 
-    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food | None, Cave]:
-        """
-        Multiplayer mode, choose the food and the caves
-
-        @see multiplayer_choose_caves()
-        Complexity : O(C)
-
-        Approach:
-        - if the player can afford the food, choose it
-        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
-        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
-
-        """
-        chosen_food = self.multiplayer_choose_food(offered_food)
-        chosen_cave = self.multiplayer_choose_caves(chosen_food)
-        if chosen_cave is None:
-            chosen_food = None
-
-        return chosen_food, chosen_cave
-
     # SOLO
 
     def choose_food(self) -> Food:
