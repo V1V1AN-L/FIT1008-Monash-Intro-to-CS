@@ -320,12 +320,6 @@ class Player:
         """
         chosen_food = self.multiplayer_choose_food(offered_food)
         chosen_cave = self.multiplayer_choose_caves(chosen_food)
-        cave, quantity = chosen_cave
-        if isinstance(cave, Cave):
-            profit_from_cave = self.get_material_price(cave.get_material())*quantity
-            if chosen_food.price > profit_from_cave:
-                chosen_food = None
-                chosen_cave = [None, 0]
 
         return chosen_food, chosen_cave
 
@@ -428,7 +422,7 @@ class Player:
             return offered_food
         return None
 
-    def multiplayer_choose_caves(self, chosen_food) -> tuple(Cave, float):
+    def multiplayer_choose_caves(self, chosen_food) -> Cave:
         """
         Choose 1 cave for each player
 
