@@ -305,6 +305,30 @@ class Player:
 
         return self.chosen_food, chosen_caves
 
+    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
+        """
+        Multiplayer mode, choose the food and the caves
+
+        @see multiplayer_choose_caves()
+        Complexity : O(C)
+        
+        Approach:
+        - if the player can afford the food, choose it
+        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
+        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
+        
+        """
+        chosen_food = self.multiplayer_choose_food(offered_food)
+        chosen_cave = self.multiplayer_choose_caves(chosen_food)
+        cave, quantity = chosen_cave
+        if isinstance(cave, Cave):
+            profit_from_cave = self.get_material_price(cave.get_material())*quantity
+            if chosen_food.price > profit_from_cave:
+                chosen_food = None
+                chosen_cave = [None, 0]
+
+        return chosen_food, chosen_cave
+
     # SOLO
 
     def choose_food(self) -> Food:
@@ -388,30 +412,6 @@ class Player:
         return res
 
     # MULTI
-    
-    def multiplayer_select_food_and_caves(self, offered_food) -> tuple[Food|None, Cave]:
-        """
-        Multiplayer mode, choose the food and the caves
-
-        @see multiplayer_choose_caves()
-        Complexity : O(C)
-        
-        Approach:
-        - if the player can afford the food, choose it
-        - the player will then pick out the best cave they can mine from (calculated from price*quantity)
-        - if the profit made from the caves is less than that of the cost of food, it would be better to not choose anything
-        
-        """
-        chosen_food = self.multiplayer_choose_food(offered_food)
-        chosen_cave = self.multiplayer_choose_caves(chosen_food)
-        cave, quantity = chosen_cave
-        if isinstance(cave, Cave):
-            profit_from_cave = self.get_material_price(cave.get_material())*quantity
-            if chosen_food.price > profit_from_cave:
-                chosen_food = None
-                chosen_cave = [None, 0]
-
-        return chosen_food, chosen_cave
 
     def multiplayer_choose_food(self, offered_food: Food) -> Food | None:
         """_summary_
