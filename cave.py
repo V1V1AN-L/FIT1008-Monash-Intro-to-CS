@@ -123,7 +123,7 @@ class Cave:
         
     def __str__(self) -> str:
         """ Formatted string representation """
-        return f"Cave: {self.name}. {int(self.quantity)} of {self.material.get_material_plural(int(self.quantity))}, Mined: {self.mined_quantity}"
+        return f"Cave: {self.name}. {self.quantity} of {self.material.get_material_plural(int(self.quantity))}, Mined: {self.mined_quantity}"
         
     def __repr__(self):
         """ Formatted string representation """

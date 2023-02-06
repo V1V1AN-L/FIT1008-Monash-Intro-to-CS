@@ -251,7 +251,7 @@ class SoloGame(Game):
         self.generate_trader_deals()
         self.player.set_traders(self.get_traders())
 
-        self.material_price_map = self.generate_material_price_map()
+        # self.material_price_map = self.generate_material_price_map()
 
 
         # 2. Food is offered
@@ -297,8 +297,9 @@ class SoloGame(Game):
         # self.material_price_map = self.generate_material_price_map()
 
         # add emeralds and update hunger and update quantities for caves
-        for i, cave in enumerate(caves):
-            caves[i].remove_quantity(cave.mined_quantity)
+        if caves != None:
+            for i, cave in enumerate(caves):
+                caves[i].remove_quantity(cave.mined_quantity)
 
         # updates the quantities
         self.player.clear_hunger()
