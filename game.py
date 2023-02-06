@@ -394,17 +394,20 @@ class MultiplayerGame(Game):
 
         for each player, select_food_and_caves is called for that player.
         This sees each player select a food (from the single option) and make the optimal cave choice
+        
+        this method uses a multiplayer exclusive algorithm to reduce runtimes and complexity
 
         the relevant quantities are then updated and lists of the selected food, expected emerald balance and cave + materials mined
-        for each player is returned
+        
+        each player then undergoes an update of avaliable caves as the previous players have updated the quantities of existing mines in the game
 
-
+        COMPLEXITY: O(P*(T + C + P) + C)
         """
         foods = []
         balances = []
         caves = []
         for i in range(len(self.players)):  # O(P)
-            food, balance, cave_tuple = self.players[i].select_food_and_caves(offered_food)  # O(M+T+C)
+            food, balance, cave_tuple = self.players[i].select_food_and_caves(offered_food)  # O(T+C)
             foods.append(food)
             balances.append(balance)
             caves.append(cave_tuple)
