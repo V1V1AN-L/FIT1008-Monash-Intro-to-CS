@@ -72,7 +72,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
         return current
 
-    def set_index(self, root:AVLTreeNode) -> None:
+    def set_index(self, root: AVLTreeNode) -> None:
         """
         Set the index of each value within the tree
         the smallest value will have the smallest index
@@ -81,7 +81,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
 
             :param root: the root tree
         """
-        if root != None:
+        if root is not None:
             self.set_index(root.left)
             root.index = self.count
             self.count += 1
@@ -203,7 +203,7 @@ class AVLTree(BinarySearchTree, Generic[K, I]):
         """
         return self.range_between_aux(self.root, i, j, [])
 
-    def range_between_aux(self, root:AVLTreeNode, i, j, result: list) -> list:
+    def range_between_aux(self, root: AVLTreeNode, i, j, result: list) -> list:
         """
         Attempts to find the value that is sorted within the index i and j
         and save it inside the result

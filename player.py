@@ -1,6 +1,4 @@
 from __future__ import annotations
-from random_gen import *
-# from graphics_module import *
 from cave import *
 from material import *
 from food import *
@@ -92,9 +90,9 @@ PLAYER_NAMES = [
 ]
 
 
-class Player():
+class Player:
     """
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     Class Attributes:
         DEFAULT_EMERALDS: Default amount of emeralds that player hold in the first round
@@ -132,7 +130,7 @@ class Player():
         return f"{self.name}: {self.get_balance()}💰"
 
     def __repr__(self):
-        """ Formatted string represntation """
+        """ Formatted string representation """
         return self.__str__()
 
     # class methods
@@ -156,7 +154,7 @@ class Player():
 
     def get_hunger(self) -> float:
         """ Get the hunger value of the player """
-        self.set_hunger(self.hunger)  # makes sure its rounded to two decimal places
+        self.set_hunger(self.hunger)  # makes sure it's rounded to two decimal places
         return self.hunger
 
     def decrease_hunger(self, hunger: float = 0) -> None:
@@ -208,9 +206,9 @@ class Player():
 
     def set_foods(self, foods_list: list[Food] = None) -> None:
         """ Set the list of foods that is provided for player """
-        if foods_list != None:
+        if foods_list is not None:
             self.foods_list: list[Food] = [food for food in foods_list if isinstance(food, Food)]
-        elif self.get_traders() != None:
+        elif self.get_traders() is not None:
             self.foods_list: list[Food] = []
         else:
             self.foods_list = foods_list
@@ -351,7 +349,7 @@ class Player():
                 res.append(food)
                 sort_based_on_hunger.append(food.hunger_bars)
                 dic.__setitem__(food.hunger_bars, food)
-        if res != None:
+        if res is not None:
             sort_based_on_hunger.sort()
             food_choice = dic[sort_based_on_hunger[-1]]
             self.set_hunger(food_choice.hunger_bars)
@@ -367,7 +365,7 @@ class Player():
         Returns:
             list[Cave]: list of caves in order of mining to
 
-        Returns caves in order of mining based on how much profit you can make from them
+        Returns the caves in order of mining based on how much profit you can make from them
 
         COMPLEXITY COMPLEXITY (best & worst) = O(C)
         """
@@ -376,7 +374,7 @@ class Player():
 
         unit_price_lst = []
         cave_after_sort = []
-        for cave in self.get_caves(): #(C)
+        for cave in self.get_caves():  # (C)
             if self.get_material_price(cave.get_material()) != 0:
                 unit_price = self.get_material_price(cave.get_material()) / cave.get_material().mining_rate
                 print(
@@ -456,7 +454,7 @@ class Player():
         Returns:
             _type_: _description_
 
-        COMPLEXITY (best & worst) = O(T), T = amount of traders avaliable to trade
+        COMPLEXITY (best & worst) = O(T), T = amount of traders available to trade
         """
         # material_map = LinearProbeTable(len(self.get_traders()))
         material_map = {}

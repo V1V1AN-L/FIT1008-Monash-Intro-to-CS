@@ -1,7 +1,7 @@
 from aset import *
 from material import *
-from merge_sort import *
 from avl import *
+
 
 class MaterialSet(ASet):
     """
@@ -50,7 +50,7 @@ class MaterialAVL(AVLTree):
     """
     AVL tree for use in Range trader. Stores materials based on their mining difficulty
     """
-    def __init__(self, capacity: int = 1, items: list[Material] = None) -> None:
+    def __init__(self, items: list[Material] = None) -> None:
         AVLTree.__init__(self)
         self.tree = AVLTree()
         if isinstance(items, list):
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     stone_brick = quick_mat(-2)
     stone_stairs = quick_mat(3)
 
-    MS = MaterialAVL(8,[stone,cobblestone,stone_slab,stone_stairs])
+    MS = MaterialAVL([stone,cobblestone,stone_slab,stone_stairs])
     MS.add(stone_brick)
 
     print(MS.get_list())

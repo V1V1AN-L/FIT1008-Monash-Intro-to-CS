@@ -38,7 +38,7 @@ class BSTInOrderIterator:
 
     def __next__(self) -> K:
         """ The main body of the iterator.
-            Returns keys of the BST one by one respecting the in-order.
+            Returns the keys of the BST one by one respecting the in-order.
         """
 
         while self.current:
@@ -148,10 +148,9 @@ class BinarySearchTree(Generic[K, I]):
         """
 
         if current is None:  # key not found
-            #raise ValueError('Deleting non-existent item')
-            return current
+            raise ValueError('Deleting non-existent item')
         elif key < current.key:
-            current.left  = self.delete_aux(current.left, key)
+            current.left = self.delete_aux(current.left, key)
         elif key > current.key:
             current.right = self.delete_aux(current.right, key)
         else:  # we found our key => do actual deletion
@@ -167,7 +166,7 @@ class BinarySearchTree(Generic[K, I]):
 
             # general case => find a successor
             succ = self.get_successor(current)
-            current.key  = succ.key
+            current.key = succ.key
             current.item = succ.item
             current.right = self.delete_aux(current.right, succ.key)
 
@@ -196,8 +195,8 @@ class BinarySearchTree(Generic[K, I]):
             worst case: O(n - 1) if the tree is unbalanced
         """
 
-        #finding the leftmost leaf
-        while (current != None):
+        # finding the leftmost leaf
+        while current is not None:
             if current.left is None:
                 break
             current = current.left

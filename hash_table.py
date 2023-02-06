@@ -65,14 +65,14 @@ class LinearProbeTable(Generic[T]):
         return value
 
     def statistics(self) -> tuple:
-        '''
+        """
         Return:
         1. conflict_count: total number of conflicts (two or more values have the same key value)
         2. probe_total: total probe_chain throughout the hash table
         3. probe_max: longest probe chain
         4. rehash_count: how many rehashing has been done if the load factor is > 0.5
-        '''
-        return(self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
+        """
+        return (self.conflict_count, self.probe_total, self.probe_max, self.rehash_count)
 
     def __len__(self) -> int:
         """
@@ -107,7 +107,7 @@ class LinearProbeTable(Generic[T]):
                 return position
             else:  # there is something but not the key, try next
                 position = (position + 1) % len(self.table)
-                self.probe_total +=1
+                self.probe_total += 1
                 self.probe_max = max(self.probe_max, self.probe_total-probe_temp)
                 if self.conflict_count == conflict_temp:
                     self.conflict_count += 1
@@ -158,7 +158,7 @@ class LinearProbeTable(Generic[T]):
 
     def __setitem__(self, key: str, data: T) -> None:
         """
-            Set an (key, data) pair in our hash table
+            Set a (key, data) pair in our hash table
             :see: #self._linear_probe(key: str, is_insert: bool)
             :see: #self.__contains__(key: str)
         """
@@ -206,7 +206,8 @@ class LinearProbeTable(Generic[T]):
 
         self.count = new_hash.count
         self.table = new_hash.table
-        self.rehash_count +=1
+        self.rehash_count += 1
+
     def __str__(self) -> str:
         """
             Returns all they key/value pairs in our hash table (no particular

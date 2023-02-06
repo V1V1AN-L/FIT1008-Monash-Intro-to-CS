@@ -12,7 +12,7 @@ from random_gen import RandomGen
 class Game:
     """
     Game class
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     Class variables:
         MIN_MATERIALS   : minimum materials generated in the game
@@ -66,7 +66,7 @@ class Game:
     def set_materials(self, mats: list[Material] = None) -> None:
         """ Set the materials list"""
         self.materials = mats
-        self.material_price_map: dict = None
+        self.material_price_map = None
 
     def set_caves(self, caves: list[Cave] = None) -> None:
         """ Set the caves list """
@@ -189,7 +189,7 @@ class Game:
 
     # can be used in both SOLO games and MULTIPLAYER games
     def calculate_hunger_emerald_material_changes(self, player: Player, cave: Cave,
-                                                  mined_quantity: float = None) -> None:
+                                                  mined_quantity: float = None) -> Cave:
         """
         Given a player, cave, and the quantity mined, changes the player's hunger and emerald balance, while also
         reducing the remaining material count in the cave.
@@ -197,7 +197,7 @@ class Game:
         if isinstance(cave, Cave):
             selling_rate = self.get_material_price(cave.get_material())
 
-            if mined_quantity == None:
+            if mined_quantity is None:
                 mined_quantity = cave.get_quantity_given_energy_spent(player.get_hunger())
                 if mined_quantity == 0:
                     return cave
@@ -215,7 +215,7 @@ class Game:
 class SoloGame(Game):
     """
     Solo game class
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     object variables:
         player      : player of the game (solo)
@@ -258,7 +258,7 @@ class SoloGame(Game):
         # 3. Select one food item to purchase
         food, balance, caves = self.player.select_food_and_caves()
 
-        # 4. Quantites for caves is updated, some more stuff is added.
+        # 4. Quantities for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(food, balance, caves)
 
     def verify_output_and_update_quantities(self, food: Food, balance: float, caves: list[
@@ -274,7 +274,7 @@ class SoloGame(Game):
 
         Complexity: O(C) because we will go through all the caves that is run by the player.
         """
-        # ensure emerald balance is sufficent to purchase food
+        # ensure emerald balance is sufficient to purchase food
         # if isinstance(food, Food):
         #     assert balance > food.price
         # assert balance > 0
@@ -295,7 +295,7 @@ class SoloGame(Game):
         # map all materials to a price
         self.material_price_map = self.generate_material_price_map()
 
-        # add emeralds and update hunger and update quantites for caves
+        # add emeralds and update hunger and update quantities for caves
         for i, cave in enumerate(caves):
             caves[i] = self.calculate_hunger_emerald_material_changes(self.player, cave)
 
@@ -319,7 +319,7 @@ class SoloGame(Game):
 class MultiplayerGame(Game):
     """
     Multiplayer game class
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     Class Variable:
         MIN_PLAYERS : Minimum players for the multiplayer mode
@@ -373,8 +373,8 @@ class MultiplayerGame(Game):
         """
 
         # 1. Traders make deals
-        self.generate_trader_deals() # O(T)
-        for i in range(len(self.players)): #O(P)
+        self.generate_trader_deals()  # O(T)
+        for i in range(len(self.players)):  # O(P)
             self.players[i].set_traders(self.get_traders())
 
         # 2. Food is offered
@@ -383,7 +383,7 @@ class MultiplayerGame(Game):
         # 3. Each player selects a cave - The game does this instead.
         foods, balances, caves = self.select_for_players(offered_food)
 
-        # 4. Quantites for caves is updated, some more stuff is added.
+        # 4. Quantities for caves is updated, some more stuff is added.
         self.verify_output_and_update_quantities(foods, balances, caves)
 
     def select_for_players(self, offered_food: Food) -> tuple[
@@ -406,13 +406,13 @@ Motivation:
         foods = []
         balances = []
         caves = []
-        for i in range(len(self.players)): #O(P)
-            food, balance, cave_tuple = self.players[i].select_food_and_caves(offered_food) # O(M+T+C)
+        for i in range(len(self.players)):  # O(P)
+            food, balance, cave_tuple = self.players[i].select_food_and_caves(offered_food)  # O(M+T+C)
             foods.append(food)
             balances.append(balance)
             caves.append(cave_tuple)
             # update the quantities in game so that other players quantities will be updated (only players that need the quantities updated)
-            self.update_cave_quantity(cave_tuple) #O(C)
+            self.update_cave_quantity(cave_tuple)  # O(C)
             for j in range(i, len(self.players)):
                 self.players[j].set_caves(self.get_caves())
 
@@ -428,7 +428,7 @@ Motivation:
         # modify other players lists so that mining happens real time
 
         for i in range(len(self.players)):
-            # ensure emerald balance is sufficent to purchase food
+            # ensure emerald balance is sufficient to purchase food
             food = foods[i]
             balance = balances[i]
             cave, amount_of_material_mined = caves[i]
@@ -449,7 +449,7 @@ Motivation:
                 assert self.players[
                            i].get_hunger() >= 0, f"{self.players[i]} should be reset to 0 at the end of every turn"
 
-            # add emeralds and update hunger and update quantites for caves
+            # add emeralds and update hunger and update quantities for caves
             self.calculate_hunger_emerald_material_changes(self.players[i], cave, amount_of_material_mined)
 
             # updates the quantities

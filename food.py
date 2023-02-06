@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-from material import Material
 from random_gen import RandomGen
 
 # List of food names from https://github.com/vectorwing/FarmersDelight/tree/1.18.2/src/main/resources/assets/farmersdelight/textures/item
@@ -90,9 +88,10 @@ FOOD_NAMES = [
     "Vegetable Soup",
 ]
 
+
 class Food:
     """
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
     """
     
     MIN_PRICE = 1
@@ -130,6 +129,6 @@ class Food:
         hunger_restored = RandomGen.randint(cls.MIN_HUNGER, cls.MAX_HUNGER)
         return Food(RandomGen.random_choice(FOOD_NAMES), hunger_restored, price)
 
+
 if __name__ == "__main__":
     print(Food.random_food())
-

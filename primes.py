@@ -5,8 +5,9 @@ from __future__ import annotations
 __author__ = 'Zecan Liu'
 __docformat__ = 'reStructuredText'
 
+
 class LargestPrimeIterator():
-    """ iterator that yields largest prime less than upper_bound"""
+    """ iterator that yields the largest prime less than upper_bound"""
     def __init__(self, upper_bound, factor):
         """
         Initialiser.

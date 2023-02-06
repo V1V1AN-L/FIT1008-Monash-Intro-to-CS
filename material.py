@@ -1,5 +1,4 @@
 from random_gen import RandomGen
-#from graphics_module import *
 
 # Material names taken from https://minecraft-archive.fandom.com/wiki/Items
 RANDOM_MATERIAL_NAMES = [
@@ -86,9 +85,10 @@ RANDOM_MATERIAL_NAMES = [
     "Netherite Ingot",
 ]
 
+
 class Material:
     """
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     Class attribute:
         MIN_MINING_RATE: the minimum rate mining of consuming hunger points
@@ -207,7 +207,7 @@ class Material:
                 return plural
             return self.name
         except KeyError:
-            return self.name[:-1] # gets rid of the 's' at the end of the name
+            return self.name[:-1]  # gets rid of the 's' at the end of the name
 
     @classmethod
     def random_material(cls):

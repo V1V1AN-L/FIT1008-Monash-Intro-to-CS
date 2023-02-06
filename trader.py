@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from abc import abstractmethod, ABC
+# from abc import abstractmethod, ABC
 from material import Material
-from random_gen import RandomGen
+# from random_gen import RandomGen
 from MaterialSet import *
 
 # Generated with https://www.namegenerator.co/real-names/english-name-generator
@@ -73,7 +73,7 @@ TRADER_NAMES = [
 class Trader(ABC):
     """
     Trader class
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
 
     attributes:
     name: name of the trader
@@ -96,7 +96,7 @@ class Trader(ABC):
 
     def __str__(self) -> str:
         """ Formatted string when print this class """
-        if self.buying != None:
+        if self.buying is not None:
             return f"<{type(self).__name__}: {self.name} buying [{self.buying}] for {self.buying_price}💰>"
         return f"<{type(self).__name__}: {self.name}>"
 
@@ -133,8 +133,9 @@ class Trader(ABC):
 
     def current_deal(self) -> tuple[Material, float]:
         """ Return the deal that the trader offers """
-        if self.buying == None: raise ValueError
-        return (self.buying, self.buying_price)
+        if self.buying is None:
+            raise ValueError
+        return self.buying, self.buying_price
 
     def generate_deal(self) -> None:
         """ Generate the deal that the trader wants to offer"""
@@ -154,14 +155,14 @@ class Trader(ABC):
 class RandomTrader(Trader):
     """
     Random trader, with their random trait
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
     """
 
     def get_market_material(self):
         """_summary_
 
         Returns:
-            Material: random material chosen from the avaliable list of materials the trader is buying
+            Material: random material chosen from the available list of materials the trader is buying
         """
         return RandomGen.random_choice(self.get_materials())
 
@@ -169,7 +170,7 @@ class RandomTrader(Trader):
 class RangeTrader(Trader):
     """
     Range trader, will find the easiest things to mine
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
     """
 
     def __init__(self, name: str) -> None:
@@ -188,7 +189,8 @@ class RangeTrader(Trader):
         """_summary_
 
         Returns:
-            Material: random material chosen from the avaliable list of materials the trader is buying within the bounds of lower and upper (see RangeTrader.materials_between)
+            Material: random material chosen from the available list of materials the trader is buying within
+            the bounds of lower and upper (see RangeTrader.materials_between)
         """
         lower = RandomGen.randint(0, len(self.get_materials()) - 1)
         upper = RandomGen.randint(lower, len(self.get_materials()) - 1)
@@ -207,24 +209,12 @@ class RangeTrader(Trader):
 
         Complexity: O(M)
         """
-        # dic = {}
-        # material_list = self.get_materials()
-        # mining_rate_lst = []
-        # for material in material_list:
-        #     mining_rate_lst.append(material.mining_rate)
-        #     dic.__setitem__(material.mining_rate, material)
-        # mining_rate_lst.sort()
-        # res = []
-        # for mining_rate in mining_rate_lst:
-        #     res.append(dic.get(mining_rate))
-        #
-        # return res[i:j + 1]
-        return self.materials.tree.range_between(i,j)
+        return self.materials.tree.range_between(i, j)
 
 
 class HardTrader(Trader):
     """
-    NOTE: unless specified all methods have a best and worst case complexity of O(1)
+    NOTE: unless specified all methods have best and worst case complexity of O(1)
     """
 
     def get_market_material(self):
@@ -234,7 +224,7 @@ class HardTrader(Trader):
         Returns:
             Material: hardest material to mine in the available list of materials the trader is buying
 
-        COmplexity: O(M)
+        Complexity: O(M)
         """
         hardest_to_mine = None
         hardest_to_mine_value = 0
